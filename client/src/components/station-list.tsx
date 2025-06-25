@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Shuffle, Loader2 } from 'lucide-react';
 import { RadioStation, SearchFilters } from '@/types/radio';
@@ -12,8 +12,9 @@ interface StationListProps {
 }
 
 export function StationList({ filters }: StationListProps) {
-  const [page, setPage] = useState(0);
+  const [allStations, setAllStations] = useState<RadioStation[]>([]);
   const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null);
+  const [offset, setOffset] = useState(0);
   const limit = 20;
   
   const {
@@ -22,37 +23,44 @@ export function StationList({ filters }: StationListProps) {
     error,
     isFetching,
   } = useQuery({
-    queryKey: ['/api/stations', { ...filters, limit, offset: page * limit }],
-    queryFn: () => fetchStations({ ...filters, limit, offset: page * limit }),
-    staleTime: 30 * 1000, // 30 seconds for more frequent refreshes
+    queryKey: ['/api/stations', { ...filters, limit, offset }],
+    queryFn: () => fetchStations({ ...filters, limit, offset }),
+    staleTime: 30 * 1000,
     refetchOnWindowFocus: true,
   });
 
-  // Always show top 10 random stations when no filters are applied
-  const displayStations = useMemo(() => {
-    if (!filters.search && !filters.country && !filters.genre && stations.length > 10) {
-      // Shuffle and take top 10 for discovery
-      const shuffled = [...stations].sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, 10);
+  // Update allStations when new data comes in
+  useEffect(() => {
+    if (stations.length > 0) {
+      if (offset === 0) {
+        setAllStations(stations);
+      } else {
+        setAllStations(prev => [...prev, ...stations]);
+      }
     }
-    return stations;
-  }, [stations, filters]);
+  }, [stations, offset]);
+
+  // Reset offset when filters change
+  useEffect(() => {
+    setOffset(0);
+    setAllStations([]);
+  }, [filters.search, filters.country, filters.genre]);
 
   const handleLoadMore = () => {
-    setPage(prev => prev + 1);
+    setOffset(prev => prev + limit);
   };
 
   const handleRandomDrift = () => {
-    if (displayStations.length > 0) {
-      const randomIndex = Math.floor(Math.random() * displayStations.length);
-      const randomStation = displayStations[randomIndex];
+    if (allStations.length > 0) {
+      const randomIndex = Math.floor(Math.random() * allStations.length);
+      const randomStation = allStations[randomIndex];
       // Scroll to the random station
       const element = document.querySelector(`[data-station-id="${randomStation.stationuuid}"]`);
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
-  if (isLoading && page === 0) {
+  if (isLoading && offset === 0) {
     return (
       <div className="flex-1 p-6 flex items-center justify-center">
         <div className="text-center">
@@ -83,8 +91,8 @@ export function StationList({ filters }: StationListProps) {
           <h2 className="text-lg md:text-xl font-bold text-crt-green font-serif">Ultra-Obscure Transmissions</h2>
           <p className="text-xs md:text-sm text-gray-400 mt-1">
             {!filters.search && !filters.country && !filters.genre 
-              ? `Top 10 random discoveries • ${displayStations.length} stations`
-              : `Sorted by reverse popularity • ${displayStations.length} stations found`
+              ? `Random discoveries • ${allStations.length} stations`
+              : `Sorted by reverse popularity • ${allStations.length} stations found`
             }
           </p>
         </div>
@@ -103,7 +111,7 @@ export function StationList({ filters }: StationListProps) {
       </div>
 
       <div className="space-y-3 md:space-y-4">
-        {displayStations.map((station: RadioStation) => (
+        {allStations.map((station: RadioStation) => (
           <div key={station.stationuuid} data-station-id={station.stationuuid}>
             <StationCard 
               station={station} 
@@ -113,7 +121,7 @@ export function StationList({ filters }: StationListProps) {
         ))}
       </div>
 
-      {displayStations.length > 0 && !(!filters.search && !filters.country && !filters.genre) && (
+      {allStations.length > 0 && stations.length === limit && (
         <div className="text-center py-6 md:py-8">
           <Button
             onClick={handleLoadMore}

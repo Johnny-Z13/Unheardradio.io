@@ -144,6 +144,16 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
             >
               <Share2 className="w-4 h-4" />
             </button>
+            
+            {onMaximize && (
+              <button
+                onClick={onMaximize}
+                className="w-10 h-10 rounded-full border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center"
+                title="Fullscreen view"
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
       </div>
