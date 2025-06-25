@@ -4,6 +4,7 @@ import { Shuffle, Loader2 } from 'lucide-react';
 import { RadioStation, SearchFilters } from '@/types/radio';
 import { fetchStations } from '@/lib/radio-api';
 import { StationCard } from './station-card';
+import { FullscreenStation } from './fullscreen-station';
 import { Button } from '@/components/ui/button';
 
 interface StationListProps {

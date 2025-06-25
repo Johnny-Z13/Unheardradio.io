@@ -220,6 +220,43 @@
   .border-accent-yellow {
     border-color: var(--accent-yellow);
   }
+
+  /* Fullscreen slider styling */
+  .slider-fullscreen .slider-track {
+    background: var(--radio-black);
+    height: 8px;
+  }
+  
+  .slider-fullscreen .slider-range {
+    background: var(--vdu-green);
+  }
+  
+  .slider-fullscreen .slider-thumb {
+    background: var(--vdu-green-bright);
+    border: 2px solid var(--vdu-green);
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Grid animation */
+  @keyframes grid-move {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+  }
+
+  /* Enhanced glow effects */
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    from {
+      text-shadow: 0 0 5px var(--vdu-green), 0 0 10px var(--vdu-green), 0 0 15px var(--vdu-green);
+    }
+    to {
+      text-shadow: 0 0 10px var(--vdu-green-bright), 0 0 20px var(--vdu-green-bright), 0 0 30px var(--vdu-green-bright);
+    }
+  }
 }
 
 @keyframes static {

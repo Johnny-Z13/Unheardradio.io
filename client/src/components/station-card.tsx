@@ -1,4 +1,4 @@
-import { Play, Pause, Bookmark, Share2 } from 'lucide-react';
+import { Play, Pause, Bookmark, Share2, Maximize2 } from 'lucide-react';
 import { RadioStation } from '@/types/radio';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
@@ -7,9 +7,10 @@ import { useToast } from '@/hooks/use-toast';
 
 interface StationCardProps {
   station: RadioStation;
+  onMaximize?: () => void;
 }
 
-export function StationCard({ station }: StationCardProps) {
+export function StationCard({ station, onMaximize }: StationCardProps) {
   const { playStation, currentStation, isPlaying, isLoading } = useAudioStore();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
@@ -110,6 +111,16 @@ export function StationCard({ station }: StationCardProps) {
           </div>
           
           <div className="flex items-center space-x-2 flex-shrink-0">
+            {onMaximize && (
+              <button
+                onClick={onMaximize}
+                className="w-10 h-10 rounded-full border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center"
+                title="Fullscreen view"
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+            )}
+            
             <button
               onClick={handleBookmark}
               className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all ${
