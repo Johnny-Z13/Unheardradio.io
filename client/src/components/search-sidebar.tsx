@@ -54,22 +54,22 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
   return (
     <aside className={`${
       isCollapsed ? 'w-0 md:w-0' : 'w-full md:w-80'
-    } bg-radio-gray border-r border-crt-dim transition-all duration-300 overflow-hidden md:sticky md:top-16 md:h-[calc(100vh-4rem)] md:overflow-y-auto flex-shrink-0`}>
+    } bg-radio-dark border-r border-vdu-green-dim transition-all duration-300 overflow-hidden md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:overflow-y-auto flex-shrink-0`}>
       
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="md:hidden fixed top-20 left-4 z-50 w-10 h-10 bg-radio-gray border border-crt-green text-crt-green flex items-center justify-center"
+        className="md:hidden fixed top-24 left-4 z-50 w-12 h-12 bg-vdu-green text-radio-black rounded-full flex items-center justify-center shadow-lg"
       >
-        <Search className="w-4 h-4" />
+        <Search className="w-5 h-5" />
       </button>
 
-      <div className={`${isCollapsed ? 'hidden' : 'block'} p-4 md:p-6 space-y-4 md:space-y-6`}>
+      <div className={`${isCollapsed ? 'hidden' : 'block'} p-4 md:p-6 space-y-6`}>
         <div className="flex items-center justify-between">
-          <h2 className="text-base md:text-lg font-bold text-crt-green font-serif">Signal Scanner</h2>
+          <h2 className="text-lg md:text-xl font-black text-vdu-green tracking-tight">FILTERS</h2>
           <div className="text-right hidden md:block">
-            <div className="text-xs text-gray-400">Stations Indexed</div>
-            <div className="text-lg text-crt-green font-bold">{totalStations.toLocaleString()}</div>
+            <div className="text-xs text-muted font-medium">INDEXED</div>
+            <div className="text-lg text-vdu-green font-black">{totalStations.toLocaleString()}</div>
           </div>
         </div>
         

@@ -2,7 +2,7 @@ import { Play, Pause, Bookmark, Share2 } from 'lucide-react';
 import { RadioStation } from '@/types/radio';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import { getObscurityBadge, generateStationDescription } from '@/lib/radio-api';
+import { getObscurityBadge, generateStationDescription, getTimeOnAir, getStationPopularity, getStreamQuality } from '@/lib/radio-api';
 import { useToast } from '@/hooks/use-toast';
 
 interface StationCardProps {
@@ -66,85 +66,179 @@ export function StationCard({ station }: StationCardProps) {
   };
 
   return (
-    <div className="border border-crt-dim bg-radio-gray p-3 md:p-4 hover:border-crt-green transition-colors group relative">
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-crt-green to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+    <div className="bg-radio-dark rounded-2xl p-4 md:p-6 hover:bg-opacity-80 transition-all group relative overflow-hidden border border-vdu-green-dim hover:border-vdu-green">
+      {/* Background pattern overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="w-full h-full" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300ff00' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3Ccircle cx='37' cy='17' r='1'/%3E%3Ccircle cx='47' cy='37' r='1'/%3E%3Ccircle cx='17' cy='47' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
       
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between space-y-3 md:space-y-0">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-3 mb-2">
+      <div className="relative z-10">
+        {/* Header with play button and title */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center space-x-4 flex-1 min-w-0">
             <button
               onClick={handlePlay}
               disabled={isCurrentlyLoading}
-              className={`w-8 h-8 md:w-10 md:h-10 border flex-shrink-0 ${
+              className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex-shrink-0 flex items-center justify-center transition-all ${
                 isCurrentlyPlaying
-                  ? 'border-amber text-amber hover:bg-amber'
-                  : 'border-crt-green text-crt-green hover:bg-crt-green'
-              } hover:text-radio-black transition-all flex items-center justify-center ${
-                isCurrentlyLoading ? 'animate-pulse' : ''
-              }`}
+                  ? 'bg-accent-yellow text-radio-black'
+                  : 'bg-vdu-green text-radio-black hover:bg-vdu-green-bright'
+              } ${isCurrentlyLoading ? 'animate-pulse' : ''}`}
             >
               {isCurrentlyLoading ? (
-                <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : isCurrentlyPlaying ? (
-                <Pause className="w-3 h-3 md:w-4 md:h-4" />
+                <Pause className="w-5 h-5 md:w-6 md:h-6" />
               ) : (
-                <Play className="w-3 h-3 md:w-4 md:h-4" />
+                <Play className="w-5 h-5 md:w-6 md:h-6 ml-1" />
               )}
             </button>
             
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-crt-green text-sm md:text-base truncate">{station.name}</h3>
-              <p className="text-xs text-gray-400">{station.country}</p>
+              <h3 className="text-lg md:text-xl font-black text-vdu-green tracking-tight truncate mb-1">
+                {station.name.toUpperCase()}
+              </h3>
+              <p className="text-sm md:text-base text-muted font-medium">
+                BY {station.country}
+              </p>
             </div>
-            
-            {isCurrentStation && (
-              <span className="px-2 py-1 bg-amber text-radio-black text-xs font-bold animate-static flex-shrink-0 hidden md:inline">
-                NOW PLAYING
-              </span>
-            )}
           </div>
           
-          {/* Mobile Now Playing Indicator */}
-          {isCurrentStation && (
-            <div className="mb-2 md:hidden">
-              <span className="px-2 py-1 bg-amber text-radio-black text-xs font-bold animate-static">
-                NOW PLAYING
-              </span>
+          <div className="flex items-center space-x-2 flex-shrink-0">
+            <button
+              onClick={handleBookmark}
+              className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all ${
+                isBookmarked(station.stationuuid)
+                  ? 'border-vdu-green bg-vdu-green text-radio-black'
+                  : 'border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green'
+              }`}
+            >
+              <Bookmark className={`w-4 h-4 ${isBookmarked(station.stationuuid) ? 'fill-current' : ''}`} />
+            </button>
+            
+            <button
+              onClick={handleShare}
+              className="w-10 h-10 rounded-full border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Now Playing indicator */}
+        {isCurrentStation && (
+          <div className="mb-4">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 bg-accent-yellow text-radio-black rounded-full text-xs font-black">
+              <div className="w-2 h-2 bg-radio-black rounded-full animate-pulse" />
+              <span>NOW PLAYING</span>
             </div>
-          )}
-          
-          <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs text-gray-500 mb-2">
-            <span className="flex-shrink-0">{station.bitrate ? `${station.bitrate} kbps` : 'Unknown bitrate'}</span>
-            <span className="flex-shrink-0">{station.clickcount || 0} listeners</span>
-            <span className="truncate">{station.tags || 'Unknown genre'}</span>
-            <span className={`px-2 py-1 bg-${obscurityBadge.color} text-radio-black font-bold flex-shrink-0`}>
+          </div>
+        )}
+
+        {/* Description */}
+        <p className="text-sm md:text-base text-muted font-medium mb-4 line-clamp-2">
+          {description}
+        </p>
+
+        {/* Enhanced Metadata */}
+        <div className="space-y-3 mb-4">
+          {/* Primary metadata row */}
+          <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm">
+            <span className="px-2 py-1 bg-vdu-green-dim text-radio-black rounded font-bold">
+              {station.bitrate ? `${station.bitrate} KBPS` : 'UNKNOWN'}
+            </span>
+            <span className="text-muted font-medium">
+              {station.clickcount || 0} listeners
+            </span>
+            <span className={`px-2 py-1 rounded font-bold text-radio-black ${
+              obscurityBadge.color === 'signal-blue' ? 'bg-vdu-green-bright' :
+              obscurityBadge.color === 'crt-green' ? 'bg-vdu-green' :
+              obscurityBadge.color === 'tape-orange' ? 'bg-accent-yellow' :
+              'bg-vdu-green-dim'
+            }`}>
               {obscurityBadge.text}
             </span>
           </div>
-          
-          <p className="text-xs md:text-sm text-gray-400 font-serif italic line-clamp-2">
-            "{description}"
-          </p>
-        </div>
-        
-        <div className="flex items-center justify-end space-x-3 md:space-x-2 md:flex-col md:space-y-2 md:space-x-0 flex-shrink-0">
-          <button
-            onClick={handleBookmark}
-            className={`transition-colors ${
-              isBookmarked(station.stationuuid)
-                ? 'text-crt-green hover:text-amber'
-                : 'text-gray-500 hover:text-crt-green'
-            }`}
-          >
-            <Bookmark className={`w-4 h-4 ${isBookmarked(station.stationuuid) ? 'fill-current' : ''}`} />
-          </button>
-          
-          <button
-            onClick={handleShare}
-            className="text-gray-500 hover:text-crt-green transition-colors"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
+
+          {/* Location and Technical Details */}
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <span className="text-vdu-green-dim font-bold block">LOCATION</span>
+              <span className="text-muted">
+                {station.state && station.state !== station.country 
+                  ? `${station.state}, ${station.country}`
+                  : station.country}
+              </span>
+              {station.geo_lat && station.geo_long && (
+                <div className="text-vdu-green-dim mt-1">
+                  📍 {station.geo_lat.toFixed(2)}°, {station.geo_long.toFixed(2)}°
+                </div>
+              )}
+            </div>
+            <div>
+              <span className="text-vdu-green-dim font-bold block">CODEC</span>
+              <span className="text-muted">{station.codec || 'Unknown'}</span>
+              {station.hls === 1 && (
+                <div className="text-vdu-green text-xs mt-1">HLS STREAM</div>
+              )}
+            </div>
+          </div>
+
+          {/* Time and Activity Info */}
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <span className="text-vdu-green-dim font-bold block">LAST SEEN</span>
+              <span className="text-muted">
+                {station.lastcheckoktime 
+                  ? new Date(station.lastcheckoktime).toLocaleDateString()
+                  : 'Unknown'}
+              </span>
+              {station.lastcheckok === 1 ? (
+                <div className="text-vdu-green text-xs mt-1">✓ ONLINE</div>
+              ) : (
+                <div className="text-accent-yellow text-xs mt-1">⚠ STATUS UNKNOWN</div>
+              )}
+            </div>
+            <div>
+              <span className="text-vdu-green-dim font-bold block">LANGUAGE</span>
+              <span className="text-muted">{station.language || 'Unknown'}</span>
+              {station.votes > 0 && (
+                <div className="text-vdu-green-dim text-xs mt-1">{station.votes} votes</div>
+              )}
+            </div>
+          </div>
+
+          {/* Genres and Tags */}
+          {station.tags && (
+            <div>
+              <span className="text-vdu-green-dim font-bold block text-xs">GENRES</span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {station.tags.split(',').slice(0, 4).map((tag, index) => (
+                  <span key={index} className="px-2 py-1 bg-radio-black text-vdu-green-dim rounded text-xs">
+                    {tag.trim()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Homepage link if available */}
+          {station.homepage && (
+            <div>
+              <span className="text-vdu-green-dim font-bold block text-xs">WEBSITE</span>
+              <a 
+                href={station.homepage} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-vdu-green hover:text-vdu-green-bright transition-colors text-xs underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {station.homepage.replace(/^https?:\/\//, '').substring(0, 30)}...
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

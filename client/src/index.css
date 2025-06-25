@@ -24,14 +24,14 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
 
-  /* Signal Drift custom colors */
-  --radio-black: hsl(0, 0%, 4%);
-  --radio-gray: hsl(0, 0%, 10%);
-  --crt-green: hsl(147, 100%, 50%);
-  --crt-dim: hsl(147, 100%, 26%);
-  --tape-orange: hsl(33, 100%, 50%);
-  --amber: hsl(45, 100%, 50%);
-  --signal-blue: hsl(197, 100%, 50%);
+  /* Signal Drift custom colors - inspired by yellow radio app */
+  --radio-black: hsl(0, 0%, 8%);
+  --radio-dark: hsl(0, 0%, 12%);
+  --vdu-green: hsl(120, 100%, 75%);
+  --vdu-green-bright: hsl(120, 100%, 85%);
+  --vdu-green-dim: hsl(120, 50%, 40%);
+  --accent-yellow: hsl(60, 100%, 75%);
+  --text-muted: hsl(0, 0%, 60%);
 }
 
 .dark {
@@ -62,7 +62,8 @@
   }
 
   body {
-    @apply bg-[var(--radio-black)] text-gray-300 font-mono antialiased overflow-x-hidden;
+    @apply bg-[var(--radio-black)] text-[var(--vdu-green)] font-sans antialiased overflow-x-hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 
@@ -164,68 +165,60 @@
     -webkit-line-clamp: 2;
   }
   
-  .text-crt-green {
-    color: var(--crt-green);
+  .text-vdu-green {
+    color: var(--vdu-green);
   }
   
-  .text-crt-dim {
-    color: var(--crt-dim);
+  .text-vdu-green-bright {
+    color: var(--vdu-green-bright);
   }
   
-  .text-tape-orange {
-    color: var(--tape-orange);
+  .text-vdu-green-dim {
+    color: var(--vdu-green-dim);
   }
   
-  .text-amber {
-    color: var(--amber);
+  .text-accent-yellow {
+    color: var(--accent-yellow);
   }
   
-  .text-signal-blue {
-    color: var(--signal-blue);
+  .text-muted {
+    color: var(--text-muted);
   }
   
   .bg-radio-black {
     background-color: var(--radio-black);
   }
   
-  .bg-radio-gray {
-    background-color: var(--radio-gray);
+  .bg-radio-dark {
+    background-color: var(--radio-dark);
   }
   
-  .bg-crt-green {
-    background-color: var(--crt-green);
+  .bg-vdu-green {
+    background-color: var(--vdu-green);
   }
   
-  .bg-crt-dim {
-    background-color: var(--crt-dim);
+  .bg-vdu-green-bright {
+    background-color: var(--vdu-green-bright);
   }
   
-  .bg-tape-orange {
-    background-color: var(--tape-orange);
+  .bg-vdu-green-dim {
+    background-color: var(--vdu-green-dim);
   }
   
-  .bg-amber {
-    background-color: var(--amber);
+  .bg-accent-yellow {
+    background-color: var(--accent-yellow);
   }
   
-  .bg-signal-blue {
-    background-color: var(--signal-blue);
+  .border-vdu-green {
+    border-color: var(--vdu-green);
   }
   
-  .border-crt-green {
-    border-color: var(--crt-green);
+  .border-vdu-green-dim {
+    border-color: var(--vdu-green-dim);
   }
   
-  .border-crt-dim {
-    border-color: var(--crt-dim);
-  }
-  
-  .border-tape-orange {
-    border-color: var(--tape-orange);
-  }
-  
-  .border-amber {
-    border-color: var(--amber);
+  .border-accent-yellow {
+    border-color: var(--accent-yellow);
   }
 }
 

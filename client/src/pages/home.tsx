@@ -20,28 +20,29 @@ export default function Home() {
       <AudioPlayer />
       
       {/* Header */}
-      <header className="border-b border-crt-dim bg-radio-gray relative overflow-hidden sticky top-0 z-40">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-crt-green to-transparent opacity-10 animate-scan"></div>
-        <div className="container mx-auto px-4 py-4 relative z-10">
+      <header className="bg-radio-black relative overflow-hidden sticky top-0 z-40 border-b border-vdu-green-dim">
+        <div className="container mx-auto px-4 py-6 relative z-10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <Radio className="w-6 h-6 md:w-8 md:h-8 text-crt-green animate-pulse-glow" />
-              </div>
-              <div>
-                <h1 className="text-lg md:text-2xl font-bold text-crt-green font-serif tracking-wide">
-                  Signal Drift
-                </h1>
-                <p className="text-xs md:text-sm text-gray-400 font-mono hidden sm:block">
-                  discovering the world's most obscure radio stations
-                </p>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-vdu-green text-radio-black rounded-lg flex items-center justify-center font-black text-xl md:text-2xl">
+                  S
+                </div>
+                <div>
+                  <h1 className="text-xl md:text-3xl font-black text-vdu-green tracking-tight">
+                    SIGNAL DRIFT
+                  </h1>
+                  <p className="text-xs md:text-sm text-muted font-medium hidden sm:block">
+                    Obscure Radio Discovery
+                  </p>
+                </div>
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 md:space-x-6">
+            <div className="flex items-center space-x-4">
               <div className="text-right">
-                <div className="text-xs md:text-sm text-gray-400">Stations</div>
-                <div className="text-sm md:text-xl text-crt-green font-bold">
+                <div className="text-xs text-muted font-medium">STATIONS</div>
+                <div className="text-lg md:text-2xl text-vdu-green font-black">
                   {totalStations.toLocaleString()}
                 </div>
               </div>
