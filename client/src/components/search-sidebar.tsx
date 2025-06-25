@@ -117,7 +117,7 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
             {popularGenres.map((g) => (
               <button
                 key={g}
-                onClick={() => setGenre(genre === g ? '' : g)}
+                onClick={() => setGenre(genre === g ? 'all' : g)}
                 className={`px-3 py-1 text-xs border transition-colors ${
                   genre === g
                     ? 'border-crt-green text-crt-green bg-crt-green bg-opacity-20'
@@ -161,7 +161,7 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
             className="w-full h-32 object-cover opacity-60 border border-crt-dim"
           />
           <div className="text-xs text-gray-500 font-serif italic">
-            "In the static between stations, worlds unfold..."
+            "Discovering hidden frequencies from around the world..."
           </div>
         </div>
       </div>

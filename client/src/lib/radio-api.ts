@@ -72,7 +72,7 @@ export function generateStationDescription(station: RadioStation): string {
     "Ghost frequencies haunt the airwaves...",
     "Distant voices through the static...",
     "Underground currents of sound...",
-    "Radio archaeology in progress...",
+    "Rare transmissions from remote locations...",
   ];
   
   // Use station UUID as seed for consistent descriptions
