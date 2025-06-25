@@ -13,6 +13,7 @@ interface StationListProps {
 
 export function StationList({ filters }: StationListProps) {
   const [page, setPage] = useState(0);
+  const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null);
   const limit = 20;
   
   const {
@@ -104,7 +105,10 @@ export function StationList({ filters }: StationListProps) {
       <div className="space-y-3 md:space-y-4">
         {displayStations.map((station: RadioStation) => (
           <div key={station.stationuuid} data-station-id={station.stationuuid}>
-            <StationCard station={station} />
+            <StationCard 
+              station={station} 
+              onMaximize={() => setFullscreenStation(station)}
+            />
           </div>
         ))}
       </div>
@@ -134,6 +138,14 @@ export function StationList({ filters }: StationListProps) {
             )}
           </Button>
         </div>
+      )}
+
+      {/* Fullscreen Station View */}
+      {fullscreenStation && (
+        <FullscreenStation 
+          station={fullscreenStation} 
+          onClose={() => setFullscreenStation(null)} 
+        />
       )}
     </div>
   );

@@ -88,7 +88,7 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
               className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex-shrink-0 flex items-center justify-center transition-all ${
                 isCurrentlyPlaying
                   ? 'bg-accent-yellow text-radio-black'
-                  : 'bg-vdu-green text-radio-black hover:bg-vdu-green-bright'
+                  : 'bg-radio-dark border-2 border-vdu-green text-vdu-green hover:bg-vdu-green hover:text-radio-black'
               } ${isCurrentlyLoading ? 'animate-pulse' : ''}`}
             >
               {isCurrentlyLoading ? (
