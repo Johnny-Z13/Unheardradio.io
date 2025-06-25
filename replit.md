@@ -92,6 +92,14 @@ Signal Drift is a web application that discovers and curates the world's most ob
 ```
 Changelog:
 - June 25, 2025. Initial setup
+- June 25, 2025. Enhanced responsive design and mobile optimization
+  - Improved header layout with responsive typography
+  - Added collapsible sidebar with mobile toggle button
+  - Redesigned station cards for better mobile layout
+  - Enhanced now-playing bar with mobile-optimized controls
+  - Added responsive grid layouts and improved visual hierarchy
+  - Fixed genre filtering functionality
+  - Improved API reliability with multiple server fallbacks
 ```
 
 ## User Preferences
