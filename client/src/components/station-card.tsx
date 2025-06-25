@@ -20,6 +20,9 @@ export function StationCard({ station }: StationCardProps) {
   
   const obscurityBadge = getObscurityBadge(station);
   const description = generateStationDescription(station);
+  const timeOnAir = getTimeOnAir(station);
+  const popularity = getStationPopularity(station);
+  const streamQuality = getStreamQuality(station);
   
   const handlePlay = () => {
     playStation(station);
@@ -189,23 +192,39 @@ export function StationCard({ station }: StationCardProps) {
           {/* Time and Activity Info */}
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <span className="text-vdu-green-dim font-bold block">LAST SEEN</span>
-              <span className="text-muted">
-                {station.lastcheckoktime 
-                  ? new Date(station.lastcheckoktime).toLocaleDateString()
-                  : 'Unknown'}
-              </span>
+              <span className="text-vdu-green-dim font-bold block">ON AIR SINCE</span>
+              <span className="text-muted">{timeOnAir}</span>
               {station.lastcheckok === 1 ? (
-                <div className="text-vdu-green text-xs mt-1">✓ ONLINE</div>
+                <div className="text-vdu-green text-xs mt-1">✓ VERIFIED ONLINE</div>
               ) : (
                 <div className="text-accent-yellow text-xs mt-1">⚠ STATUS UNKNOWN</div>
               )}
             </div>
             <div>
+              <span className="text-vdu-green-dim font-bold block">POPULARITY</span>
+              <span className="text-muted">{popularity}</span>
+              {station.votes > 0 && (
+                <div className="text-vdu-green-dim text-xs mt-1">★ {station.votes} community votes</div>
+              )}
+            </div>
+          </div>
+
+          {/* Stream Quality and Language */}
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <span className="text-vdu-green-dim font-bold block">STREAM QUALITY</span>
+              <span className={`text-${streamQuality.color} font-bold`}>{streamQuality.quality}</span>
+              {station.ssl_error === 0 && (
+                <div className="text-vdu-green text-xs mt-1">🔒 SECURE</div>
+              )}
+            </div>
+            <div>
               <span className="text-vdu-green-dim font-bold block">LANGUAGE</span>
               <span className="text-muted">{station.language || 'Unknown'}</span>
-              {station.votes > 0 && (
-                <div className="text-vdu-green-dim text-xs mt-1">{station.votes} votes</div>
+              {station.clicktrend !== 0 && (
+                <div className={`text-xs mt-1 ${station.clicktrend > 0 ? 'text-vdu-green' : 'text-accent-yellow'}`}>
+                  {station.clicktrend > 0 ? '📈 Trending up' : '📉 Trending down'}
+                </div>
               )}
             </div>
           </div>

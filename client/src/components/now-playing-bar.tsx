@@ -58,75 +58,81 @@ export function NowPlayingBar() {
   };
 
   return (
-    <div className="border-t border-crt-dim bg-radio-gray p-3 md:p-4 sticky bottom-0 z-30">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
-        <div className="flex items-center space-x-3 md:space-x-4 min-w-0 flex-1">
-          <img
-            src="https://images.unsplash.com/photo-1484704849700-f032a568e944?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80"
-            alt="Vintage radio equipment"
-            className="w-10 h-10 md:w-12 md:h-12 object-cover border border-crt-dim opacity-80 flex-shrink-0"
-          />
+    <div className="border-t border-vdu-green-dim bg-radio-dark p-4 md:p-6 sticky bottom-0 z-30">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div className="flex items-center space-x-4 min-w-0 flex-1">
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-vdu-green text-radio-black rounded-xl flex items-center justify-center font-black text-lg md:text-2xl flex-shrink-0">
+            S
+          </div>
           <div className="min-w-0 flex-1">
-            <h4 className="font-semibold text-amber text-sm md:text-base truncate">{currentStation.name}</h4>
-            <p className="text-xs md:text-sm text-gray-400 truncate">
-              {currentStation.tags || 'Unknown genre'} • {currentStation.country}
+            <h4 className="font-black text-vdu-green text-base md:text-xl truncate tracking-tight">
+              {currentStation.name.toUpperCase()}
+            </h4>
+            <p className="text-sm md:text-base text-muted truncate font-medium">
+              {currentStation.country} • {currentStation.tags?.split(',')[0]?.trim() || 'Unknown genre'}
             </p>
-            <div className="flex items-center space-x-2 mt-1">
-              <div className="w-2 h-2 bg-crt-green rounded-full animate-pulse"></div>
-              <span className="text-xs text-crt-green">LIVE</span>
-              <span className="text-xs text-gray-500 hidden md:inline">
-                {currentStation.bitrate ? `${currentStation.bitrate} kbps` : 'Unknown bitrate'} • {currentStation.clickcount || 0} listeners
+            <div className="flex items-center space-x-3 mt-2">
+              <div className="inline-flex items-center space-x-2 px-2 py-1 bg-accent-yellow text-radio-black rounded-full text-xs font-black">
+                <div className="w-1.5 h-1.5 bg-radio-black rounded-full animate-pulse"></div>
+                <span>LIVE</span>
+              </div>
+              <span className="text-xs text-vdu-green-dim font-medium">
+                {currentStation.bitrate ? `${currentStation.bitrate} KBPS` : 'Unknown'} • {currentStation.clickcount || 0} listeners
               </span>
             </div>
             {error && (
-              <p className="text-xs text-red-400 mt-1 truncate">{error}</p>
+              <p className="text-xs text-accent-yellow mt-2 truncate font-medium">⚠ {error}</p>
             )}
           </div>
         </div>
 
-        <div className="flex items-center justify-between md:justify-end space-x-3 md:space-x-4">
+        <div className="flex items-center justify-between md:justify-end space-x-4 md:space-x-6">
           {/* Player Controls */}
-          <div className="flex items-center space-x-2">
-            <button className="w-8 h-8 md:w-10 md:h-10 border border-crt-green text-crt-green hover:bg-crt-green hover:text-radio-black transition-all flex items-center justify-center">
-              <SkipBack className="w-3 h-3 md:w-4 md:h-4" />
+          <div className="flex items-center space-x-3">
+            <button className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center">
+              <SkipBack className="w-4 h-4 md:w-5 md:h-5" />
             </button>
             
             <button
               onClick={togglePlay}
-              className="w-10 h-10 md:w-12 md:h-12 border-2 border-amber text-amber hover:bg-amber hover:text-radio-black transition-all flex items-center justify-center animate-pulse-glow"
+              className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all ${
+                isPlaying
+                  ? 'bg-accent-yellow text-radio-black'
+                  : 'bg-vdu-green text-radio-black hover:bg-vdu-green-bright'
+              }`}
             >
               {isPlaying ? (
-                <Pause className="w-4 h-4 md:w-5 md:h-5" />
+                <Pause className="w-5 h-5 md:w-7 md:h-7" />
               ) : (
-                <Play className="w-4 h-4 md:w-5 md:h-5" />
+                <Play className="w-5 h-5 md:w-7 md:h-7 ml-1" />
               )}
             </button>
             
-            <button className="w-8 h-8 md:w-10 md:h-10 border border-crt-green text-crt-green hover:bg-crt-green hover:text-radio-black transition-all flex items-center justify-center">
-              <SkipForward className="w-3 h-3 md:w-4 md:h-4" />
+            <button className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center">
+              <SkipForward className="w-4 h-4 md:w-5 md:h-5" />
             </button>
           </div>
 
           {/* Volume Control - Hidden on mobile */}
-          <div className="hidden md:flex items-center space-x-2">
-            <Volume2 className="w-4 h-4 text-gray-400" />
+          <div className="hidden md:flex items-center space-x-3">
+            <Volume2 className="w-5 h-5 text-vdu-green-dim" />
             <Slider
               value={[volume * 100]}
               onValueChange={(value) => setVolume(value[0] / 100)}
               max={100}
               step={1}
-              className="w-20"
+              className="w-24"
             />
           </div>
 
           {/* Additional Controls */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <button
               onClick={handleBookmark}
-              className={`transition-colors ${
+              className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all ${
                 isBookmarked(currentStation.stationuuid)
-                  ? 'text-crt-green hover:text-amber'
-                  : 'text-gray-400 hover:text-crt-green'
+                  ? 'border-vdu-green bg-vdu-green text-radio-black'
+                  : 'border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green'
               }`}
             >
               <Bookmark className={`w-4 h-4 ${isBookmarked(currentStation.stationuuid) ? 'fill-current' : ''}`} />
@@ -134,35 +140,32 @@ export function NowPlayingBar() {
             
             <button
               onClick={handleShare}
-              className="text-gray-400 hover:text-crt-green transition-colors"
+              className="w-10 h-10 rounded-full border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center"
             >
               <Share2 className="w-4 h-4" />
-            </button>
-            
-            <button className="hidden md:block text-gray-400 hover:text-crt-green transition-colors">
-              <ChevronDown className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
 
       {/* Waveform Visualization - Responsive */}
-      <div className="mt-3 flex items-center space-x-1 h-6 md:h-8">
-        {Array.from({ length: window.innerWidth < 768 ? 30 : 50 }, (_, i) => (
+      <div className="mt-4 flex items-center justify-center space-x-1 h-8 md:h-10">
+        {Array.from({ length: window.innerWidth < 768 ? 40 : 60 }, (_, i) => (
           <div
             key={i}
-            className={`w-1 animate-pulse ${
+            className={`w-1 rounded-full ${
               isPlaying
                 ? i % 3 === 0
-                  ? 'bg-amber opacity-90'
+                  ? 'bg-vdu-green animate-pulse'
                   : i % 5 === 0
-                  ? 'bg-tape-orange opacity-60'
-                  : 'bg-crt-green opacity-70'
-                : 'bg-gray-600 opacity-30'
+                  ? 'bg-vdu-green-bright animate-pulse'
+                  : 'bg-vdu-green-dim animate-pulse'
+                : 'bg-radio-black opacity-50'
             }`}
             style={{
-              height: `${Math.random() * 80 + 20}%`,
-              animationDelay: `${i * 0.1}s`,
+              height: `${Math.random() * 70 + 30}%`,
+              animationDelay: `${i * 0.05}s`,
+              animationDuration: isPlaying ? `${0.5 + Math.random() * 0.5}s` : '1s',
             }}
           />
         ))}

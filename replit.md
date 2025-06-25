@@ -100,6 +100,14 @@ Changelog:
   - Added responsive grid layouts and improved visual hierarchy
   - Fixed genre filtering functionality
   - Improved API reliability with multiple server fallbacks
+- June 25, 2025. Complete VDU green aesthetic transformation
+  - Redesigned color scheme with VDU terminal green (#00FF00) as primary
+  - Updated all components to use modern card-based layouts with rounded corners
+  - Enhanced station cards with comprehensive metadata display
+  - Added detailed station information: location, time on air, stream quality, popularity
+  - Redesigned header with bold typography and logo
+  - Updated now-playing bar with enhanced controls and waveform visualization
+  - Improved mobile responsiveness across all components
 ```
 
 ## User Preferences
