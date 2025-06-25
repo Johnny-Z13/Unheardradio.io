@@ -8,19 +8,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { limit = 50, offset = 0, country, genre, search } = req.query;
       
-      // Build RadioBrowser API URL
-      let apiUrl = `http://all.api.radio-browser.info/json/stations/search?limit=${limit}&offset=${offset}&order=clickcount&reverse=false`;
+      // Try multiple RadioBrowser API servers for better reliability
+      const servers = [
+        "http://all.api.radio-browser.info/json/stations/search",
+        "http://at1.api.radio-browser.info/json/stations/search",
+        "http://de1.api.radio-browser.info/json/stations/search"
+      ];
       
-      if (country) apiUrl += `&country=${encodeURIComponent(country as string)}`;
-      if (genre) apiUrl += `&tag=${encodeURIComponent(genre as string)}`;
-      if (search) apiUrl += `&name=${encodeURIComponent(search as string)}`;
+      let stations = [];
+      let lastError: Error | null = null;
       
-      const response = await fetch(apiUrl);
-      if (!response.ok) {
-        throw new Error(`RadioBrowser API error: ${response.status}`);
+      for (const server of servers) {
+        try {
+          // Build API URL
+          let apiUrl = `${server}?limit=${limit}&offset=${offset}&order=clickcount&reverse=false`;
+          
+          if (country) apiUrl += `&country=${encodeURIComponent(country as string)}`;
+          if (genre) apiUrl += `&tag=${encodeURIComponent(genre as string)}`;
+          if (search) apiUrl += `&name=${encodeURIComponent(search as string)}`;
+          
+          const response = await fetch(apiUrl, {
+            headers: { 'User-Agent': 'SignalDrift/1.0' }
+          });
+          
+          if (response.ok) {
+            stations = await response.json();
+            break;
+          }
+        } catch (err) {
+          lastError = err as Error;
+          continue;
+        }
       }
       
-      const stations = await response.json();
+      if (stations.length === 0) {
+        throw lastError || new Error("All RadioBrowser servers unavailable");
+      }
       
       // Sort by reverse popularity (lowest clickcount first)
       const sortedStations = stations.sort((a: any, b: any) => {
@@ -38,12 +61,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/countries", async (req, res) => {
     try {
-      const response = await fetch("http://all.api.radio-browser.info/json/countries");
-      if (!response.ok) {
-        throw new Error(`RadioBrowser API error: ${response.status}`);
+      // Try multiple RadioBrowser API servers for better reliability
+      const servers = [
+        "http://all.api.radio-browser.info/json/countries",
+        "http://at1.api.radio-browser.info/json/countries",
+        "http://de1.api.radio-browser.info/json/countries"
+      ];
+      
+      let countries = [];
+      let lastError: Error | null = null;
+      
+      for (const server of servers) {
+        try {
+          const response = await fetch(server, { 
+            headers: { 'User-Agent': 'SignalDrift/1.0' }
+          });
+          if (response.ok) {
+            countries = await response.json();
+            break;
+          }
+        } catch (err) {
+          lastError = err as Error;
+          continue;
+        }
       }
       
-      const countries = await response.json();
+      if (countries.length === 0) {
+        throw lastError || new Error("All RadioBrowser servers unavailable");
+      }
+      
       // Sort by country name and filter out countries with very few stations
       const filteredCountries = countries
         .filter((country: any) => country.stationcount > 5)
@@ -52,18 +98,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(filteredCountries);
     } catch (error) {
       console.error("Error fetching countries:", error);
-      res.status(500).json({ message: "Failed to fetch countries" });
+      // Return empty array instead of error to keep UI functional
+      res.json([]);
     }
   });
 
   app.get("/api/genres", async (req, res) => {
     try {
-      const response = await fetch("http://all.api.radio-browser.info/json/tags");
-      if (!response.ok) {
-        throw new Error(`RadioBrowser API error: ${response.status}`);
+      // Try multiple RadioBrowser API servers for better reliability
+      const servers = [
+        "http://all.api.radio-browser.info/json/tags",
+        "http://at1.api.radio-browser.info/json/tags",
+        "http://de1.api.radio-browser.info/json/tags"
+      ];
+      
+      let tags = [];
+      let lastError: Error | null = null;
+      
+      for (const server of servers) {
+        try {
+          const response = await fetch(server, { 
+            headers: { 'User-Agent': 'SignalDrift/1.0' }
+          });
+          if (response.ok) {
+            tags = await response.json();
+            break;
+          }
+        } catch (err) {
+          lastError = err as Error;
+          continue;
+        }
       }
       
-      const tags = await response.json();
+      if (tags.length === 0) {
+        throw lastError || new Error("All RadioBrowser servers unavailable");
+      }
+      
       // Filter and sort genres
       const genres = tags
         .filter((tag: any) => tag.stationcount > 10)
@@ -73,7 +143,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(genres);
     } catch (error) {
       console.error("Error fetching genres:", error);
-      res.status(500).json({ message: "Failed to fetch genres" });
+      // Return empty array instead of error to keep UI functional
+      res.json([]);
     }
   });
 
