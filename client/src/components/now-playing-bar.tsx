@@ -1,10 +1,10 @@
-import { SkipBack, Play, Pause, SkipForward, Volume2, Bookmark, Share2, ChevronDown } from 'lucide-react';
+import { SkipBack, Play, Pause, SkipForward, Volume2, Bookmark, Share2, ChevronDown, Maximize2 } from 'lucide-react';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import { useToast } from '@/hooks/use-toast';
 import { Slider } from '@/components/ui/slider';
 
-export function NowPlayingBar() {
+export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
   const {
     currentStation,
     isPlaying,
