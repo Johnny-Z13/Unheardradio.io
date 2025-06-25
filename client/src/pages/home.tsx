@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Radio } from 'lucide-react';
-import { SearchFilters } from '@/types/radio';
+import { SearchFilters, RadioStation } from '@/types/radio';
 import { SearchSidebar } from '@/components/search-sidebar';
 import { StationList } from '@/components/station-list';
 import { NowPlayingBar } from '@/components/now-playing-bar';
 import { AudioPlayer } from '@/components/audio-player';
+import { FullscreenStation } from '@/components/fullscreen-station';
+import { useAudioStore } from '@/lib/audio-store';
 
 export default function Home() {
   const [filters, setFilters] = useState<SearchFilters>({});
-  const [totalStations] = useState(47283); // This would be fetched from API in real app
+  const [totalStations] = useState(47283);
   const [activeTab, setActiveTab] = useState<'discover' | 'search'>('discover');
+  const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null);
+  const { currentStation } = useAudioStore();
 
   useEffect(() => {
     document.title = 'Signal Drift - Discover the World\'s Most Obscure Radio Stations';
@@ -94,7 +98,17 @@ export default function Home() {
         </main>
       </div>
 
-      <NowPlayingBar />
+      <NowPlayingBar 
+        onMaximize={() => currentStation && setFullscreenStation(currentStation)}
+      />
+
+      {/* Fullscreen Station View */}
+      {fullscreenStation && (
+        <FullscreenStation 
+          station={fullscreenStation} 
+          onClose={() => setFullscreenStation(null)} 
+        />
+      )}
     </div>
   );
 }
