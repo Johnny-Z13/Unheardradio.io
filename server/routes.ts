@@ -52,9 +52,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // If we got stations, sort and return them
+      // If we got stations, filter by listener count and sort
       if (stations.length > 0) {
-        const sortedStations = stations.sort((a: any, b: any) => {
+        let filteredStations = stations;
+        
+        // Apply listener count filter
+        if (listenerFilter) {
+          filteredStations = stations.filter((station: any) => {
+            const clicks = parseInt(station.clickcount) || 0;
+            
+            switch (listenerFilter) {
+              case 'zero':
+                return clicks === 0;
+              case 'under10':
+                return clicks < 10;
+              case 'under50':
+                return clicks < 50;
+              default:
+                return true;
+            }
+          });
+        }
+        
+        // Sort by click count (ascending for obscurity)
+        const sortedStations = filteredStations.sort((a: any, b: any) => {
           const aClicks = parseInt(a.clickcount) || 0;
           const bClicks = parseInt(b.clickcount) || 0;
           return aClicks - bClicks;
