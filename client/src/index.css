@@ -24,13 +24,13 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
 
-  /* Signal Drift custom colors - inspired by yellow radio app */
+  /* Signal Drift custom colors - VDU green terminal aesthetic */
   --radio-black: hsl(0, 0%, 8%);
   --radio-dark: hsl(0, 0%, 12%);
   --vdu-green: hsl(120, 100%, 75%);
   --vdu-green-bright: hsl(120, 100%, 85%);
   --vdu-green-dim: hsl(120, 50%, 40%);
-  --accent-yellow: hsl(60, 100%, 75%);
+  --accent-cyan: hsl(180, 100%, 70%);
   --text-muted: hsl(0, 0%, 60%);
 }
 

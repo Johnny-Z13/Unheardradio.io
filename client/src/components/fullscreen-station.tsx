@@ -144,32 +144,29 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto">
+      <div className="relative z-10 flex-1 p-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto h-full flex flex-col">
           {/* Station info header */}
-          <div className="text-center mb-12">
-            <h2 className="text-6xl md:text-8xl font-black text-vdu-green tracking-tight mb-4 uppercase">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl md:text-6xl font-black text-vdu-green tracking-tight mb-3 uppercase">
               {station.name}
             </h2>
-            <p className="text-2xl md:text-3xl text-muted font-medium mb-6">
+            <p className="text-xl md:text-2xl text-muted font-medium mb-4">
               Broadcasting from {station.country}
-            </p>
-            <p className="text-xl text-vdu-green-dim font-medium max-w-2xl mx-auto mb-8">
-              {description}
             </p>
             
             {/* Status indicators */}
-            <div className="flex items-center justify-center space-x-6 mb-8">
+            <div className="flex items-center justify-center space-x-4 mb-6">
               {isCurrentStation && (
-                <div className="inline-flex items-center space-x-3 px-6 py-3 bg-accent-yellow text-radio-black rounded-full text-lg font-black">
-                  <div className="w-3 h-3 bg-radio-black rounded-full animate-pulse" />
+                <div className="inline-flex items-center space-x-2 px-4 py-2 bg-accent-cyan text-radio-black rounded-full text-sm font-black">
+                  <div className="w-2 h-2 bg-radio-black rounded-full animate-pulse" />
                   <span>NOW PLAYING</span>
                 </div>
               )}
-              <div className={`px-6 py-3 rounded-full text-lg font-black text-radio-black ${
+              <div className={`px-4 py-2 rounded-full text-sm font-black text-radio-black ${
                 obscurityBadge.color === 'signal-blue' ? 'bg-vdu-green-bright' :
                 obscurityBadge.color === 'crt-green' ? 'bg-vdu-green' :
-                obscurityBadge.color === 'tape-orange' ? 'bg-accent-yellow' :
+                obscurityBadge.color === 'tape-orange' ? 'bg-accent-cyan' :
                 'bg-vdu-green-dim'
               }`}>
                 {obscurityBadge.text}
@@ -177,14 +174,14 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
             </div>
           </div>
 
-          {/* Animated volume visualization */}
+          {/* Compact volume visualization and controls */}
           {showVolumeViz && (
-            <div className="mb-12">
-              <div className="flex items-center justify-center space-x-2 h-32 mb-8">
-                {Array.from({ length: 60 }, (_, i) => (
+            <div className="mb-6">
+              <div className="flex items-center justify-center space-x-1 h-16 mb-4">
+                {Array.from({ length: 40 }, (_, i) => (
                   <div
                     key={i}
-                    className={`w-2 rounded-full ${
+                    className={`w-1.5 rounded-full ${
                       isCurrentlyPlaying
                         ? i % 4 === 0
                           ? 'bg-vdu-green-bright animate-pulse'
@@ -194,7 +191,7 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
                         : 'bg-radio-dark opacity-50'
                     }`}
                     style={{
-                      height: `${20 + Math.sin((i + Date.now() / 100) * 0.1) * 60 + volume * 40}%`,
+                      height: `${20 + Math.sin((i + Date.now() / 100) * 0.1) * 40 + volume * 30}%`,
                       animationDelay: `${i * 0.03}s`,
                       animationDuration: isCurrentlyPlaying ? `${0.3 + Math.random() * 0.4}s` : '1s',
                     }}
@@ -203,9 +200,9 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
               </div>
               
               {/* Volume control */}
-              <div className="flex items-center justify-center space-x-6 mb-8">
-                <Volume2 className="w-8 h-8 text-vdu-green" />
-                <div className="w-96">
+              <div className="flex items-center justify-center space-x-4">
+                <Volume2 className="w-6 h-6 text-vdu-green" />
+                <div className="w-64">
                   <Slider
                     value={[volume * 100]}
                     onValueChange={(value) => setVolume(value[0] / 100)}
@@ -214,122 +211,313 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
                     className="slider-fullscreen"
                   />
                 </div>
-                <span className="text-2xl font-bold text-vdu-green min-w-16 text-center">
+                <span className="text-lg font-bold text-vdu-green min-w-12 text-center">
                   {Math.round(volume * 100)}%
                 </span>
               </div>
             </div>
           )}
 
-          {/* Station metadata grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {/* Location Info */}
-            <div className="bg-radio-dark rounded-2xl p-6 border border-vdu-green-dim">
-              <div className="flex items-center space-x-3 mb-4">
-                <Globe className="w-8 h-8 text-vdu-green" />
-                <h3 className="text-xl font-black text-vdu-green">LOCATION</h3>
+          {/* Comprehensive metadata grid - no scrolling */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 flex-1">
+            {/* Location & Broadcasting */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Globe className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">LOCATION</h3>
               </div>
-              <p className="text-lg text-muted mb-2">
-                {station.state && station.state !== station.country 
-                  ? `${station.state}, ${station.country}`
-                  : station.country}
-              </p>
-              {station.geo_lat && station.geo_long && (
-                <p className="text-sm text-vdu-green-dim">
-                  📍 {station.geo_lat.toFixed(4)}°, {station.geo_long.toFixed(4)}°
-                </p>
-              )}
-              <p className="text-sm text-muted mt-2">
-                Language: {station.language || 'Unknown'}
-              </p>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Country:</span>
+                  <span className="ml-2 text-muted">{station.country}</span>
+                </div>
+                {station.state && station.state !== station.country && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">State:</span>
+                    <span className="ml-2 text-muted">{station.state}</span>
+                  </div>
+                )}
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Language:</span>
+                  <span className="ml-2 text-muted">{station.language || 'Unknown'}</span>
+                </div>
+                {station.geo_lat && station.geo_long && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Coordinates:</span>
+                    <span className="ml-2 text-accent-cyan text-xs">
+                      {station.geo_lat.toFixed(3)}°, {station.geo_long.toFixed(3)}°
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Technical Details */}
-            <div className="bg-radio-dark rounded-2xl p-6 border border-vdu-green-dim">
-              <div className="flex items-center space-x-3 mb-4">
-                <Signal className="w-8 h-8 text-vdu-green" />
-                <h3 className="text-xl font-black text-vdu-green">TECHNICAL</h3>
+            {/* Technical Specifications */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Signal className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">TECHNICAL</h3>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2 text-sm">
                 <div>
-                  <span className="text-sm text-vdu-green-dim font-bold">Quality:</span>
-                  <span className={`ml-2 text-lg font-bold text-${streamQuality.color}`}>
+                  <span className="text-vdu-green-dim font-bold">Bitrate:</span>
+                  <span className="ml-2 text-muted">
+                    {station.bitrate ? `${station.bitrate} kbps` : 'Unknown'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Codec:</span>
+                  <span className="ml-2 text-muted">{station.codec || 'Unknown'}</span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Quality:</span>
+                  <span className={`ml-2 font-bold text-${streamQuality.color}`}>
                     {streamQuality.quality}
                   </span>
                 </div>
-                <div>
-                  <span className="text-sm text-vdu-green-dim font-bold">Bitrate:</span>
-                  <span className="ml-2 text-lg text-muted">
-                    {station.bitrate ? `${station.bitrate} KBPS` : 'Unknown'}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-sm text-vdu-green-dim font-bold">Codec:</span>
-                  <span className="ml-2 text-lg text-muted">{station.codec || 'Unknown'}</span>
-                </div>
                 {station.hls === 1 && (
-                  <div className="text-sm text-vdu-green">✓ HLS STREAM</div>
+                  <div className="text-accent-cyan">✓ HLS Stream</div>
                 )}
                 {station.ssl_error === 0 && (
-                  <div className="text-sm text-vdu-green">🔒 SECURE CONNECTION</div>
+                  <div className="text-vdu-green">✓ Secure SSL</div>
                 )}
               </div>
             </div>
 
-            {/* Activity Stats */}
-            <div className="bg-radio-dark rounded-2xl p-6 border border-vdu-green-dim">
-              <div className="flex items-center space-x-3 mb-4">
-                <Users className="w-8 h-8 text-vdu-green" />
-                <h3 className="text-xl font-black text-vdu-green">ACTIVITY</h3>
+            {/* Broadcasting Info */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Radio className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">BROADCAST</h3>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2 text-sm">
                 <div>
-                  <span className="text-sm text-vdu-green-dim font-bold">Listeners:</span>
-                  <span className="ml-2 text-lg text-muted">{station.clickcount || 0}</span>
+                  <span className="text-vdu-green-dim font-bold">Genre:</span>
+                  <span className="ml-2 text-muted">
+                    {station.tags ? station.tags.split(',')[0] : 'Various'}
+                  </span>
                 </div>
                 <div>
-                  <span className="text-sm text-vdu-green-dim font-bold">Popularity:</span>
-                  <span className="ml-2 text-lg text-muted">{popularity}</span>
+                  <span className="text-vdu-green-dim font-bold">On Air:</span>
+                  <span className="ml-2 text-muted">{timeOnAir}</span>
                 </div>
                 <div>
-                  <span className="text-sm text-vdu-green-dim font-bold">On Air:</span>
-                  <span className="ml-2 text-lg text-muted">{timeOnAir}</span>
+                  <span className="text-vdu-green-dim font-bold">Status:</span>
+                  <span className={`ml-2 ${station.lastcheckok === 1 ? 'text-vdu-green' : 'text-accent-cyan'}`}>
+                    {station.lastcheckok === 1 ? 'Online' : 'Unverified'}
+                  </span>
+                </div>
+                {station.lastchecktime && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Last Check:</span>
+                    <span className="ml-2 text-muted text-xs">
+                      {new Date(station.lastchecktime).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Popularity & Metrics */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Users className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">METRICS</h3>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Listeners:</span>
+                  <span className="ml-2 text-muted">{station.clickcount || 0}</span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Popularity:</span>
+                  <span className="ml-2 text-muted">{popularity}</span>
                 </div>
                 {station.votes > 0 && (
                   <div>
-                    <span className="text-sm text-vdu-green-dim font-bold">Votes:</span>
-                    <span className="ml-2 text-lg text-muted">★ {station.votes}</span>
+                    <span className="text-vdu-green-dim font-bold">Votes:</span>
+                    <span className="ml-2 text-accent-cyan">★ {station.votes}</span>
                   </div>
                 )}
                 {station.clicktrend !== 0 && (
-                  <div className={`text-sm ${station.clicktrend > 0 ? 'text-vdu-green' : 'text-accent-yellow'}`}>
-                    {station.clicktrend > 0 ? '📈 Trending up' : '📉 Trending down'}
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Trend:</span>
+                    <span className={`ml-2 ${station.clicktrend > 0 ? 'text-vdu-green' : 'text-accent-cyan'}`}>
+                      {station.clicktrend > 0 ? '↗ Rising' : '↘ Falling'}
+                    </span>
                   </div>
                 )}
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Obscurity:</span>
+                  <span className="ml-2 text-accent-cyan">{obscurityBadge.text}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Website & Organization */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Globe className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">WEBSITE</h3>
+              </div>
+              <div className="space-y-2 text-sm">
+                {station.homepage ? (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Homepage:</span>
+                    <div className="mt-1">
+                      <a 
+                        href={station.homepage} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-accent-cyan hover:text-vdu-green underline break-all text-xs"
+                      >
+                        {station.homepage.replace(/^https?:\/\//, '').slice(0, 30)}...
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Homepage:</span>
+                    <span className="ml-2 text-muted">Not available</span>
+                  </div>
+                )}
+                {station.favicon && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Logo:</span>
+                    <span className="ml-2 text-vdu-green">Available</span>
+                  </div>
+                )}
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Stream URL:</span>
+                  <div className="mt-1 text-xs text-muted break-all">
+                    {station.url.slice(0, 35)}...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Historical Data */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Clock className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">HISTORY</h3>
+              </div>
+              <div className="space-y-2 text-sm">
+                {station.lastchangetime && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Last Updated:</span>
+                    <div className="mt-1 text-muted text-xs">
+                      {new Date(station.lastchangetime).toLocaleDateString()}
+                    </div>
+                  </div>
+                )}
+                {station.clicktimestamp && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Last Played:</span>
+                    <div className="mt-1 text-muted text-xs">
+                      {new Date(station.clicktimestamp).toLocaleDateString()}
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Station ID:</span>
+                  <div className="mt-1 text-accent-cyan text-xs font-mono">
+                    {station.stationuuid.slice(0, 8)}...
+                  </div>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Country Code:</span>
+                  <span className="ml-2 text-muted">{station.countrycode || 'N/A'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Content & Tags */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Headphones className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">CONTENT</h3>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Primary Genre:</span>
+                  <span className="ml-2 text-muted">
+                    {station.tags ? station.tags.split(',')[0].trim() : 'Various'}
+                  </span>
+                </div>
+                {station.tags && station.tags.includes(',') && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">All Tags:</span>
+                    <div className="mt-1 text-xs text-muted">
+                      {station.tags.split(',').slice(1, 4).map(tag => tag.trim()).join(', ')}
+                      {station.tags.split(',').length > 4 && '...'}
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Discovery:</span>
+                  <span className="ml-2 text-accent-cyan">Obscure Signal</span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Network:</span>
+                  <span className="ml-2 text-muted">Independent</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Stream Details */}
+            <div className="bg-radio-dark rounded-xl p-4 border border-vdu-green-dim">
+              <div className="flex items-center space-x-2 mb-3">
+                <Signal className="w-5 h-5 text-vdu-green" />
+                <h3 className="text-lg font-black text-vdu-green">STREAM</h3>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Protocol:</span>
+                  <span className="ml-2 text-muted">
+                    {station.url.startsWith('https') ? 'HTTPS' : 'HTTP'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Format:</span>
+                  <span className="ml-2 text-muted">
+                    {station.url.includes('.m3u') ? 'Playlist' : 'Direct Stream'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Reliability:</span>
+                  <span className={`ml-2 ${station.lastcheckok === 1 ? 'text-vdu-green' : 'text-accent-cyan'}`}>
+                    {station.lastcheckok === 1 ? 'Verified' : 'Unverified'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Access:</span>
+                  <span className="ml-2 text-vdu-green">Public</span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-center space-x-6">
+          <div className="flex items-center justify-center space-x-4">
             <button
               onClick={handleBookmark}
-              className={`flex items-center space-x-3 px-8 py-4 rounded-2xl border-2 font-bold text-lg transition-all ${
+              className={`flex items-center space-x-2 px-6 py-3 rounded-xl border-2 font-bold text-sm transition-all ${
                 isBookmarked(station.stationuuid)
                   ? 'border-vdu-green bg-vdu-green text-radio-black'
                   : 'border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green'
               }`}
             >
-              <Bookmark className={`w-6 h-6 ${isBookmarked(station.stationuuid) ? 'fill-current' : ''}`} />
+              <Bookmark className={`w-5 h-5 ${isBookmarked(station.stationuuid) ? 'fill-current' : ''}`} />
               <span>{isBookmarked(station.stationuuid) ? 'BOOKMARKED' : 'BOOKMARK'}</span>
             </button>
             
             <button
               onClick={handleShare}
-              className="flex items-center space-x-3 px-8 py-4 rounded-2xl border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all font-bold text-lg"
+              className="flex items-center space-x-2 px-6 py-3 rounded-xl border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all font-bold text-sm"
             >
-              <Share2 className="w-6 h-6" />
-              <span>SHARE STATION</span>
+              <Share2 className="w-5 h-5" />
+              <span>SHARE</span>
             </button>
 
             {station.homepage && (
@@ -337,18 +525,18 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
                 href={station.homepage}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-3 px-8 py-4 rounded-2xl border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all font-bold text-lg"
+                className="flex items-center space-x-2 px-6 py-3 rounded-xl border-2 border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all font-bold text-sm"
               >
-                <Globe className="w-6 h-6" />
-                <span>VISIT WEBSITE</span>
+                <Globe className="w-5 h-5" />
+                <span>WEBSITE</span>
               </a>
             )}
           </div>
 
           {/* Error display */}
           {error && (
-            <div className="mt-8 p-6 bg-radio-dark border-2 border-accent-yellow rounded-2xl text-center">
-              <p className="text-lg text-accent-yellow font-bold">⚠ {error}</p>
+            <div className="mt-4 p-4 bg-radio-dark border-2 border-accent-cyan rounded-xl text-center">
+              <p className="text-sm text-accent-cyan font-bold">⚠ {error}</p>
             </div>
           )}
         </div>

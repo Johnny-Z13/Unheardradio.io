@@ -63,26 +63,30 @@ export function getObscurityBadge(station: RadioStation): { text: string; color:
 }
 
 export function generateStationDescription(station: RadioStation): string {
-  const descriptions = [
-    "Whispers from the digital void...",
-    "Echoes of forgotten frequencies...",
-    "Static-wrapped melodies drift through time...",
-    "Lost signals seeking distant ears...",
-    "Analog warmth in a digital wasteland...",
-    "Transmission from the edge of silence...",
-    "Ghost frequencies haunt the airwaves...",
-    "Distant voices through the static...",
-    "Underground currents of sound...",
-    "Rare transmissions from remote locations...",
-  ];
+  // Generate informative description based on station data
+  const parts = [];
   
-  // Use station UUID as seed for consistent descriptions
-  const seed = station.stationuuid.split('').reduce((a, b) => {
-    a = ((a << 5) - a) + b.charCodeAt(0);
-    return a & a;
-  }, 0);
+  if (station.tags) {
+    const primaryGenre = station.tags.split(',')[0].trim();
+    parts.push(`${primaryGenre} radio station`);
+  } else {
+    parts.push('Radio station');
+  }
   
-  return descriptions[Math.abs(seed) % descriptions.length];
+  if (station.language && station.language !== 'unknown') {
+    parts.push(`broadcasting in ${station.language}`);
+  }
+  
+  const listeners = parseInt(String(station.clickcount || 0)) || 0;
+  if (listeners === 0) {
+    parts.push('with zero listeners - completely undiscovered');
+  } else if (listeners < 10) {
+    parts.push(`with ${listeners} listener${listeners === 1 ? '' : 's'} - extremely obscure`);
+  } else if (listeners < 50) {
+    parts.push(`with ${listeners} listeners - very obscure`);
+  }
+  
+  return parts.join(' ');
 }
 
 export function getTimeOnAir(station: RadioStation): string {
