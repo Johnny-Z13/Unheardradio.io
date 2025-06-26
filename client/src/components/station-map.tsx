@@ -26,11 +26,26 @@ function MapBounds({ stations }: { stations: RadioStation[] }) {
   const map = useMap();
   
   useEffect(() => {
-    if (stations.length > 0) {
-      const validStations = stations.filter(s => s.geo_lat !== 0 && s.geo_long !== 0);
-      if (validStations.length > 0) {
-        const bounds = validStations.map(station => [station.geo_lat, station.geo_long] as [number, number]);
-        map.fitBounds(bounds, { padding: [20, 20] });
+    if (stations && stations.length > 0) {
+      const validStations = stations.filter(s => 
+        s && 
+        typeof s.geo_lat === 'number' && 
+        typeof s.geo_long === 'number' &&
+        s.geo_lat !== 0 && 
+        s.geo_long !== 0 &&
+        !isNaN(s.geo_lat) &&
+        !isNaN(s.geo_long) &&
+        Math.abs(s.geo_lat) <= 90 && 
+        Math.abs(s.geo_long) <= 180
+      );
+      
+      if (validStations.length > 0 && map) {
+        try {
+          const bounds = validStations.map(station => [station.geo_lat, station.geo_long] as [number, number]);
+          map.fitBounds(bounds, { padding: [20, 20] });
+        } catch (error) {
+          console.warn('Error fitting map bounds:', error);
+        }
       }
     }
   }, [stations, map]);
@@ -54,8 +69,13 @@ export function StationMap({ onStationSelect }: StationMapProps) {
 
   // Filter stations with valid coordinates
   const validStations = stations.filter(station => 
+    station && 
+    typeof station.geo_lat === 'number' && 
+    typeof station.geo_long === 'number' &&
     station.geo_lat !== 0 && 
     station.geo_long !== 0 && 
+    !isNaN(station.geo_lat) &&
+    !isNaN(station.geo_long) &&
     Math.abs(station.geo_lat) <= 90 && 
     Math.abs(station.geo_long) <= 180
   );
@@ -112,81 +132,108 @@ export function StationMap({ onStationSelect }: StationMapProps) {
 
       {/* Map Container */}
       <div className="flex-1 relative">
-        <MapContainer
-          center={[20, 0]}
-          zoom={2}
-          className="w-full h-full bg-radio-black"
-          style={{ height: '100%' }}
-        >
-          <TileLayer
-            url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
-          />
-          
-          <MapBounds stations={validStations} />
-          
-          {validStations.map((station) => {
-            const obscurityBadge = getObscurityBadge(station);
+        {validStations.length > 0 ? (
+          <MapContainer
+            center={[20, 0]}
+            zoom={2}
+            className="w-full h-full bg-radio-black"
+            style={{ height: '100%' }}
+          >
+            <TileLayer
+              url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
+            />
             
-            return (
-              <Marker
-                key={station.stationuuid}
-                position={[station.geo_lat, station.geo_long]}
-                icon={defaultIcon}
-              >
-                <Popup className="custom-popup" maxWidth={300}>
-                  <div className="bg-radio-black text-vdu-green p-3 rounded border border-vdu-green-dim">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-bold text-sm leading-tight pr-2">{station.name}</h3>
-                      <span 
-                        className={`px-2 py-1 rounded text-xs font-mono ${obscurityBadge.color}`}
-                      >
-                        {obscurityBadge.text}
-                      </span>
-                    </div>
-                    
-                    <div className="space-y-1 text-xs text-gray-300 mb-3">
-                      <div className="flex items-center">
-                        <Globe className="w-3 h-3 mr-1" />
-                        {station.country}, {station.state}
-                      </div>
-                      <div className="flex items-center">
-                        <Users className="w-3 h-3 mr-1" />
-                        {station.clickcount} clicks • {station.votes} votes
-                      </div>
-                      {station.tags && (
-                        <div className="text-gray-400 truncate">
-                          {station.tags.split(',').slice(0, 3).join(', ')}
+            <MapBounds stations={validStations} />
+            
+            {validStations.map((station) => {
+              try {
+                // Additional safety check for marker positioning
+                if (!station || 
+                    typeof station.geo_lat !== 'number' || 
+                    typeof station.geo_long !== 'number' ||
+                    isNaN(station.geo_lat) ||
+                    isNaN(station.geo_long)) {
+                  return null;
+                }
+                
+                const position: [number, number] = [station.geo_lat, station.geo_long];
+                const obscurityBadge = getObscurityBadge(station);
+                
+                return (
+                  <Marker
+                    key={station.stationuuid}
+                    position={position}
+                    icon={defaultIcon}
+                  >
+                    <Popup className="custom-popup" maxWidth={300}>
+                      <div className="bg-radio-black text-vdu-green p-3 rounded border border-vdu-green-dim">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-bold text-sm leading-tight pr-2">{station.name}</h3>
+                          <span 
+                            className={`px-2 py-1 rounded text-xs font-mono ${obscurityBadge.color}`}
+                          >
+                            {obscurityBadge.text}
+                          </span>
                         </div>
-                      )}
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button
-                        onClick={() => handlePlayStation(station)}
-                        size="sm"
-                        className="flex-1 bg-vdu-green text-radio-black hover:bg-vdu-green-bright text-xs"
-                      >
-                        <Radio className="w-3 h-3 mr-1" />
-                        Play
-                      </Button>
-                      {onStationSelect && (
-                        <Button
-                          onClick={() => onStationSelect(station)}
-                          variant="outline"
-                          size="sm"
-                          className="border-vdu-green text-vdu-green hover:bg-vdu-green hover:text-radio-black text-xs"
-                        >
-                          Details
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
-        </MapContainer>
+                        
+                        <div className="space-y-1 text-xs text-gray-300 mb-3">
+                          <div className="flex items-center">
+                            <Globe className="w-3 h-3 mr-1" />
+                            {station.country}, {station.state}
+                          </div>
+                          <div className="flex items-center">
+                            <Users className="w-3 h-3 mr-1" />
+                            {station.clickcount} clicks • {station.votes} votes
+                          </div>
+                          {station.tags && (
+                            <div className="text-gray-400 truncate">
+                              {station.tags.split(',').slice(0, 3).join(', ')}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex space-x-2">
+                          <Button
+                            onClick={() => handlePlayStation(station)}
+                            size="sm"
+                            className="flex-1 bg-vdu-green text-radio-black hover:bg-vdu-green-bright text-xs"
+                          >
+                            <Radio className="w-3 h-3 mr-1" />
+                            Play
+                          </Button>
+                          {onStationSelect && (
+                            <Button
+                              onClick={() => onStationSelect(station)}
+                              variant="outline"
+                              size="sm"
+                              className="border-vdu-green text-vdu-green hover:bg-vdu-green hover:text-radio-black text-xs"
+                            >
+                              Details
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </Popup>
+                  </Marker>
+                );
+              } catch (error) {
+                console.warn('Error rendering station marker:', error, station);
+                return null;
+              }
+            })}
+          </MapContainer>
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <Globe className="w-16 h-16 text-vdu-green-dim mx-auto mb-4" />
+              <p className="text-vdu-green text-lg mb-2">No stations with location data</p>
+              <p className="text-sm text-muted max-w-md mx-auto">
+                The loaded stations don't have valid GPS coordinates for mapping.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
