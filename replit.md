@@ -108,6 +108,15 @@ Changelog:
   - Redesigned header with bold typography and logo
   - Updated now-playing bar with enhanced controls and waveform visualization
   - Improved mobile responsiveness across all components
+- June 26, 2025. Enhanced fullscreen station view with comprehensive metadata display
+  - Redesigned fullscreen layout to display all metadata without scrolling
+  - Added 8 detailed information cards: Location, Technical, Broadcast, Metrics, Website, History, Content, Stream
+  - Included comprehensive station data: coordinates, stream quality, broadcaster info, website links, historical data
+  - Removed silly comments ("ghost frequencies haunt the airwaves") and replaced with informative descriptions
+  - Replaced yellow accent color with cyan throughout the entire application
+  - Updated color scheme: accent-yellow → accent-cyan (HSL 180, 100%, 70%)
+  - Enhanced metadata includes: website URLs, station IDs, country codes, last check dates, stream protocols
+  - Improved action buttons layout and error display styling
 ```
 
 ## User Preferences

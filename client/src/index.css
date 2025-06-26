@@ -177,8 +177,8 @@
     color: var(--vdu-green-dim);
   }
   
-  .text-accent-yellow {
-    color: var(--accent-yellow);
+  .text-accent-cyan {
+    color: var(--accent-cyan);
   }
   
   .text-muted {
@@ -205,8 +205,8 @@
     background-color: var(--vdu-green-dim);
   }
   
-  .bg-accent-yellow {
-    background-color: var(--accent-yellow);
+  .bg-accent-cyan {
+    background-color: var(--accent-cyan);
   }
   
   .border-vdu-green {
@@ -217,8 +217,8 @@
     border-color: var(--vdu-green-dim);
   }
   
-  .border-accent-yellow {
-    border-color: var(--accent-yellow);
+  .border-accent-cyan {
+    border-color: var(--accent-cyan);
   }
 
   /* Fullscreen slider styling */

@@ -81,7 +81,7 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
               </span>
             </div>
             {error && (
-              <p className="text-xs text-accent-yellow mt-2 truncate font-medium">⚠ {error}</p>
+              <p className="text-xs text-accent-cyan mt-2 truncate font-medium">⚠ {error}</p>
             )}
           </div>
         </div>

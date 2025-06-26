@@ -51,6 +51,14 @@ export default {
           "4": "var(--chart-4)",
           "5": "var(--chart-5)",
         },
+        // Signal Drift custom colors
+        "radio-black": "var(--radio-black)",
+        "radio-dark": "var(--radio-dark)",
+        "vdu-green": "var(--vdu-green)",
+        "vdu-green-bright": "var(--vdu-green-bright)",
+        "vdu-green-dim": "var(--vdu-green-dim)",
+        "accent-cyan": "var(--accent-cyan)",
+        "text-muted": "var(--text-muted)",
         sidebar: {
           DEFAULT: "var(--sidebar-background)",
           foreground: "var(--sidebar-foreground)",

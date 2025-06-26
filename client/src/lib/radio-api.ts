@@ -56,9 +56,9 @@ export function getObscurityBadge(station: RadioStation): { text: string; color:
   } else if (clicks < 50) {
     return { text: 'RARE', color: 'crt-green' };
   } else if (clicks < 500) {
-    return { text: 'HIDDEN GEM', color: 'tape-orange' };
+    return { text: 'HIDDEN GEM', color: 'accent-cyan' };
   } else {
-    return { text: 'DISCOVERED', color: 'amber' };
+    return { text: 'DISCOVERED', color: 'cyan' };
   }
 }
 
