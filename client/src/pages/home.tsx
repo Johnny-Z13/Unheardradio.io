@@ -48,15 +48,15 @@ export default function Home() {
       
       {/* Header */}
       <header className="bg-radio-black relative overflow-hidden sticky top-0 z-40 border-b border-vdu-green-dim">
-        <div className="container mx-auto px-4 py-4 relative z-10">
+        <div className="container mx-auto px-3 py-3 md:px-4 md:py-4 relative z-10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-vdu-green text-radio-black rounded border-2 border-vdu-green flex items-center justify-center font-black text-lg md:text-xl">
+            <div className="flex items-center space-x-2 md:space-x-4 min-w-0 flex-1">
+              <div className="flex items-center space-x-2 md:space-x-3 min-w-0 flex-1">
+                <div className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 bg-vdu-green text-radio-black rounded border-2 border-vdu-green flex items-center justify-center font-black text-sm md:text-lg lg:text-xl flex-shrink-0">
                   U
                 </div>
-                <div>
-                  <h1 className="text-lg md:text-2xl font-black text-vdu-green tracking-tight">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-sm md:text-lg lg:text-2xl font-black text-vdu-green tracking-tight truncate">
                     UNHEARD RADIO
                   </h1>
                   <p className="text-xs text-muted font-medium hidden sm:block">
@@ -66,26 +66,26 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-3 lg:space-x-4 flex-shrink-0">
               {/* Random Button */}
               <button
                 onClick={playRandomStation}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-radio-black transition-all font-bold text-xs"
+                className="flex items-center space-x-1 md:space-x-2 px-2 py-1.5 md:px-3 md:py-2 rounded-lg border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-radio-black transition-all font-bold text-xs"
               >
-                <Shuffle className="w-4 h-4" />
+                <Shuffle className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="hidden sm:block">RANDOM</span>
               </button>
 
               {/* Bookmarks Button */}
               <button
                 onClick={() => setActiveTab('bookmarks')}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg border font-bold text-xs transition-all ${
+                className={`flex items-center space-x-1 md:space-x-2 px-2 py-1.5 md:px-3 md:py-2 rounded-lg border font-bold text-xs transition-all ${
                   activeTab === 'bookmarks'
                     ? 'border-vdu-green bg-vdu-green text-radio-black'
                     : 'border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green'
                 }`}
               >
-                <Bookmark className="w-4 h-4" />
+                <Bookmark className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="hidden sm:block">BOOKMARKS</span>
                 {bookmarks.length > 0 && (
                   <span className="bg-accent-cyan text-radio-black rounded-full w-5 h-5 flex items-center justify-center text-xs font-black">
@@ -106,42 +106,44 @@ export default function Home() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-radio-dark border-b border-vdu-green-dim sticky top-16 z-30">
-        <div className="container mx-auto px-4">
-          <div className="flex space-x-8">
+      <div className="bg-radio-dark border-b border-vdu-green-dim sticky top-12 md:top-16 z-30">
+        <div className="container mx-auto px-3 md:px-4">
+          <div className="flex space-x-3 md:space-x-8 overflow-x-auto scrollbar-hide">
             <button
               onClick={() => setActiveTab('discover')}
-              className={`py-3 px-2 border-b-2 font-bold text-sm md:text-base transition-colors ${
+              className={`py-2 md:py-3 px-1 md:px-2 border-b-2 font-bold text-xs md:text-sm lg:text-base transition-colors whitespace-nowrap ${
                 activeTab === 'discover'
                   ? 'border-vdu-green text-vdu-green'
                   : 'border-transparent text-muted hover:text-vdu-green-dim'
               }`}
             >
-              DISCOVER STATIONS
+              DISCOVER
             </button>
             <button
               onClick={() => setActiveTab('search')}
-              className={`py-3 px-2 border-b-2 font-bold text-sm md:text-base transition-colors ${
+              className={`py-2 md:py-3 px-1 md:px-2 border-b-2 font-bold text-xs md:text-sm lg:text-base transition-colors whitespace-nowrap ${
                 activeTab === 'search'
                   ? 'border-vdu-green text-vdu-green'
                   : 'border-transparent text-muted hover:text-vdu-green-dim'
               }`}
             >
-              SEARCH & FILTER
+              FILTER
             </button>
             <button
               onClick={() => setActiveTab('bookmarks')}
-              className={`py-3 px-2 border-b-2 font-bold text-sm md:text-base transition-colors ${
+              className={`py-2 md:py-3 px-1 md:px-2 border-b-2 font-bold text-xs md:text-sm lg:text-base transition-colors whitespace-nowrap ${
                 activeTab === 'bookmarks'
                   ? 'border-vdu-green text-vdu-green'
                   : 'border-transparent text-muted hover:text-vdu-green-dim'
               }`}
             >
-              BOOKMARKS {bookmarks.length > 0 && `(${bookmarks.length})`}
+              BOOKMARKS {bookmarks.length > 0 && (
+                <span className="ml-1">({bookmarks.length})</span>
+              )}
             </button>
             <button
               onClick={() => setActiveTab('locations')}
-              className={`py-3 px-2 border-b-2 font-bold text-sm md:text-base transition-colors ${
+              className={`py-2 md:py-3 px-1 md:px-2 border-b-2 font-bold text-xs md:text-sm lg:text-base transition-colors whitespace-nowrap ${
                 activeTab === 'locations'
                   ? 'border-vdu-green text-vdu-green'
                   : 'border-transparent text-muted hover:text-vdu-green-dim'
