@@ -40,10 +40,16 @@ export function StationList({ filters }: StationListProps) {
     }
   }, [stations, offset]);
 
-  // Reset offset when filters change
+  // Reset offset when filters change (but preserve data if filters are just empty)
   useEffect(() => {
-    setOffset(0);
-    setAllStations([]);
+    const hasActiveFilters = filters.search || filters.country || filters.genre;
+    const prevHadActiveFilters = allStations.length > 0;
+    
+    // Only reset if we actually have new filter criteria
+    if (hasActiveFilters || (prevHadActiveFilters && !hasActiveFilters)) {
+      setOffset(0);
+      setAllStations([]);
+    }
   }, [filters.search, filters.country, filters.genre]);
 
   const handleLoadMore = () => {

@@ -4,6 +4,7 @@ import { trackStationClick } from './radio-api';
 
 interface AudioStore extends AudioState {
   audio: HTMLAudioElement | null;
+  audioContext: AudioContext | null;
   setCurrentStation: (station: RadioStation | null) => void;
   setIsPlaying: (playing: boolean) => void;
   setVolume: (volume: number) => void;
@@ -13,6 +14,7 @@ interface AudioStore extends AudioState {
   togglePlay: () => void;
   stop: () => void;
   initializeAudio: () => void;
+  initializeAudioContext: () => void;
 }
 
 export const useAudioStore = create<AudioStore>((set, get) => ({
@@ -22,6 +24,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
   isLoading: false,
   error: null,
   audio: null,
+  audioContext: null,
 
   setCurrentStation: (station) => set({ currentStation: station }),
   setIsPlaying: (playing) => set({ isPlaying: playing }),
@@ -39,6 +42,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
     const audio = new Audio();
     audio.crossOrigin = 'anonymous';
     audio.preload = 'none';
+    audio.id = 'main-audio-player';
     
     audio.addEventListener('loadstart', () => {
       set({ isLoading: true, error: null });

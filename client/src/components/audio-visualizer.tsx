@@ -20,28 +20,42 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
   useEffect(() => {
     if (isPlaying && currentStation) {
       try {
-        // Try to get audio context from the audio element
-        const audioElements = document.querySelectorAll('audio');
-        const activeAudio = Array.from(audioElements).find(audio => !audio.paused);
+        // Get the main audio player element by ID
+        const activeAudio = document.getElementById('main-audio-player') as HTMLAudioElement;
         
         if (activeAudio && !analyserRef.current) {
           const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          
+          // Resume audio context if suspended (browser policy)
+          if (audioContext.state === 'suspended') {
+            audioContext.resume();
+          }
+          
           const source = audioContext.createMediaElementSource(activeAudio);
           const analyser = audioContext.createAnalyser();
           
-          analyser.fftSize = 512;
-          analyser.smoothingTimeConstant = 0.3;
+          analyser.fftSize = 1024;
+          analyser.smoothingTimeConstant = 0.2;
+          analyser.minDecibels = -90;
+          analyser.maxDecibels = -10;
           
           source.connect(analyser);
           analyser.connect(audioContext.destination);
           
           analyserRef.current = analyser;
           dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);
+          
+          console.log('Audio visualizer connected to real audio stream');
         }
       } catch (error) {
-        // Fallback to animated visualization if Web Audio API fails
-        console.log('Web Audio API not available, using animated visualization');
+        console.log('Web Audio API connection failed:', error);
+        analyserRef.current = null;
+        dataArrayRef.current = null;
       }
+    } else {
+      // Reset analyser when not playing
+      analyserRef.current = null;
+      dataArrayRef.current = null;
     }
 
     return () => {
@@ -65,32 +79,17 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
         const newPeaks: number[] = [];
         
         for (let i = 0; i < barCount; i++) {
-          // Logarithmic frequency mapping for realistic EQ bands
-          const freq = Math.pow(2, (i / barCount) * 10) - 1;
-          const freqIndex = Math.floor(freq * dataArrayRef.current.length / 1023);
+          // Simple linear frequency mapping with better distribution
+          const binIndex = Math.floor((i / barCount) * dataArrayRef.current.length);
+          let magnitude = dataArrayRef.current[binIndex] || 0;
           
-          // Get frequency magnitude and apply dynamic scaling
-          let magnitude = dataArrayRef.current[freqIndex] || 0;
-          
-          // Enhanced frequency response with bass/mid/treble emphasis
-          if (i < barCount * 0.2) {
-            // Bass frequencies - more pronounced
-            magnitude *= 1.8;
-          } else if (i < barCount * 0.6) {
-            // Mid frequencies - natural
-            magnitude *= 1.3;
-          } else {
-            // Treble frequencies - slightly enhanced
-            magnitude *= 1.1;
-          }
-          
-          // Normalize and apply dynamic range compression
-          let normalizedValue = Math.pow(magnitude / 255, 0.7); // Gamma correction for better visibility
-          normalizedValue = Math.min(normalizedValue * 1.2, 1.0); // Boost with ceiling
+          // Simple normalization with boost for visibility
+          let normalizedValue = (magnitude / 255) * 2; // Double the amplitude
+          normalizedValue = Math.min(normalizedValue, 1.0); // Cap at 1.0
           
           // Peak hold and decay
           const currentPeak = peaks[i] || 0;
-          const newPeak = Math.max(normalizedValue, currentPeak * 0.92); // Peak decay
+          const newPeak = Math.max(normalizedValue, currentPeak * 0.9); // Faster peak decay
           
           bars.push(normalizedValue);
           newPeaks.push(newPeak);
