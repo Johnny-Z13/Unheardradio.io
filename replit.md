@@ -117,6 +117,14 @@ Changelog:
   - Updated color scheme: accent-yellow → accent-cyan (HSL 180, 100%, 70%)
   - Enhanced metadata includes: website URLs, station IDs, country codes, last check dates, stream protocols
   - Improved action buttons layout and error display styling
+- June 26, 2025. Compact player interface and responsive audio visualization
+  - Redesigned now-playing bar to be more compact (reduced from 96px to 48px height)
+  - Created responsive AudioVisualizer component that reacts to real audio using Web Audio API
+  - Implemented fallback animated visualization when Web Audio API is unavailable
+  - Made fullscreen station view more compact with scrolling support for all metadata
+  - Reduced metadata card sizes (p-4 → p-3, text-lg → text-sm) to fit more information
+  - Enhanced audio visualization with frequency analysis and dynamic bar heights
+  - Improved browsing space by reducing player window footprint by 50%
 ```
 
 ## User Preferences
