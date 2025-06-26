@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Radio, Bookmark, Shuffle } from 'lucide-react';
+import { Radio, Bookmark, Shuffle, MapPin } from 'lucide-react';
 import { SearchFilters, RadioStation } from '@/types/radio';
 import { SearchSidebar } from '@/components/search-sidebar';
 import { StationList } from '@/components/station-list';
+import { StationMap } from '@/components/station-map';
 import { NowPlayingBar } from '@/components/now-playing-bar';
 import { AudioPlayer } from '@/components/audio-player';
 import { FullscreenStation } from '@/components/fullscreen-station';
@@ -13,7 +14,7 @@ import { fetchStations } from '@/lib/radio-api';
 export default function Home() {
   const [filters, setFilters] = useState<SearchFilters>({});
   const [totalStations] = useState(47283);
-  const [activeTab, setActiveTab] = useState<'discover' | 'search' | 'bookmarks'>('discover');
+  const [activeTab, setActiveTab] = useState<'discover' | 'search' | 'bookmarks' | 'locations'>('discover');
   const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null);
   const { currentStation, playStation } = useAudioStore();
   const { bookmarks } = useBookmarks();
@@ -137,6 +138,16 @@ export default function Home() {
               }`}
             >
               BOOKMARKS {bookmarks.length > 0 && `(${bookmarks.length})`}
+            </button>
+            <button
+              onClick={() => setActiveTab('locations')}
+              className={`py-3 px-2 border-b-2 font-bold text-sm md:text-base transition-colors ${
+                activeTab === 'locations'
+                  ? 'border-vdu-green text-vdu-green'
+                  : 'border-transparent text-muted hover:text-vdu-green-dim'
+              }`}
+            >
+              LOCATIONS
             </button>
           </div>
         </div>
@@ -281,6 +292,8 @@ export default function Home() {
                 )}
               </div>
             </div>
+          ) : activeTab === 'locations' ? (
+            <StationMap onStationSelect={setFullscreenStation} />
           ) : (
             <StationList filters={filters} />
           )}

@@ -140,6 +140,13 @@ Changelog:
   - Fixed station list persistence issue when switching between tabs
   - Enhanced frequency analysis with triple amplification and peak tracking
   - Optimized FFT settings for real-time responsive visualization
+- June 26, 2025. Added global station map with geographic visualization
+  - Created new "Locations" tab with interactive world map using Leaflet
+  - Displays radio stations as markers based on their GPS coordinates
+  - Shows station details in popups with play/details buttons
+  - Added custom VDU green styling for map controls and popups
+  - Integrated with existing audio player for direct station playback from map
+  - Filters out stations without valid coordinate data for clean display
 ```
 
 ## User Preferences
