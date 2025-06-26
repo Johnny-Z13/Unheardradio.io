@@ -125,6 +125,14 @@ Changelog:
   - Reduced metadata card sizes (p-4 → p-3, text-lg → text-sm) to fit more information
   - Enhanced audio visualization with frequency analysis and dynamic bar heights
   - Improved browsing space by reducing player window footprint by 50%
+- June 26, 2025. Complete rebrand to "Unheard Radio" with enhanced navigation
+  - Rebranded from "Signal Drift" to "Unheard Radio - Obscure Radio Discovery"
+  - Added "U in a box" placeholder logo in top left corner
+  - Updated station count text to "Stations live on air: 47,283"
+  - Implemented bookmarks section with viewing and management capabilities
+  - Added random button that instantly finds and plays zero-listener stations
+  - Removed hero image and quote from both main interface and search sidebar
+  - Enhanced audio error handling with fallback URL support for better stream reliability
 ```
 
 ## User Preferences

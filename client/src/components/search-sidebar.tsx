@@ -182,17 +182,7 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
           </button>
         </div>
 
-        {/* Vintage radio imagery - hidden on mobile */}
-        <div className="mt-6 md:mt-8 space-y-4 hidden md:block">
-          <img
-            src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300"
-            alt="Vintage radio control panel"
-            className="w-full h-24 md:h-32 object-cover opacity-60 border border-crt-dim"
-          />
-          <div className="text-xs text-gray-500 font-serif italic">
-            "Discovering hidden frequencies from around the world..."
-          </div>
-        </div>
+
       </div>
     </aside>
   );
