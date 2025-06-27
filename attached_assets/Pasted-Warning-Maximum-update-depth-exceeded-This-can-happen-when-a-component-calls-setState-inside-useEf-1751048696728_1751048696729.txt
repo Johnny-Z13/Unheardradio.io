@@ -1,0 +1,41 @@
+Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn&#x27;t have a dependency array, or one of the dependencies changes on every render.
+    at ProgressiveStationLoader (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/src/components/station-map.tsx:58:37)
+    at div
+    at MapContainerComponent (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-leaflet.js?v=0de28212:545:34)
+    at div
+    at div
+    at StationMap (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/src/components/station-map.tsx:87:30)
+    at div
+    at main
+    at div
+    at div
+    at Home (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/src/pages/home.tsx:31:33)
+    at Route (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0de28212:323:16)
+    at Switch (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0de28212:379:17)
+    at Router
+    at div
+    at Provider (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-ZTXB6ZXA.js?v=0de28212:32:15)
+    at TooltipProvider (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=0de28212:57:5)
+    at QueryClientProvider (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=0de28212:2805:3)
+    at App
+Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn&#x27;t have a dependency array, or one of the dependencies changes on every render.
+    at ProgressiveStationLoader (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/src/components/station-map.tsx:58:37)
+    at div
+    at MapContainerComponent (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-leaflet.js?v=0de28212:545:34)
+    at div
+    at div
+    at StationMap (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/src/components/station-map.tsx:87:30)
+    at div
+    at main
+    at div
+    at div
+    at Home (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/src/pages/home.tsx:31:33)
+    at Route (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0de28212:323:16)
+    at Switch (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0de28212:379:17)
+    at Router
+    at div
+    at Provider (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-ZTXB6ZXA.js?v=0de28212:32:15)
+    at TooltipProvider (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=0de28212:57:5)
+    at QueryClientProvider (https://17b8506b-9f05-4b0b-888d-08e3da2b9d2d-00-15w9inf2ji3ku.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=0de28212:2805:3)
+    at App

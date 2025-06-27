@@ -45,6 +45,7 @@ export interface SearchFilters {
   listenerFilter?: 'all' | 'zero' | 'under10' | 'under50';
   limit?: number;
   offset?: number;
+  bookmarkedOnly?: boolean;
 }
 
 export interface AudioState {

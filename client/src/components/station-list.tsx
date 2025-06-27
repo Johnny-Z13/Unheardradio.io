@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Shuffle, Loader2 } from 'lucide-react';
+import { Shuffle, Loader2, Bookmark } from 'lucide-react';
 import { RadioStation, SearchFilters } from '@/types/radio';
 import { fetchStations } from '@/lib/radio-api';
 import { StationCard } from './station-card';
 import { FullscreenStation } from './fullscreen-station';
 import { Button } from '@/components/ui/button';
+import { useBookmarks } from '@/hooks/use-bookmarks';
 
 interface StationListProps {
   filters: SearchFilters;
@@ -16,6 +17,39 @@ export function StationList({ filters }: StationListProps) {
   const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null);
   const [offset, setOffset] = useState(0);
   const limit = 20;
+  const { bookmarks } = useBookmarks();
+  
+  // If showing bookmarks only, create stations from bookmark data
+  const bookmarkStations = useMemo(() => {
+    return bookmarks.map(bookmark => ({
+      stationuuid: bookmark.stationuuid,
+      name: bookmark.name,
+      country: bookmark.country,
+      tags: bookmark.genre,
+      bitrate: bookmark.bitrate,
+      url: bookmark.url,
+      url_resolved: bookmark.url,
+      homepage: '',
+      favicon: '',
+      countrycode: '',
+      state: '',
+      language: '',
+      votes: 0,
+      lastchangetime: '',
+      codec: '',
+      hls: 0,
+      lastcheckok: 1,
+      lastchecktime: '',
+      lastcheckoktime: '',
+      lastlocalchecktime: '',
+      clicktimestamp: '',
+      clickcount: 0,
+      clicktrend: 0,
+      ssl_error: 0,
+      geo_lat: 0,
+      geo_long: 0
+    } as RadioStation));
+  }, [bookmarks]);
   
   const {
     data: stations = [],
@@ -27,30 +61,44 @@ export function StationList({ filters }: StationListProps) {
     queryFn: () => fetchStations({ ...filters, limit, offset }),
     staleTime: 30 * 1000,
     refetchOnWindowFocus: true,
+    enabled: !filters.bookmarkedOnly, // Only fetch from API if not showing bookmarks
   });
+  
+  // Use bookmark stations if bookmarkedOnly filter is active
+  const displayStations = filters.bookmarkedOnly ? bookmarkStations : stations;
 
-  // Update allStations when new data comes in
+  // Update allStations when new data comes in (but not for bookmark mode)
   useEffect(() => {
-    if (stations.length > 0) {
+    if (!filters.bookmarkedOnly && stations.length > 0) {
       if (offset === 0) {
         setAllStations(stations);
       } else {
         setAllStations(prev => [...prev, ...stations]);
       }
     }
-  }, [stations, offset]);
+  }, [stations, offset, filters.bookmarkedOnly]);
+
+  // For bookmark mode, use bookmark stations directly
+  useEffect(() => {
+    if (filters.bookmarkedOnly) {
+      setAllStations(bookmarkStations);
+      setOffset(0);
+    }
+  }, [filters.bookmarkedOnly, bookmarkStations]);
 
   // Reset offset when filters change (but preserve data if filters are just empty)
   useEffect(() => {
-    const hasActiveFilters = filters.search || filters.country || filters.genre;
+    const hasActiveFilters = filters.search || filters.country || filters.genre || filters.bookmarkedOnly;
     const prevHadActiveFilters = allStations.length > 0;
     
     // Only reset if we actually have new filter criteria
     if (hasActiveFilters || (prevHadActiveFilters && !hasActiveFilters)) {
       setOffset(0);
-      setAllStations([]);
+      if (!filters.bookmarkedOnly) {
+        setAllStations([]);
+      }
     }
-  }, [filters.search, filters.country, filters.genre]);
+  }, [filters.search, filters.country, filters.genre, filters.bookmarkedOnly]);
 
   const handleLoadMore = () => {
     setOffset(prev => prev + limit);
@@ -94,11 +142,15 @@ export function StationList({ filters }: StationListProps) {
     <div className="flex-1 p-3 md:p-6 overflow-y-auto">
       <div className="mb-4 md:mb-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
         <div className="min-w-0">
-          <h2 className="text-lg md:text-xl font-bold text-crt-green font-serif">Ultra-Obscure Transmissions</h2>
+          <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif">
+            {filters.bookmarkedOnly ? 'Saved Stations' : 'Ultra-Obscure Transmissions'}
+          </h2>
           <p className="text-xs md:text-sm text-gray-400 mt-1">
-            {!filters.search && !filters.country && !filters.genre 
-              ? `Random discoveries • ${allStations.length} stations`
-              : `Sorted by reverse popularity • ${allStations.length} stations found`
+            {filters.bookmarkedOnly 
+              ? `${allStations.length} saved ${allStations.length === 1 ? 'station' : 'stations'}`
+              : !filters.search && !filters.country && !filters.genre 
+                ? `Random discoveries • ${allStations.length} stations`
+                : `Sorted by reverse popularity • ${allStations.length} stations found`
             }
           </p>
         </div>

@@ -80,7 +80,7 @@ function ProgressiveStationLoader({ onStationsChange }: { onStationsChange: (sta
 
   useEffect(() => {
     onStationsChange(stations);
-  }, [stations, onStationsChange]);
+  }, [stations]);
 
   return null;
 }
