@@ -147,7 +147,7 @@ export default function Home() {
         
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {activeTab === 'bookmarks' ? (
-            <div className="flex-1 scrollbar-stable h-full">
+            <div className="flex-1 overflow-y-auto scrollbar-hide h-full">
               <div className="container mx-auto px-3 py-4 md:px-4 md:py-6">
                 <div className="mb-4 md:mb-6">
                   <h2 className="text-xl md:text-2xl font-black text-vdu-green mb-2">YOUR BOOKMARKS</h2>
@@ -276,11 +276,11 @@ export default function Home() {
               </div>
             </div>
           ) : activeTab === 'locations' ? (
-            <div className="flex-1 scrollbar-stable h-full">
+            <div className="flex-1 overflow-hidden h-full">
               <StationMap onStationSelect={setFullscreenStation} />
             </div>
           ) : (
-            <div className="flex-1 flex flex-col h-full">
+            <div className="flex-1 flex flex-col h-full overflow-hidden">
               {/* Random Station Button for Discover Tab */}
               {activeTab === 'discover' && (
                 <div className="p-4 border-b border-vdu-green-dim bg-radio-dark flex-shrink-0">
@@ -293,7 +293,7 @@ export default function Home() {
                   </button>
                 </div>
               )}
-              <div className="flex-1 scrollbar-stable">
+              <div className="flex-1 overflow-y-auto scrollbar-hide">
                 <StationList filters={filters} />
               </div>
             </div>
