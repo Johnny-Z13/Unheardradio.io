@@ -24,46 +24,21 @@ interface StationMapProps {
 
 // Removed automatic bounds fitting to prevent zoom snapping
 
-// Simplified loading component - loads all stations once, filters client-side based on zoom
-function ProgressiveStationLoader({ onStationsChange }: { onStationsChange: (stations: RadioStation[]) => void }) {
-  const [zoomLevel, setZoomLevel] = useState(2);
-  
-  const map = useMapEvents({
-    zoomend: () => {
-      setZoomLevel(map.getZoom());
-    },
-  });
-
-  // Load all stations once
+// Simple loader - display all stations without filtering
+function StationLoader({ onStationsChange }: { onStationsChange: (stations: RadioStation[]) => void }) {
+  // Load all available stations
   const { data: allStations = [] } = useQuery<RadioStation[]>({
-    queryKey: ['/api/stations', { limit: 2000 }],
-    queryFn: () => fetchStations({ limit: 2000 }),
-    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
+    queryKey: ['/api/stations', { limit: 5000 }], // Increased limit to get more stations
+    queryFn: () => fetchStations({ limit: 5000 }),
+    staleTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
-  // Filter stations based on zoom level to control density
-  const getVisibleStations = useCallback((stations: RadioStation[], zoom: number) => {
-    if (!stations.length) return [];
-    
-    // Calculate how many stations to show based on zoom
-    let maxStations: number;
-    if (zoom >= 10) maxStations = 2000;      // City level - show all
-    else if (zoom >= 8) maxStations = 1000;  // Urban area
-    else if (zoom >= 6) maxStations = 500;   // Regional
-    else if (zoom >= 4) maxStations = 200;   // Country
-    else if (zoom >= 2) maxStations = 100;   // Continental
-    else maxStations = 50;                   // World level
-    
-    // Return subset of stations for current zoom level
-    return stations.slice(0, maxStations);
-  }, []);
-
-  const visibleStations = getVisibleStations(allStations, zoomLevel);
-
   useEffect(() => {
-    onStationsChange(visibleStations);
-  }, [visibleStations, onStationsChange]);
+    if (allStations.length > 0) {
+      onStationsChange(allStations);
+    }
+  }, [allStations, onStationsChange]);
 
   return null;
 }
@@ -89,13 +64,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
     Math.abs(station.geo_long) <= 180
   );
 
-  // Debug logging
-  console.log('Map Debug:', {
-    totalStations: stations.length,
-    validStations: validStations.length,
-    sampleStation: stations[0],
-    sampleValidStation: validStations[0]
-  });
+
 
   const handlePlayStation = async (station: RadioStation) => {
     try {
@@ -113,7 +82,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           <div className="min-w-0 flex-1">
             <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif truncate">Global Radio Map</h2>
             <p className="text-xs md:text-sm text-gray-400 mt-1">
-              {validStations.length} stations • Zoom to adjust density
+              {validStations.length} stations • All available stations displayed
             </p>
           </div>
           <div className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-400 flex-shrink-0">
@@ -139,7 +108,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
             maxZoom={20}
           />
           
-          <ProgressiveStationLoader onStationsChange={handleStationsChange} />
+          <StationLoader onStationsChange={handleStationsChange} />
           
           {validStations.map((station) => {
               try {
