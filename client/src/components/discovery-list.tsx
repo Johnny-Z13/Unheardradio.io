@@ -29,6 +29,12 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
     refetchOnWindowFocus: true,
   });
 
+  // Reset offset when filters change
+  useEffect(() => {
+    setOffset(0);
+    setAllStations([]);
+  }, [filters.search, filters.country, filters.genre, filters.listenerFilter]);
+
   // Update allStations when new data comes in
   useEffect(() => {
     if (stations.length > 0) {
