@@ -135,7 +135,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-1 relative overflow-hidden">
-        {/* Conditional Sidebar */}
+        {/* Sidebar - Only show for search tab */}
         {activeTab === 'search' && (
           <div className="w-full md:w-72 lg:w-80 flex-shrink-0 md:border-r md:border-vdu-green-dim">
             <SearchSidebar
@@ -147,8 +147,8 @@ export default function Home() {
         
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {activeTab === 'bookmarks' ? (
-            <div className="flex-1 overflow-y-auto">
-              <div className="container mx-auto px-3 py-4 md:px-4 md:py-6">
+            <div className="flex-1 overflow-y-auto h-full">
+              <div className="container mx-auto px-3 py-4 md:px-4 md:py-6 h-full">
                 <div className="mb-4 md:mb-6">
                   <h2 className="text-xl md:text-2xl font-black text-vdu-green mb-2">YOUR BOOKMARKS</h2>
                   <p className="text-muted text-xs md:text-sm">
@@ -276,12 +276,14 @@ export default function Home() {
               </div>
             </div>
           ) : activeTab === 'locations' ? (
-            <StationMap onStationSelect={setFullscreenStation} />
+            <div className="flex-1 h-full">
+              <StationMap onStationSelect={setFullscreenStation} />
+            </div>
           ) : (
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col h-full">
               {/* Random Station Button for Discover Tab */}
               {activeTab === 'discover' && (
-                <div className="p-4 border-b border-vdu-green-dim bg-radio-dark">
+                <div className="p-4 border-b border-vdu-green-dim bg-radio-dark flex-shrink-0">
                   <button
                     onClick={playRandomStation}
                     className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-radio-black transition-all font-bold text-sm"
@@ -291,7 +293,9 @@ export default function Home() {
                   </button>
                 </div>
               )}
-              <StationList filters={filters} />
+              <div className="flex-1 overflow-hidden">
+                <StationList filters={filters} />
+              </div>
             </div>
           )}
         </main>
