@@ -204,6 +204,11 @@ Changelog:
   - Linked privacy policy page from About page footer for proper navigation flow
   - Included contact information (hello@unheardradio.io) and external policy links
   - Maintained consistent VDU green styling and responsive design across all pages
+- June 27, 2025. Added About button to main navigation bar
+  - Integrated About page access directly into the icon-based navigation tabs
+  - Removed duplicate About link from header to maintain clean interface
+  - About tab functions as external link while maintaining navigation consistency
+  - Navigation flow: Discover/Filter/Saved/Map/About tabs in single horizontal bar
 ```
 
 ## User Preferences

@@ -11,7 +11,7 @@ import { FullscreenStation } from '@/components/fullscreen-station';
 import { useAudioStore } from '@/lib/audio-store';
 import { RadioStation } from '@/types/radio';
 
-type Tab = 'discover' | 'search' | 'saved' | 'map';
+type Tab = 'discover' | 'search' | 'saved' | 'map' | 'about';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('discover');
@@ -26,6 +26,7 @@ export default function Home() {
     { id: 'search' as Tab, label: 'Filter', icon: Search },
     { id: 'saved' as Tab, label: 'Saved', icon: Bookmark },
     { id: 'map' as Tab, label: 'Map', icon: MapPin },
+    { id: 'about' as Tab, label: 'About', icon: Info, isExternal: true, href: '/about' },
   ];
 
   return (
@@ -48,16 +49,8 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
-              <Link href="/about">
-                <button className="flex items-center gap-1 text-xs md:text-sm text-muted hover:text-vdu-green transition-colors">
-                  <Info className="h-3 w-3 md:h-4 md:w-4" />
-                  <span className="hidden sm:inline">About</span>
-                </button>
-              </Link>
-              <div className="text-right text-xs md:text-sm text-muted flex-shrink-0">
-                <p>Stations live on air: {totalStations.toLocaleString()}</p>
-              </div>
+            <div className="text-right text-xs md:text-sm text-muted flex-shrink-0">
+              <p>Stations live on air: {totalStations.toLocaleString()}</p>
             </div>
           </div>
         </header>
@@ -68,6 +61,20 @@ export default function Home() {
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
+              
+              if (tab.isExternal) {
+                return (
+                  <Link key={tab.id} href={tab.href}>
+                    <button
+                      className="flex items-center space-x-1 md:space-x-2 px-3 md:px-4 py-2 rounded-lg transition-all whitespace-nowrap text-xs md:text-sm font-mono group relative text-vdu-green-dim hover:text-vdu-green hover:bg-radio-black"
+                      title={tab.label}
+                    >
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      <span className="hidden md:inline font-mono">{tab.label.toUpperCase()}</span>
+                    </button>
+                  </Link>
+                );
+              }
               
               return (
                 <button
