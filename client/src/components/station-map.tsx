@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { useState, useEffect, useCallback } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { Icon, LatLngBounds } from 'leaflet';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, Radio, Users, Globe } from 'lucide-react';
 import { RadioStation } from '@/types/radio';
@@ -53,19 +53,45 @@ function MapBounds({ stations }: { stations: RadioStation[] }) {
   return null;
 }
 
+// Progressive loading component that filters stations based on zoom level
+function ProgressiveStationLoader({ onStationsChange }: { onStationsChange: (stations: RadioStation[]) => void }) {
+  const [zoomLevel, setZoomLevel] = useState(2);
+  
+  const map = useMapEvents({
+    zoomend: () => {
+      setZoomLevel(map.getZoom());
+    },
+  });
+
+  // Calculate station limit based on zoom level
+  const getStationLimit = (zoom: number) => {
+    if (zoom >= 10) return 2000; // City level - show many stations
+    if (zoom >= 7) return 800;   // Regional level
+    if (zoom >= 5) return 300;   // Country level  
+    if (zoom >= 3) return 100;   // Continental level
+    return 61;                   // World level - current default
+  };
+
+  const { data: stations = [] } = useQuery<RadioStation[]>({
+    queryKey: ['/api/stations', { limit: getStationLimit(zoomLevel) }],
+    queryFn: () => fetchStations({ limit: getStationLimit(zoomLevel) }),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    onStationsChange(stations);
+  }, [stations, onStationsChange]);
+
+  return null;
+}
+
 export function StationMap({ onStationSelect }: StationMapProps) {
-  const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [stations, setStations] = useState<RadioStation[]>([]);
   const { playStation } = useAudioStore();
   
-  const {
-    data: stations = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['/api/stations', { country: selectedCountry, limit: 500 }],
-    queryFn: () => fetchStations({ country: selectedCountry, limit: 500 }),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  const handleStationsChange = useCallback((newStations: RadioStation[]) => {
+    setStations(newStations);
+  }, []);
 
   // Filter stations with valid coordinates
   const validStations = stations.filter(station => 
@@ -88,30 +114,6 @@ export function StationMap({ onStationSelect }: StationMapProps) {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex-1 p-6 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-vdu-green mx-auto mb-4" />
-          <p className="text-vdu-green">Loading global transmissions...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex-1 p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-400 mb-2">Map Signal Lost</div>
-          <p className="text-gray-400">
-            {error instanceof Error ? error.message : 'Failed to load station locations'}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex-1 flex flex-col h-full">
       {/* Map Header */}
@@ -120,7 +122,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           <div className="min-w-0 flex-1">
             <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif truncate">Global Radio Map</h2>
             <p className="text-xs md:text-sm text-gray-400 mt-1">
-              {validStations.length} stations • Zoom and click to explore
+              {validStations.length} stations • Zoom in for more stations
             </p>
           </div>
           <div className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-400 flex-shrink-0">
@@ -141,10 +143,13 @@ export function StationMap({ onStationSelect }: StationMapProps) {
             style={{ height: '100%' }}
           >
             <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+              subdomains="abcd"
+              maxZoom={20}
             />
             
+            <ProgressiveStationLoader onStationsChange={handleStationsChange} />
             <MapBounds stations={validStations} />
             
             {validStations.map((station) => {
