@@ -223,6 +223,12 @@ Changelog:
   - Added proper useCallback memoization to prevent performance issues
   - Improved station density control that responds smoothly to zoom changes
   - Updated map header text to "Zoom to adjust density" for clearer user guidance
+- June 27, 2025. Enhanced map to display all available stations with coordinates
+  - Increased API limit to 50,000 stations to load maximum available data
+  - Map now displays 8,759 stations with valid GPS coordinates from RadioBrowser
+  - Updated interface to show coordinate statistics: "X stations with coordinates • Y total loaded"
+  - Removed zoom-based filtering to show complete global radio station distribution
+  - Clarified difference between mappable stations vs total database count
 ```
 
 ## User Preferences

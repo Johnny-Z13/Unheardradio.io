@@ -24,12 +24,12 @@ interface StationMapProps {
 
 // Removed automatic bounds fitting to prevent zoom snapping
 
-// Simple loader - display all stations without filtering
+// Simple loader - try to load ALL stations from RadioBrowser API
 function StationLoader({ onStationsChange }: { onStationsChange: (stations: RadioStation[]) => void }) {
-  // Load all available stations
+  // Load maximum possible stations - RadioBrowser API might have limits
   const { data: allStations = [] } = useQuery<RadioStation[]>({
-    queryKey: ['/api/stations', { limit: 5000 }], // Increased limit to get more stations
-    queryFn: () => fetchStations({ limit: 5000 }),
+    queryKey: ['/api/stations', { limit: 50000 }], // Try very high limit to get all stations
+    queryFn: () => fetchStations({ limit: 50000 }),
     staleTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
@@ -66,6 +66,8 @@ export function StationMap({ onStationSelect }: StationMapProps) {
 
 
 
+
+
   const handlePlayStation = async (station: RadioStation) => {
     try {
       await playStation(station);
@@ -82,7 +84,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           <div className="min-w-0 flex-1">
             <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif truncate">Global Radio Map</h2>
             <p className="text-xs md:text-sm text-gray-400 mt-1">
-              {validStations.length} stations • All available stations displayed
+              {validStations.length} stations with coordinates • {stations.length} total loaded
             </p>
           </div>
           <div className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-400 flex-shrink-0">
