@@ -49,30 +49,7 @@ export default function About() {
           </CardContent>
         </Card>
 
-        {/* Features Section */}
-        <Card className="bg-gray-900 border-green-400/20 mb-8">
-          <CardContent className="p-6">
-            <h2 className="text-xl font-bold mb-4 text-cyan-400">What We Offer</h2>
-            <div className="grid md:grid-cols-2 gap-4 text-green-300">
-              <div>
-                <h3 className="font-semibold mb-2">🌍 Global Discovery</h3>
-                <p className="text-sm">Explore radio stations from every corner of the world, sorted by obscurity level.</p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">📍 Geographic Mapping</h3>
-                <p className="text-sm">Interactive world map showing exact station locations and broadcasting details.</p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">🔍 Advanced Filtering</h3>
-                <p className="text-sm">Search by country, genre, language, and listener count to find your perfect obscure station.</p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">💾 Personal Collection</h3>
-                <p className="text-sm">Bookmark your favorite discoveries and build your own curated collection of rare stations.</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Footer Links */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-green-400/20">

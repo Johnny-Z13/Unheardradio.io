@@ -215,6 +215,8 @@ Changelog:
   - Emphasized anti-algorithm, weird, overlooked content focus
   - Copy highlights glitchy transmissions, ghost signals, offbeat gems
   - Maintains "Anti-algorithm radio. Always live. Never normal." brand positioning
+  - Removed features section to keep focus on core messaging without marketing content
+  - Updated privacy policy contact email to hello@z13labs.com for consistency
 ```
 
 ## User Preferences

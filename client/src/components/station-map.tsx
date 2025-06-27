@@ -59,28 +59,42 @@ function ProgressiveStationLoader({ onStationsChange }: { onStationsChange: (sta
   
   const map = useMapEvents({
     zoomend: () => {
-      setZoomLevel(map.getZoom());
+      const newZoom = map.getZoom();
+      setZoomLevel(newZoom);
     },
+    moveend: () => {
+      // Optional: could also trigger on map movement for geographic filtering
+    }
   });
 
-  // Calculate station limit based on zoom level
+  // Calculate station limit based on zoom level - more granular density control
   const getStationLimit = (zoom: number) => {
-    if (zoom >= 10) return 2000; // City level - show many stations
-    if (zoom >= 7) return 800;   // Regional level
-    if (zoom >= 5) return 300;   // Country level  
-    if (zoom >= 3) return 100;   // Continental level
-    return 61;                   // World level - current default
+    if (zoom >= 12) return 3000; // Street level - maximum stations
+    if (zoom >= 10) return 2000; // City level - many stations
+    if (zoom >= 8) return 1200;  // Urban area level
+    if (zoom >= 6) return 600;   // Regional level
+    if (zoom >= 4) return 200;   // Country level  
+    if (zoom >= 2) return 80;    // Continental level
+    return 40;                   // World level - minimal stations
   };
 
+  const currentLimit = getStationLimit(zoomLevel);
+
   const { data: stations = [] } = useQuery<RadioStation[]>({
-    queryKey: ['/api/stations', { limit: getStationLimit(zoomLevel) }],
-    queryFn: () => fetchStations({ limit: getStationLimit(zoomLevel) }),
+    queryKey: ['/api/stations', { limit: currentLimit }],
+    queryFn: () => fetchStations({ limit: currentLimit }),
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
+  // Use useCallback to prevent infinite re-renders
+  const memoizedOnStationsChange = useCallback(onStationsChange, [onStationsChange]);
+
   useEffect(() => {
-    onStationsChange(stations);
-  }, [stations]);
+    if (stations && stations.length > 0) {
+      memoizedOnStationsChange(stations);
+    }
+  }, [stations, memoizedOnStationsChange]);
 
   return null;
 }
@@ -92,9 +106,6 @@ export function StationMap({ onStationSelect }: StationMapProps) {
   const handleStationsChange = useCallback((newStations: RadioStation[]) => {
     setStations(newStations);
   }, []);
-
-  // Memoize the callback to prevent infinite loops
-  const memoizedCallback = useCallback(handleStationsChange, []);
 
   // Filter stations with valid coordinates
   const validStations = stations.filter(station => 
@@ -125,7 +136,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           <div className="min-w-0 flex-1">
             <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif truncate">Global Radio Map</h2>
             <p className="text-xs md:text-sm text-gray-400 mt-1">
-              {validStations.length} stations • Zoom in for more stations
+              {validStations.length} stations • Zoom to adjust density
             </p>
           </div>
           <div className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-400 flex-shrink-0">

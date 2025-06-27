@@ -97,7 +97,7 @@ export default function Privacy() {
                 <div className="flex flex-col gap-2 ml-4">
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4" />
-                    <a href="mailto:hello@unheardradio.io" className="text-green-400 hover:text-cyan-400 underline">hello@unheardradio.io</a>
+                    <a href="mailto:hello@z13labs.com" className="text-green-400 hover:text-cyan-400 underline">hello@z13labs.com</a>
                   </div>
                   <div className="flex items-center gap-2">
                     <ExternalLink className="h-4 w-4" />
