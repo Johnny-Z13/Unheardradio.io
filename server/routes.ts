@@ -64,10 +64,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             switch (listenerFilter) {
               case 'zero':
                 return clicks === 0;
-              case 'under10':
-                return clicks < 10;
-              case 'under50':
-                return clicks < 50;
+              case 'one':
+                return clicks === 1;
+              case '2-10':
+                return clicks >= 2 && clicks <= 10;
+              case 'under100':
+                return clicks < 100;
               default:
                 return true;
             }

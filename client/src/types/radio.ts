@@ -42,7 +42,7 @@ export interface SearchFilters {
   search?: string;
   country?: string;
   genre?: string;
-  listenerFilter?: 'all' | 'zero' | 'under10' | 'under50';
+  listenerFilter?: 'all' | 'zero' | 'one' | '2-10' | 'under100';
   limit?: number;
   offset?: number;
   bookmarkedOnly?: boolean;

@@ -18,7 +18,7 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
   const [genre, setGenre] = useState('');
-  const [listenerFilter, setListenerFilter] = useState<'all' | 'zero' | 'under10' | 'under50'>('all');
+  const [listenerFilter, setListenerFilter] = useState<'all' | 'zero' | 'one' | '2-10' | 'under100'>('all');
   const [obscurity, setObscurity] = useState('rare');
   const [isCollapsed, setIsCollapsed] = useState(false);
   
@@ -76,36 +76,46 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
           <Search className="absolute right-3 top-3 h-4 w-4 text-gray-500" />
         </div>
 
-        {/* Obscurity Filters */}
+        {/* Listener Count Filter */}
         <div className="space-y-3">
-          <h3 className="text-xs md:text-sm font-semibold text-amber uppercase tracking-wide">Obscurity Index</h3>
-          <RadioGroup value={obscurity} onValueChange={setObscurity}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="ultra" id="ultra" className="border-crt-green text-crt-green" />
-              <Label htmlFor="ultra" className="text-xs md:text-sm">Ultra Rare (&lt;5 listeners)</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="rare" id="rare" className="border-crt-green text-crt-green" />
-              <Label htmlFor="rare" className="text-xs md:text-sm">Rare (&lt;50 listeners)</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="hidden" id="hidden" className="border-crt-green text-crt-green" />
-              <Label htmlFor="hidden" className="text-xs md:text-sm">Hidden Gems (&lt;500 listeners)</Label>
+          <h3 className="text-xs md:text-sm font-semibold text-vdu-green uppercase tracking-wide">Listener Count</h3>
+          <RadioGroup value={listenerFilter} onValueChange={(value) => setListenerFilter(value as any)}>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="all" className="border-vdu-green-dim text-vdu-green" />
+                <Label htmlFor="all" className="text-xs text-gray-300 cursor-pointer">All stations</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="zero" id="zero" className="border-vdu-green-dim text-vdu-green" />
+                <Label htmlFor="zero" className="text-xs text-vdu-green cursor-pointer font-medium">0 listeners only</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="one" id="one" className="border-vdu-green-dim text-vdu-green" />
+                <Label htmlFor="one" className="text-xs text-vdu-green cursor-pointer font-medium">Exactly 1 listener</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="2-10" id="2-10" className="border-vdu-green-dim text-vdu-green" />
+                <Label htmlFor="2-10" className="text-xs text-gray-300 cursor-pointer">2-10 listeners</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="under100" id="under100" className="border-vdu-green-dim text-vdu-green" />
+                <Label htmlFor="under100" className="text-xs text-gray-300 cursor-pointer">Under 100 listeners</Label>
+              </div>
             </div>
           </RadioGroup>
         </div>
 
         {/* Location Filter */}
         <div className="space-y-3">
-          <h3 className="text-xs md:text-sm font-semibold text-amber uppercase tracking-wide">Signal Origin</h3>
+          <h3 className="text-xs md:text-sm font-semibold text-vdu-green uppercase tracking-wide">Location</h3>
           <Select value={country} onValueChange={setCountry}>
-            <SelectTrigger className="w-full bg-radio-black border-crt-dim text-crt-green focus:border-crt-green text-sm">
+            <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green text-sm">
               <SelectValue placeholder="All Countries" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-radio-black border-vdu-green-dim">
               <SelectItem value="all">All Countries</SelectItem>
-              {countries.map((c) => (
-                <SelectItem key={c.iso_3166_1} value={c.name}>
+              {countries.slice(0, 50).map((c) => (
+                <SelectItem key={c.iso_3166_1} value={c.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20">
                   {c.name} ({c.stationcount})
                 </SelectItem>
               ))}
@@ -115,31 +125,15 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
 
         {/* Genre Filter */}
         <div className="space-y-3">
-          <h3 className="text-xs md:text-sm font-semibold text-amber uppercase tracking-wide">Genre</h3>
-          <div className="grid grid-cols-2 md:flex md:flex-wrap gap-1 md:gap-2">
-            {popularGenres.map((g) => (
-              <button
-                key={g}
-                onClick={() => setGenre(genre === g ? 'all' : g)}
-                className={`px-2 md:px-3 py-1 text-xs border transition-colors ${
-                  genre === g
-                    ? 'border-crt-green text-crt-green bg-crt-green bg-opacity-20'
-                    : 'border-crt-dim hover:border-crt-green hover:text-crt-green'
-                }`}
-              >
-                {g}
-              </button>
-            ))}
-          </div>
-          
+          <h3 className="text-xs md:text-sm font-semibold text-vdu-green uppercase tracking-wide">Genre</h3>
           <Select value={genre} onValueChange={setGenre}>
-            <SelectTrigger className="w-full bg-radio-black border-crt-dim text-crt-green focus:border-crt-green text-sm">
-              <SelectValue placeholder="More genres..." />
+            <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green text-sm">
+              <SelectValue placeholder="All Genres" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Genres</SelectItem>
-              {genres.map((g) => (
-                <SelectItem key={g.name} value={g.name}>
+            <SelectContent className="bg-radio-black border-vdu-green-dim max-h-60 overflow-y-auto">
+              <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20">All Genres</SelectItem>
+              {genres.slice(0, 100).map((g) => (
+                <SelectItem key={g.name} value={g.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20">
                   {g.name} ({g.stationcount})
                 </SelectItem>
               ))}
@@ -147,31 +141,7 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
           </Select>
         </div>
 
-        {/* Listener Count Filter */}
-        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-crt-dim">
-          <h3 className="text-sm font-bold text-crt-green mb-3 md:mb-4 tracking-wide">OBSCURITY LEVEL</h3>
-          
-          <RadioGroup value={listenerFilter} onValueChange={(value) => setListenerFilter(value as any)}>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="all" id="all" className="border-crt-dim text-crt-green" />
-                <Label htmlFor="all" className="text-xs text-muted cursor-pointer">All stations</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="zero" id="zero" className="border-crt-dim text-crt-green" />
-                <Label htmlFor="zero" className="text-xs text-crt-green cursor-pointer font-medium">Zero listeners only</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="under10" id="under10" className="border-crt-dim text-crt-green" />
-                <Label htmlFor="under10" className="text-xs text-muted cursor-pointer">Under 10 listeners</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="under50" id="under50" className="border-crt-dim text-crt-green" />
-                <Label htmlFor="under50" className="text-xs text-muted cursor-pointer">Under 50 listeners</Label>
-              </div>
-            </div>
-          </RadioGroup>
-        </div>
+
 
         {/* Bookmarks */}
         <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-crt-dim">
