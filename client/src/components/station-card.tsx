@@ -31,10 +31,12 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
   
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
+    const wasBookmarked = isBookmarked(station.stationuuid);
     toggleBookmark(station);
     toast({
-      title: isBookmarked(station.stationuuid) ? "Bookmark removed" : "Station bookmarked",
+      title: wasBookmarked ? "Bookmark removed" : "Station bookmarked",
       description: station.name,
+      duration: 2000, // Shorter duration - 2 seconds
     });
   };
   

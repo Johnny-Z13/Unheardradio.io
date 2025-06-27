@@ -67,13 +67,7 @@ export function StationList({ filters }: StationListProps) {
   // Use bookmark stations if bookmarkedOnly filter is active
   const displayStations = filters.bookmarkedOnly ? bookmarkStations : stations;
   
-  // Debug logging for bookmarks
-  useEffect(() => {
-    if (filters.bookmarkedOnly) {
-      console.log('Bookmarks mode - found bookmarks:', bookmarks.length);
-      console.log('Bookmark stations:', bookmarkStations.length);
-    }
-  }, [filters.bookmarkedOnly, bookmarks.length, bookmarkStations.length]);
+
 
   // Update allStations when new data comes in (but not for bookmark mode)
   useEffect(() => {
@@ -86,25 +80,22 @@ export function StationList({ filters }: StationListProps) {
     }
   }, [stations, offset, filters.bookmarkedOnly]);
 
-  // For bookmark mode, use bookmark stations directly
+  // For bookmark mode, always use fresh bookmark data
   useEffect(() => {
     if (filters.bookmarkedOnly) {
       setAllStations(bookmarkStations);
       setOffset(0);
+    } else if (filters.bookmarkedOnly === false && allStations.length === 0) {
+      // When switching away from bookmark mode, clear and fetch fresh data
+      setOffset(0);
     }
   }, [filters.bookmarkedOnly, bookmarkStations]);
 
-  // Reset offset when filters change (but preserve data if filters are just empty)
+  // Reset offset when filters change 
   useEffect(() => {
-    const hasActiveFilters = filters.search || filters.country || filters.genre || filters.bookmarkedOnly;
-    const prevHadActiveFilters = allStations.length > 0;
-    
-    // Only reset if we actually have new filter criteria
-    if (hasActiveFilters || (prevHadActiveFilters && !hasActiveFilters)) {
-      setOffset(0);
-      if (!filters.bookmarkedOnly) {
-        setAllStations([]);
-      }
+    setOffset(0);
+    if (!filters.bookmarkedOnly) {
+      setAllStations([]);
     }
   }, [filters.search, filters.country, filters.genre, filters.bookmarkedOnly]);
 
