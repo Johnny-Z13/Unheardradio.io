@@ -143,9 +143,7 @@ export default function Home() {
               title="Saved stations"
             >
               <Bookmark className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="hidden sm:inline text-xs md:text-sm font-mono">
-                SAVED {bookmarks.length > 0 && `(${bookmarks.length})`}
-              </span>
+              <span className="hidden sm:inline text-xs md:text-sm font-mono">SAVED</span>
             </button>
             <button
               onClick={() => setActiveTab('locations')}

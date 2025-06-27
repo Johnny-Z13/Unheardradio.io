@@ -70,9 +70,9 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
               {currentStation.name.toUpperCase()}
             </h4>
             <div className="flex items-center space-x-2">
-              <div className="inline-flex items-center space-x-1 px-2 py-0.5 bg-accent-cyan text-radio-black rounded-full text-xs font-black">
-                <div className="w-1 h-1 bg-radio-black rounded-full animate-pulse"></div>
-                <span>LIVE</span>
+              <div className="inline-flex items-center space-x-1 px-2 py-0.5 bg-red-600 text-white rounded-full text-xs font-black">
+                <div className="w-1.5 h-1.5 bg-red-300 rounded-full animate-pulse"></div>
+                <span>ON AIR</span>
               </div>
               <span className="text-xs text-muted truncate">
                 {currentStation.country} • {currentStation.clickcount || 0} listeners

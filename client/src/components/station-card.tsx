@@ -144,9 +144,9 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
         {/* Now Playing indicator */}
         {isCurrentStation && (
           <div className="mb-2">
-            <div className="inline-flex items-center space-x-1 px-2 py-1 bg-accent-yellow text-radio-black rounded-full text-xs font-black">
-              <div className="w-1 h-1 bg-radio-black rounded-full animate-pulse" />
-              <span>LIVE</span>
+            <div className="inline-flex items-center space-x-1 px-2 py-1 bg-red-600 text-white rounded-full text-xs font-black">
+              <div className="w-1.5 h-1.5 bg-red-300 rounded-full animate-pulse" />
+              <span>ON AIR</span>
             </div>
           </div>
         )}

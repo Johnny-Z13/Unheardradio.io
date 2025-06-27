@@ -166,7 +166,8 @@ Changelog:
   - Added hover tooltips for icon navigation accessibility
   - Implemented responsive design: icons only on mobile, icons + text on larger screens
   - Used monospace font for navigation text to enhance terminal aesthetic
-  - Maintained bookmark count display in navigation for user feedback
+  - Removed bookmark count from navigation for cleaner minimalist appearance
+  - Changed "LIVE" indicators to red "ON AIR" with pulsing red dot for broadcasting studio aesthetic
 ```
 
 ## User Preferences
