@@ -71,7 +71,7 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
             placeholder="Search stations..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-radio-black border-crt-dim text-crt-green placeholder-gray-500 focus:border-crt-green pr-10"
+            className="w-full bg-radio-black border-vdu-green-dim text-vdu-green placeholder-gray-500 focus:border-vdu-green pr-10"
           />
           <Search className="absolute right-3 top-3 h-4 w-4 text-gray-500" />
         </div>
@@ -143,13 +143,30 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
 
 
 
-        {/* Bookmarks */}
-        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-crt-dim">
-          <button className="w-full px-3 md:px-4 py-2 border border-crt-dim text-crt-green hover:bg-crt-green hover:text-radio-black transition-all duration-200 relative group text-sm">
-            <Radio className="inline-block w-4 h-4 mr-2" />
-            <span>{bookmarkCount} Saved</span>
-            <div className="absolute inset-0 bg-crt-green opacity-0 group-hover:opacity-20 transition-opacity"></div>
-          </button>
+        {/* Quick Filter Buttons */}
+        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-vdu-green-dim">
+          <div className="grid grid-cols-2 gap-2">
+            <button 
+              onClick={() => setListenerFilter('zero')}
+              className={`px-3 py-2 text-xs border transition-colors ${
+                listenerFilter === 'zero'
+                  ? 'border-vdu-green text-vdu-green bg-vdu-green bg-opacity-20'
+                  : 'border-vdu-green-dim text-gray-300 hover:border-vdu-green hover:text-vdu-green'
+              }`}
+            >
+              Zero Listeners
+            </button>
+            <button 
+              onClick={() => setListenerFilter('one')}
+              className={`px-3 py-2 text-xs border transition-colors ${
+                listenerFilter === 'one'
+                  ? 'border-vdu-green text-vdu-green bg-vdu-green bg-opacity-20'
+                  : 'border-vdu-green-dim text-gray-300 hover:border-vdu-green hover:text-vdu-green'
+              }`}
+            >
+              1 Listener
+            </button>
+          </div>
         </div>
 
 
