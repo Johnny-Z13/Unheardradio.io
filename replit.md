@@ -172,6 +172,13 @@ Changelog:
   - Streamlined header to focus on branding and live station count
   - Fixed UI shifting between tabs by implementing consistent scrollbar behavior across all tabs
   - Added custom VDU green scrollbar styling to match terminal aesthetic
+- June 27, 2025. Dark mode map with progressive station loading
+  - Implemented dark mode Carto tiles for map background instead of standard OpenStreetMap
+  - Added progressive station loading based on zoom level (61 at world level, up to 2000 at city level)
+  - Enhanced map controls with VDU green styling and dark backgrounds
+  - Added custom dark styling for map popups, attribution, and zoom controls
+  - Fixed station count display to show accurate progressive loading information
+  - Stations now load dynamically as user zooms in for better performance
 ```
 
 ## User Preferences

@@ -135,24 +135,23 @@ export function StationMap({ onStationSelect }: StationMapProps) {
 
       {/* Map Container */}
       <div className="flex-1 relative">
-        {validStations.length > 0 ? (
-          <MapContainer
-            center={[20, 0]}
-            zoom={2}
-            className="w-full h-full bg-radio-black"
-            style={{ height: '100%' }}
-          >
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-              subdomains="abcd"
-              maxZoom={20}
-            />
-            
-            <ProgressiveStationLoader onStationsChange={handleStationsChange} />
-            <MapBounds stations={validStations} />
-            
-            {validStations.map((station) => {
+        <MapContainer
+          center={[20, 0]}
+          zoom={2}
+          className="w-full h-full bg-radio-black"
+          style={{ height: '100%' }}
+        >
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            subdomains="abcd"
+            maxZoom={20}
+          />
+          
+          <ProgressiveStationLoader onStationsChange={handleStationsChange} />
+          {validStations.length > 0 && <MapBounds stations={validStations} />}
+          
+          {validStations.map((station) => {
               try {
                 // Additional safety check for marker positioning
                 if (!station || 
@@ -228,18 +227,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
                 return null;
               }
             })}
-          </MapContainer>
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <Globe className="w-16 h-16 text-vdu-green-dim mx-auto mb-4" />
-              <p className="text-vdu-green text-lg mb-2">No stations with location data</p>
-              <p className="text-sm text-muted max-w-md mx-auto">
-                The loaded stations don't have valid GPS coordinates for mapping.
-              </p>
-            </div>
-          </div>
-        )}
+        </MapContainer>
       </div>
     </div>
   );
