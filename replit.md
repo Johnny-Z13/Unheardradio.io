@@ -229,6 +229,14 @@ Changelog:
   - Updated interface to show coordinate statistics: "X stations with coordinates • Y total loaded"
   - Removed zoom-based filtering to show complete global radio station distribution
   - Clarified difference between mappable stations vs total database count
+- June 27, 2025. Redesigned filters page with precise listener count targeting
+  - Added exact listener count filters: 0 listeners only, exactly 1 listener, 2-10 listeners, under 100 listeners
+  - Replaced generic obscurity ranges with precise audience size targeting for ultra-rare station discovery
+  - Enhanced genre selector with scrollable dropdown showing top 100 genres with station counts
+  - Improved location selector with top 50 countries, shortened country names (UK, USA vs full official names)
+  - Added quick filter buttons for instant access to zero and 1-listener stations
+  - Updated backend filtering logic to handle precise listener ranges and country name mapping
+  - Streamlined filter interface focused on discovering the most obscure broadcasts by exact audience size
 ```
 
 ## User Preferences

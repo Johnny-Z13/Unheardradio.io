@@ -162,9 +162,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         throw lastError || new Error("All RadioBrowser servers unavailable");
       }
       
+      // Function to convert long country names to shorter versions
+      const getShortCountryName = (name: string): string => {
+        const nameMap: { [key: string]: string } = {
+          'United Kingdom of Great Britain and Northern Ireland': 'UK',
+          'United States of America': 'USA',
+          'United States': 'USA',
+          'Russian Federation': 'Russia',
+          'Iran (Islamic Republic of)': 'Iran',
+          'Korea (Republic of)': 'South Korea',
+          'Korea (Democratic People\'s Republic of)': 'North Korea',
+          'Venezuela (Bolivarian Republic of)': 'Venezuela',
+          'Bolivia (Plurinational State of)': 'Bolivia',
+          'Taiwan (Province of China)': 'Taiwan',
+          'Macedonia (the former Yugoslav Republic of)': 'North Macedonia',
+          'Moldova (Republic of)': 'Moldova',
+          'Congo (Democratic Republic of the)': 'DR Congo',
+          'Tanzania (United Republic of)': 'Tanzania',
+          'Palestine (State of)': 'Palestine',
+          'Virgin Islands (British)': 'British Virgin Islands',
+          'Virgin Islands (U.S.)': 'US Virgin Islands'
+        };
+        
+        return nameMap[name] || name;
+      };
+
       // Sort by country name and filter out countries with very few stations
       const filteredCountries = countries
         .filter((country: any) => country.stationcount > 5)
+        .map((country: any) => ({
+          ...country,
+          name: getShortCountryName(country.name)
+        }))
         .sort((a: any, b: any) => a.name.localeCompare(b.name));
       
       res.json(filteredCountries);
