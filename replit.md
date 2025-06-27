@@ -179,6 +179,13 @@ Changelog:
   - Added custom dark styling for map popups, attribution, and zoom controls
   - Fixed station count display to show accurate progressive loading information
   - Stations now load dynamically as user zooms in for better performance
+- June 27, 2025. Redesigned bookmarks as filtered station list for iPhone optimization
+  - Converted saved stations from card grid to identical vertical list format as discover feed
+  - Removed special bookmark cards and menu items for cleaner mobile interface
+  - Implemented bookmarkedOnly filter in StationList component for unified experience
+  - Added appropriate empty state messaging for no saved stations
+  - Optimized for iPhone with consistent list layout and bookmark toggle functionality
+  - Saved section now acts as simple filter to hide unbookmarked items
 ```
 
 ## User Preferences
