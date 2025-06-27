@@ -66,34 +66,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 md:space-x-3 lg:space-x-4 flex-shrink-0">
-              {/* Random Button */}
-              <button
-                onClick={playRandomStation}
-                className="flex items-center space-x-1 md:space-x-2 px-2 py-1.5 md:px-3 md:py-2 rounded-lg border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-radio-black transition-all font-bold text-xs"
-              >
-                <Shuffle className="w-3 h-3 md:w-4 md:h-4" />
-                <span className="hidden sm:block">RANDOM</span>
-              </button>
-
-              {/* Bookmarks Button */}
-              <button
-                onClick={() => setActiveTab('bookmarks')}
-                className={`flex items-center space-x-1 md:space-x-2 px-2 py-1.5 md:px-3 md:py-2 rounded-lg border font-bold text-xs transition-all ${
-                  activeTab === 'bookmarks'
-                    ? 'border-vdu-green bg-vdu-green text-radio-black'
-                    : 'border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green'
-                }`}
-              >
-                <Bookmark className="w-3 h-3 md:w-4 md:h-4" />
-                <span className="hidden sm:block">BOOKMARKS</span>
-                {bookmarks.length > 0 && (
-                  <span className="bg-accent-cyan text-radio-black rounded-full w-5 h-5 flex items-center justify-center text-xs font-black">
-                    {bookmarks.length}
-                  </span>
-                )}
-              </button>
-              
+            <div className="flex items-center justify-end flex-shrink-0">
               <div className="text-right">
                 <div className="text-xs text-muted font-medium">STATIONS LIVE ON AIR</div>
                 <div className="text-lg md:text-xl text-vdu-green font-black">
@@ -305,7 +278,21 @@ export default function Home() {
           ) : activeTab === 'locations' ? (
             <StationMap onStationSelect={setFullscreenStation} />
           ) : (
-            <StationList filters={filters} />
+            <div className="flex-1 flex flex-col">
+              {/* Random Station Button for Discover Tab */}
+              {activeTab === 'discover' && (
+                <div className="p-4 border-b border-vdu-green-dim bg-radio-dark">
+                  <button
+                    onClick={playRandomStation}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-radio-black transition-all font-bold text-sm"
+                  >
+                    <Shuffle className="w-4 h-4" />
+                    <span>RANDOM ZERO-LISTENER STATION</span>
+                  </button>
+                </div>
+              )}
+              <StationList filters={filters} />
+            </div>
           )}
         </main>
       </div>

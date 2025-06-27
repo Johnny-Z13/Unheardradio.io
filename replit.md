@@ -167,7 +167,9 @@ Changelog:
   - Implemented responsive design: icons only on mobile, icons + text on larger screens
   - Used monospace font for navigation text to enhance terminal aesthetic
   - Removed bookmark count from navigation for cleaner minimalist appearance
-  - Changed "LIVE" indicators to red "ON AIR" with pulsing red dot for broadcasting studio aesthetic
+  - Removed duplicate RANDOM and BOOKMARKS buttons from header for cleaner interface
+  - Moved random station functionality to discover tab content area
+  - Streamlined header to focus on branding and live station count
 ```
 
 ## User Preferences
