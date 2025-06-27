@@ -156,6 +156,11 @@ Changelog:
   - Responsive map interface with mobile-friendly controls and headers
   - Added CSS utilities for smooth scrolling and text truncation
   - Enhanced touch scrolling support across all components
+- June 27, 2025. Fixed notification positioning and bookmark display issues
+  - Repositioned toast notifications to not obscure navigation tabs (top-28/bottom-16)
+  - Updated bookmark localStorage key from 'signal-drift-bookmarks' to 'unheard-radio-bookmarks'
+  - Fixed bookmark screen display functionality with proper station conversion
+  - Ensured bookmark notifications appear in safe zones on mobile and desktop
 ```
 
 ## User Preferences

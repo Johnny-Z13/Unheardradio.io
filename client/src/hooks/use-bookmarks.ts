@@ -15,20 +15,20 @@ export function useBookmarks() {
   const [bookmarks, setBookmarks] = useState<BookmarkedStation[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('signal-drift-bookmarks');
+    const saved = localStorage.getItem('unheard-radio-bookmarks');
     if (saved) {
       try {
         setBookmarks(JSON.parse(saved));
       } catch (error) {
         console.error('Error loading bookmarks:', error);
-        localStorage.removeItem('signal-drift-bookmarks');
+        localStorage.removeItem('unheard-radio-bookmarks');
       }
     }
   }, []);
 
   const saveBookmarks = (newBookmarks: BookmarkedStation[]) => {
     setBookmarks(newBookmarks);
-    localStorage.setItem('signal-drift-bookmarks', JSON.stringify(newBookmarks));
+    localStorage.setItem('unheard-radio-bookmarks', JSON.stringify(newBookmarks));
   };
 
   const isBookmarked = (stationUuid: string): boolean => {
