@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Radio, Bookmark, Shuffle, MapPin, Search, Radar } from 'lucide-react';
+import { Radio, Bookmark, Shuffle, MapPin, Search, Radar, Play, Pause } from 'lucide-react';
 import { SearchFilters, RadioStation } from '@/types/radio';
 import { SearchSidebar } from '@/components/search-sidebar';
 import { StationList } from '@/components/station-list';
@@ -16,7 +16,7 @@ export default function Home() {
   const [totalStations] = useState(47283);
   const [activeTab, setActiveTab] = useState<'discover' | 'search' | 'bookmarks' | 'locations'>('discover');
   const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null);
-  const { currentStation, playStation } = useAudioStore();
+  const { currentStation, playStation, isPlaying, isLoading } = useAudioStore();
   const { bookmarks } = useBookmarks();
 
   useEffect(() => {
@@ -161,108 +161,136 @@ export default function Home() {
                 
                 {bookmarks.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-                    {bookmarks.map((bookmark) => (
-                      <div key={bookmark.stationuuid} className="bg-radio-dark rounded-xl p-3 md:p-4 border border-vdu-green-dim hover:border-vdu-green transition-all group">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-vdu-green font-bold text-sm mb-1 line-clamp-2 group-hover:text-accent-cyan transition-colors">
-                              {bookmark.name}
-                            </h3>
+                    {bookmarks.map((bookmark) => {
+                      const isCurrentStation = currentStation?.stationuuid === bookmark.stationuuid;
+                      const isCurrentlyPlaying = isCurrentStation && isPlaying;
+                      const isCurrentlyLoading = isCurrentStation && isLoading;
+                      
+                      return (
+                        <div key={bookmark.stationuuid} className={`bg-radio-dark rounded-xl p-3 md:p-4 border transition-all group ${isCurrentStation ? 'border-accent-cyan' : 'border-vdu-green-dim hover:border-vdu-green'}`}>
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className={`font-bold text-sm mb-1 line-clamp-2 transition-colors ${isCurrentStation ? 'text-accent-cyan' : 'text-vdu-green group-hover:text-accent-cyan'}`}>
+                                {bookmark.name}
+                              </h3>
+                              <p className="text-xs text-muted">
+                                {bookmark.country} • {bookmark.genre}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Current Playing Indicator */}
+                          {isCurrentStation && (
+                            <div className="mb-2">
+                              <div className="inline-flex items-center space-x-1 px-2 py-1 bg-accent-cyan text-radio-black rounded-full text-xs font-black">
+                                <div className="w-1 h-1 bg-radio-black rounded-full animate-pulse" />
+                                <span>LIVE</span>
+                              </div>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center justify-between">
+                            <div className="text-xs text-muted">
+                              {bookmark.bitrate > 0 && `${bookmark.bitrate} kbps`}
+                            </div>
+                            
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => {
+                                  const station: RadioStation = {
+                                    stationuuid: bookmark.stationuuid,
+                                    name: bookmark.name,
+                                    country: bookmark.country,
+                                    tags: bookmark.genre,
+                                    bitrate: bookmark.bitrate,
+                                    url: bookmark.url,
+                                    url_resolved: bookmark.url,
+                                    homepage: '',
+                                    favicon: '',
+                                    countrycode: '',
+                                    state: '',
+                                    language: '',
+                                    votes: 0,
+                                    lastchangetime: '',
+                                    codec: '',
+                                    hls: 0,
+                                    lastcheckok: 1,
+                                    lastchecktime: '',
+                                    lastcheckoktime: '',
+                                    lastlocalchecktime: '',
+                                    clicktimestamp: '',
+                                    clickcount: 0,
+                                    clicktrend: 0,
+                                    ssl_error: 0,
+                                    geo_lat: 0,
+                                    geo_long: 0
+                                  };
+                                  playStation(station);
+                                }}
+                                disabled={isCurrentlyLoading}
+                                className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all font-bold ${
+                                  isCurrentlyPlaying
+                                    ? 'bg-accent-cyan text-radio-black'
+                                    : 'bg-vdu-green text-radio-black hover:bg-accent-cyan'
+                                } ${isCurrentlyLoading ? 'animate-pulse' : ''}`}
+                                title={isCurrentlyPlaying ? 'Currently Playing' : 'Play Station'}
+                              >
+                                {isCurrentlyLoading ? (
+                                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                ) : isCurrentlyPlaying ? (
+                                  <Pause className="w-5 h-5" />
+                                ) : (
+                                  <Play className="w-5 h-5 ml-0.5" />
+                                )}
+                              </button>
+                            
+                              <button
+                                onClick={() => {
+                                  const station: RadioStation = {
+                                    stationuuid: bookmark.stationuuid,
+                                    name: bookmark.name,
+                                    country: bookmark.country,
+                                    tags: bookmark.genre,
+                                    bitrate: bookmark.bitrate,
+                                    url: bookmark.url,
+                                    url_resolved: bookmark.url,
+                                    homepage: '',
+                                    favicon: '',
+                                    countrycode: '',
+                                    state: '',
+                                    language: '',
+                                    votes: 0,
+                                    lastchangetime: '',
+                                    codec: '',
+                                    hls: 0,
+                                    lastcheckok: 1,
+                                    lastchecktime: '',
+                                    lastcheckoktime: '',
+                                    lastlocalchecktime: '',
+                                    clicktimestamp: '',
+                                    clickcount: 0,
+                                    clicktrend: 0,
+                                    ssl_error: 0,
+                                    geo_lat: 0,
+                                    geo_long: 0
+                                  };
+                                  setFullscreenStation(station);
+                                }}
+                                className="w-8 h-8 rounded-lg border border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-colors flex items-center justify-center"
+                              >
+                                <span className="text-xs">↗</span>
+                              </button>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-3 pt-3 border-t border-vdu-green-dim">
                             <p className="text-xs text-muted">
-                              {bookmark.country} • {bookmark.genre}
+                              Bookmarked {new Date(bookmark.bookmarkedAt).toLocaleDateString()}
                             </p>
                           </div>
                         </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="text-xs text-muted">
-                            {bookmark.bitrate > 0 && `${bookmark.bitrate} kbps`}
-                          </div>
-                          
-                          <div className="flex items-center space-x-2">
-                            <button
-                              onClick={() => {
-                                const station: RadioStation = {
-                                  stationuuid: bookmark.stationuuid,
-                                  name: bookmark.name,
-                                  country: bookmark.country,
-                                  tags: bookmark.genre,
-                                  bitrate: bookmark.bitrate,
-                                  url: bookmark.url,
-                                  url_resolved: bookmark.url,
-                                  homepage: '',
-                                  favicon: '',
-                                  countrycode: '',
-                                  state: '',
-                                  language: '',
-                                  votes: 0,
-                                  lastchangetime: '',
-                                  codec: '',
-                                  hls: 0,
-                                  lastcheckok: 1,
-                                  lastchecktime: '',
-                                  lastcheckoktime: '',
-                                  lastlocalchecktime: '',
-                                  clicktimestamp: '',
-                                  clickcount: 0,
-                                  clicktrend: 0,
-                                  ssl_error: 0,
-                                  geo_lat: 0,
-                                  geo_long: 0
-                                };
-                                playStation(station);
-                              }}
-                              className="w-8 h-8 rounded-lg bg-vdu-green text-radio-black hover:bg-accent-cyan transition-colors flex items-center justify-center"
-                            >
-                              <Radio className="w-4 h-4" />
-                            </button>
-                            
-                            <button
-                              onClick={() => {
-                                const station: RadioStation = {
-                                  stationuuid: bookmark.stationuuid,
-                                  name: bookmark.name,
-                                  country: bookmark.country,
-                                  tags: bookmark.genre,
-                                  bitrate: bookmark.bitrate,
-                                  url: bookmark.url,
-                                  url_resolved: bookmark.url,
-                                  homepage: '',
-                                  favicon: '',
-                                  countrycode: '',
-                                  state: '',
-                                  language: '',
-                                  votes: 0,
-                                  lastchangetime: '',
-                                  codec: '',
-                                  hls: 0,
-                                  lastcheckok: 1,
-                                  lastchecktime: '',
-                                  lastcheckoktime: '',
-                                  lastlocalchecktime: '',
-                                  clicktimestamp: '',
-                                  clickcount: 0,
-                                  clicktrend: 0,
-                                  ssl_error: 0,
-                                  geo_lat: 0,
-                                  geo_long: 0
-                                };
-                                setFullscreenStation(station);
-                              }}
-                              className="w-8 h-8 rounded-lg border border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-colors flex items-center justify-center"
-                            >
-                              <span className="text-xs">↗</span>
-                            </button>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-3 pt-3 border-t border-vdu-green-dim">
-                          <p className="text-xs text-muted">
-                            Bookmarked {new Date(bookmark.bookmarkedAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-12">
