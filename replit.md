@@ -217,6 +217,12 @@ Changelog:
   - Maintains "Anti-algorithm radio. Always live. Never normal." brand positioning
   - Removed features section to keep focus on core messaging without marketing content
   - Updated privacy policy contact email to hello@z13labs.com for consistency
+- June 27, 2025. Fixed map zoom behavior and improved station density management
+  - Resolved infinite re-render issues in ProgressiveStationLoader component
+  - Implemented granular zoom-based station limits: 40 stations at world level up to 3000 at street level
+  - Added proper useCallback memoization to prevent performance issues
+  - Improved station density control that responds smoothly to zoom changes
+  - Updated map header text to "Zoom to adjust density" for clearer user guidance
 ```
 
 ## User Preferences
