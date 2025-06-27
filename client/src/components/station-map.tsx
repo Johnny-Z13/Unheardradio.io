@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
-import { Icon, LatLngBounds } from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { Icon } from 'leaflet';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, Radio, Users, Globe } from 'lucide-react';
 import { RadioStation } from '@/types/radio';
@@ -22,79 +22,48 @@ interface StationMapProps {
   onStationSelect?: (station: RadioStation) => void;
 }
 
-function MapBounds({ stations }: { stations: RadioStation[] }) {
-  const map = useMap();
-  
-  useEffect(() => {
-    if (stations && stations.length > 0) {
-      const validStations = stations.filter(s => 
-        s && 
-        typeof s.geo_lat === 'number' && 
-        typeof s.geo_long === 'number' &&
-        s.geo_lat !== 0 && 
-        s.geo_long !== 0 &&
-        !isNaN(s.geo_lat) &&
-        !isNaN(s.geo_long) &&
-        Math.abs(s.geo_lat) <= 90 && 
-        Math.abs(s.geo_long) <= 180
-      );
-      
-      if (validStations.length > 0 && map) {
-        try {
-          const bounds = validStations.map(station => [station.geo_lat, station.geo_long] as [number, number]);
-          map.fitBounds(bounds, { padding: [20, 20] });
-        } catch (error) {
-          console.warn('Error fitting map bounds:', error);
-        }
-      }
-    }
-  }, [stations, map]);
-  
-  return null;
-}
+// Removed automatic bounds fitting to prevent zoom snapping
 
-// Progressive loading component that filters stations based on zoom level
+// Simplified loading component - loads all stations once, filters client-side based on zoom
 function ProgressiveStationLoader({ onStationsChange }: { onStationsChange: (stations: RadioStation[]) => void }) {
   const [zoomLevel, setZoomLevel] = useState(2);
   
   const map = useMapEvents({
     zoomend: () => {
-      const newZoom = map.getZoom();
-      setZoomLevel(newZoom);
+      setZoomLevel(map.getZoom());
     },
-    moveend: () => {
-      // Optional: could also trigger on map movement for geographic filtering
-    }
   });
 
-  // Calculate station limit based on zoom level - more granular density control
-  const getStationLimit = (zoom: number) => {
-    if (zoom >= 12) return 3000; // Street level - maximum stations
-    if (zoom >= 10) return 2000; // City level - many stations
-    if (zoom >= 8) return 1200;  // Urban area level
-    if (zoom >= 6) return 600;   // Regional level
-    if (zoom >= 4) return 200;   // Country level  
-    if (zoom >= 2) return 80;    // Continental level
-    return 40;                   // World level - minimal stations
-  };
-
-  const currentLimit = getStationLimit(zoomLevel);
-
-  const { data: stations = [] } = useQuery<RadioStation[]>({
-    queryKey: ['/api/stations', { limit: currentLimit }],
-    queryFn: () => fetchStations({ limit: currentLimit }),
-    staleTime: 5 * 60 * 1000,
+  // Load all stations once
+  const { data: allStations = [] } = useQuery<RadioStation[]>({
+    queryKey: ['/api/stations', { limit: 2000 }],
+    queryFn: () => fetchStations({ limit: 2000 }),
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
     refetchOnWindowFocus: false,
   });
 
-  // Use useCallback to prevent infinite re-renders
-  const memoizedOnStationsChange = useCallback(onStationsChange, [onStationsChange]);
+  // Filter stations based on zoom level to control density
+  const getVisibleStations = useCallback((stations: RadioStation[], zoom: number) => {
+    if (!stations.length) return [];
+    
+    // Calculate how many stations to show based on zoom
+    let maxStations: number;
+    if (zoom >= 10) maxStations = 2000;      // City level - show all
+    else if (zoom >= 8) maxStations = 1000;  // Urban area
+    else if (zoom >= 6) maxStations = 500;   // Regional
+    else if (zoom >= 4) maxStations = 200;   // Country
+    else if (zoom >= 2) maxStations = 100;   // Continental
+    else maxStations = 50;                   // World level
+    
+    // Return subset of stations for current zoom level
+    return stations.slice(0, maxStations);
+  }, []);
+
+  const visibleStations = getVisibleStations(allStations, zoomLevel);
 
   useEffect(() => {
-    if (stations && stations.length > 0) {
-      memoizedOnStationsChange(stations);
-    }
-  }, [stations, memoizedOnStationsChange]);
+    onStationsChange(visibleStations);
+  }, [visibleStations, onStationsChange]);
 
   return null;
 }
@@ -163,7 +132,6 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           />
           
           <ProgressiveStationLoader onStationsChange={handleStationsChange} />
-          {validStations.length > 0 && <MapBounds stations={validStations} />}
           
           {validStations.map((station) => {
               try {
