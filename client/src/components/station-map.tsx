@@ -10,13 +10,16 @@ import { Button } from '@/components/ui/button';
 import { getObscurityBadge } from '@/lib/radio-api';
 import 'leaflet/dist/leaflet.css';
 
-// Fix for default markers in react-leaflet
-const defaultIcon = new Icon({
-  iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDOC4xMyAyIDUgNS4xMyA1IDlDNSAxNC4yNSAxMiAyMiAxMiAyMkMxMiAyMiAxOSAxNC4yNSAxOSA5QzE5IDUuMTMgMTUuODcgMiAxMiAyWk0xMiAxMS41QzEwLjYyIDExLjUgOS41IDEwLjM4IDkuNSA5QzkuNSA3LjYyIDEwLjYyIDYuNSAxMiA2LjVDMTMuMzggNi41IDE0LjUgNy42MiAxNC41IDlDMTQuNSAxMC4zOCAxMy4zOCAxMS41IDEyIDExLjVaIiBmaWxsPSIjMDBGRjAwIi8+Cjwvc3ZnPgo=',
-  iconSize: [24, 24],
-  iconAnchor: [12, 24],
-  popupAnchor: [0, -24],
+// Import Leaflet's default marker icons
+import L from 'leaflet';
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
+
+// Use Leaflet's default icon (should be set up by the import above)
 
 interface StationMapProps {
   onStationSelect?: (station: RadioStation) => void;
@@ -63,6 +66,18 @@ export function StationMap({ onStationSelect }: StationMapProps) {
     Math.abs(station.geo_lat) <= 90 && 
     Math.abs(station.geo_long) <= 180
   );
+
+  // Debug validStations array
+  useEffect(() => {
+    console.log('validStations updated:', {
+      total: validStations.length,
+      first3: validStations.slice(0, 3).map(s => ({
+        name: s.name,
+        lat: s.geo_lat,
+        lng: s.geo_long
+      }))
+    });
+  }, [validStations.length]);
 
 
 
@@ -112,7 +127,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           
           <StationLoader onStationsChange={handleStationsChange} />
           
-          {validStations.map((station) => {
+          {validStations.map((station, index) => {
               try {
                 // Additional safety check for marker positioning
                 if (!station || 
@@ -120,7 +135,18 @@ export function StationMap({ onStationSelect }: StationMapProps) {
                     typeof station.geo_long !== 'number' ||
                     isNaN(station.geo_lat) ||
                     isNaN(station.geo_long)) {
+                  console.log('Skipping station due to invalid coordinates:', station);
                   return null;
+                }
+
+                // Debug first few markers
+                if (index < 3) {
+                  console.log(`Rendering marker ${index}:`, {
+                    name: station.name,
+                    lat: station.geo_lat,
+                    lng: station.geo_long,
+                    position: [station.geo_lat, station.geo_long]
+                  });
                 }
                 
                 const position: [number, number] = [station.geo_lat, station.geo_long];
@@ -130,7 +156,6 @@ export function StationMap({ onStationSelect }: StationMapProps) {
                   <Marker
                     key={station.stationuuid}
                     position={position}
-                    icon={defaultIcon}
                   >
                     <Popup className="custom-popup" maxWidth={300}>
                       <div className="bg-radio-black text-vdu-green p-3 rounded border border-vdu-green-dim">
