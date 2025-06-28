@@ -88,10 +88,8 @@ export default function Home() {
 
   // Handle refresh from filters to discovery feed
   const handleRefreshToDiscovery = (appliedFilters: SearchFilters) => {
-    console.log('Home: received filters from search sidebar:', appliedFilters);
     setFilters(appliedFilters);
     setActiveTab('discover');
-    console.log('Home: switched to discover tab with filters');
   };
 
   const tabs = [
