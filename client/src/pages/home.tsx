@@ -93,6 +93,12 @@ export default function Home() {
     }
   }, [activeTab]);
 
+  // Handle refresh from filters to discovery feed
+  const handleRefreshToDiscovery = (appliedFilters: SearchFilters) => {
+    setFilters(appliedFilters);
+    setActiveTab('discover');
+  };
+
   const tabs = [
     { id: 'discover' as Tab, label: 'Discover', icon: Radar },
     { id: 'search' as Tab, label: 'Filter', icon: Search },
@@ -160,6 +166,7 @@ export default function Home() {
             <div className="w-full md:w-72 lg:w-80 flex-shrink-0 md:border-r md:border-vdu-green-dim">
               <SearchSidebar
                 onFiltersChange={setFilters}
+                onRefreshToDiscovery={handleRefreshToDiscovery}
                 totalStations={totalStations}
               />
             </div>

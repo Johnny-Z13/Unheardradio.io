@@ -1,20 +1,22 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Radio } from 'lucide-react';
+import { Search, Radio, RotateCcw } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { fetchCountries, fetchGenres } from '@/lib/radio-api';
 import { SearchFilters, Country, Genre } from '@/types/radio';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 
 interface SearchSidebarProps {
   onFiltersChange: (filters: SearchFilters) => void;
+  onRefreshToDiscovery: (filters: SearchFilters) => void;
   totalStations: number;
 }
 
-export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarProps) {
+export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStations }: SearchSidebarProps) {
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
   const [genre, setGenre] = useState('');
@@ -58,15 +60,37 @@ export function SearchSidebar({ onFiltersChange, totalStations }: SearchSidebarP
     'Ambient', 'Experimental', 'Field Recording', 'Drone', 'Numbers Station', 'Lo-Fi'
   ];
 
+  const handleRefresh = () => {
+    const currentFilters: SearchFilters = {
+      search: search || undefined,
+      country: country === 'all' ? undefined : country || undefined,
+      genre: genre === 'all' ? undefined : genre || undefined,
+      listenerFilter: listenerFilter !== 'all' ? listenerFilter : undefined,
+      limit: 50,
+      offset: 0,
+    };
+    onRefreshToDiscovery(currentFilters);
+  };
+
   return (
     <aside className="w-full md:w-80 bg-radio-dark md:border-r border-b md:border-b-0 border-vdu-green-dim overflow-y-auto flex-shrink-0 h-auto md:h-full">
-      <div className="p-3 md:p-6 space-y-4 md:space-y-6">
+      <div className="p-3 space-y-3">
+        {/* Header with refresh button */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg md:text-xl font-black text-vdu-green tracking-tight">FILTERS</h2>
-          <div className="text-right">
-            <div className="text-xs text-muted font-medium">INDEXED</div>
-            <div className="text-sm md:text-lg text-vdu-green font-black">{totalStations.toLocaleString()}</div>
-          </div>
+          <h2 className="text-lg font-black text-vdu-green tracking-tight">FILTERS</h2>
+          <Button
+            onClick={handleRefresh}
+            size="sm"
+            className="bg-vdu-green text-radio-black hover:bg-vdu-green-bright text-xs font-bold px-3 py-1 h-auto"
+          >
+            <RotateCcw className="w-3 h-3 mr-1" />
+            APPLY
+          </Button>
+        </div>
+        
+        <div className="text-center">
+          <div className="text-xs text-muted font-medium">STATIONS INDEXED</div>
+          <div className="text-sm text-vdu-green font-black">{totalStations.toLocaleString()}</div>
         </div>
         
         {/* Search Input */}
