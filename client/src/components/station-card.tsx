@@ -1,4 +1,4 @@
-import { Play, Pause, Bookmark, Share2, Maximize2 } from 'lucide-react';
+import { Play, Pause, Bookmark, Share2, Maximize2, MapPin } from 'lucide-react';
 import { RadioStation } from '@/types/radio';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
@@ -100,8 +100,9 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
               <h3 className="text-sm md:text-base font-black text-vdu-green tracking-tight truncate mb-1">
                 {station.name.toUpperCase()}
               </h3>
-              <p className="text-xs md:text-sm text-muted font-medium">
-                BY {station.country}
+              <p className="text-xs md:text-sm text-muted font-medium flex items-center">
+                <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                {station.country}
               </p>
             </div>
           </div>
