@@ -186,6 +186,38 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
               </div>
             </div>
 
+            {/* Popularity & Metrics */}
+            <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
+              <div className="flex items-center space-x-1 mb-1">
+                <Users className="w-3 h-3 text-vdu-green" />
+                <h3 className="text-xs font-black text-vdu-green">METRICS</h3>
+              </div>
+              <div className="space-y-0.5 text-xs">
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Listeners:</span>
+                  <span className="ml-2 text-muted">{station.clickcount || 0}</span>
+                </div>
+                <div>
+                  <span className="text-vdu-green-dim font-bold">Popularity:</span>
+                  <span className="ml-2 text-muted">{popularity}</span>
+                </div>
+                {station.votes > 0 && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Votes:</span>
+                    <span className="ml-2 text-accent-cyan">★ {station.votes}</span>
+                  </div>
+                )}
+                {station.clicktrend !== 0 && (
+                  <div>
+                    <span className="text-vdu-green-dim font-bold">Trend:</span>
+                    <span className={`ml-2 ${station.clicktrend > 0 ? 'text-vdu-green' : 'text-accent-cyan'}`}>
+                      {station.clicktrend > 0 ? '↗ Rising' : '↘ Falling'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Technical Specifications */}
             <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
               <div className="flex items-center space-x-1 mb-1">
@@ -249,42 +281,6 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
                     </span>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* Popularity & Metrics */}
-            <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
-              <div className="flex items-center space-x-1 mb-1">
-                <Users className="w-3 h-3 text-vdu-green" />
-                <h3 className="text-xs font-black text-vdu-green">METRICS</h3>
-              </div>
-              <div className="space-y-0.5 text-xs">
-                <div>
-                  <span className="text-vdu-green-dim font-bold">Listeners:</span>
-                  <span className="ml-2 text-muted">{station.clickcount || 0}</span>
-                </div>
-                <div>
-                  <span className="text-vdu-green-dim font-bold">Popularity:</span>
-                  <span className="ml-2 text-muted">{popularity}</span>
-                </div>
-                {station.votes > 0 && (
-                  <div>
-                    <span className="text-vdu-green-dim font-bold">Votes:</span>
-                    <span className="ml-2 text-accent-cyan">★ {station.votes}</span>
-                  </div>
-                )}
-                {station.clicktrend !== 0 && (
-                  <div>
-                    <span className="text-vdu-green-dim font-bold">Trend:</span>
-                    <span className={`ml-2 ${station.clicktrend > 0 ? 'text-vdu-green' : 'text-accent-cyan'}`}>
-                      {station.clicktrend > 0 ? '↗ Rising' : '↘ Falling'}
-                    </span>
-                  </div>
-                )}
-                <div>
-                  <span className="text-vdu-green-dim font-bold">Obscurity:</span>
-                  <span className="ml-2 text-accent-cyan">{obscurityBadge.text}</span>
-                </div>
               </div>
             </div>
 
