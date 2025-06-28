@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Radar, Search, Bookmark, MapPin, Info, Mail, ExternalLink } from 'lucide-react';
 import { Link } from 'wouter';
 import { SearchFilters } from '@/types/radio';

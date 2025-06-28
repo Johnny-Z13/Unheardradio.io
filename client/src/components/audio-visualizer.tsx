@@ -15,6 +15,37 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
   const analyserRef = useRef<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const lastUpdateTime = useRef<number>(0);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
+
+  // Cleanup function for audio resources
+  const cleanupAudioResources = () => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = undefined;
+    }
+    
+    if (sourceNodeRef.current) {
+      try {
+        sourceNodeRef.current.disconnect();
+      } catch (e) {
+        // Node might already be disconnected
+      }
+      sourceNodeRef.current = null;
+    }
+    
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      try {
+        audioContextRef.current.close();
+      } catch (e) {
+        // Context might already be closed
+      }
+      audioContextRef.current = null;
+    }
+    
+    analyserRef.current = null;
+    dataArrayRef.current = null;
+  };
 
   // Initialize audio context and analyser
   useEffect(() => {
@@ -46,6 +77,8 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
             source.connect(analyser);
             analyser.connect(audioContext.destination);
             
+            audioContextRef.current = audioContext;
+            sourceNodeRef.current = source;
             analyserRef.current = analyser;
             dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);
             
@@ -55,6 +88,9 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
           console.log('Web Audio API setup failed:', error);
         }
       }, 500);
+    } else if (!isPlaying || !currentStation) {
+      // Clean up when stopping or changing stations
+      cleanupAudioResources();
     }
 
     return () => {
@@ -64,6 +100,13 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
       }
     };
   }, [isPlaying, currentStation]);
+
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      cleanupAudioResources();
+    };
+  }, []);
 
   // Enhanced animation loop for EQ-style visualization
   useEffect(() => {
