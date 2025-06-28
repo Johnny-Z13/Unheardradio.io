@@ -43,14 +43,11 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
       } else {
         setAllStations(prev => [...prev, ...stations]);
       }
+    } else if (offset === 0 && !isLoading) {
+      // Only clear if we're at offset 0 and not loading (failed request)
+      setAllStations([]);
     }
-  }, [stations, offset]);
-
-  // Reset when filters change
-  useEffect(() => {
-    setOffset(0);
-    setAllStations([]);
-  }, [filters.search, filters.country, filters.genre]);
+  }, [stations, offset, isLoading]);
 
   const handleLoadMore = () => {
     setOffset(prev => prev + limit);

@@ -78,9 +78,9 @@ export default function Home() {
 
   const totalStations = 47283;
 
-  // Reset filters when switching to discover tab
+  // Reset filters when switching to discover tab (only if filters are set)
   useEffect(() => {
-    if (activeTab === 'discover') {
+    if (activeTab === 'discover' && Object.keys(filters).length > 0) {
       setFilters({});
     }
   }, [activeTab]);
