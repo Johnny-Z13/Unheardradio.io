@@ -131,26 +131,26 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 flex-1 p-4 overflow-y-auto overflow-x-hidden">
-        <div className="max-w-6xl mx-auto w-full">
+      <div className="relative z-10 flex-1 p-2 overflow-hidden">
+        <div className="max-w-6xl mx-auto w-full h-full flex flex-col">
           {/* Station info header */}
-          <div className="text-center mb-6">
-            <h2 className="text-3xl md:text-5xl font-black text-vdu-green tracking-tight mb-2 uppercase">
+          <div className="text-center mb-3">
+            <h2 className="text-2xl md:text-3xl font-black text-vdu-green tracking-tight mb-1 uppercase">
               {station.name}
             </h2>
-            <p className="text-lg md:text-xl text-muted font-medium mb-3">
+            <p className="text-sm md:text-base text-muted font-medium mb-2">
               Broadcasting from {station.country}
             </p>
             
             {/* Status indicators */}
-            <div className="flex items-center justify-center space-x-3 mb-4">
+            <div className="flex items-center justify-center space-x-2 mb-2">
               {isCurrentStation && (
-                <div className="inline-flex items-center space-x-2 px-3 py-1 bg-accent-cyan text-radio-black rounded-full text-xs font-black">
-                  <div className="w-1.5 h-1.5 bg-radio-black rounded-full animate-pulse" />
+                <div className="inline-flex items-center space-x-1 px-2 py-1 bg-accent-cyan text-radio-black rounded-full text-xs font-black">
+                  <div className="w-1 h-1 bg-radio-black rounded-full animate-pulse" />
                   <span>NOW PLAYING</span>
                 </div>
               )}
-              <div className={`px-3 py-1 rounded-full text-xs font-black text-radio-black ${
+              <div className={`px-2 py-1 rounded-full text-xs font-black text-radio-black ${
                 obscurityBadge.color === 'signal-blue' ? 'bg-vdu-green-bright' :
                 obscurityBadge.color === 'crt-green' ? 'bg-vdu-green' :
                 obscurityBadge.color === 'tape-orange' ? 'bg-accent-cyan' :
@@ -162,19 +162,19 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
           </div>
 
           {/* Enhanced Audio Visualizer */}
-          <div className="mb-6">
-            <AudioVisualizer height={48} barCount={60} compact={false} />
+          <div className="mb-3">
+            <AudioVisualizer height={32} barCount={40} compact={true} />
           </div>
 
           {/* Comprehensive metadata grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4 w-full">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-2 w-full flex-1 min-h-0">
             {/* Location & Broadcasting */}
-            <div className="bg-radio-dark rounded-lg p-3 border border-vdu-green-dim">
-              <div className="flex items-center space-x-2 mb-2">
-                <Globe className="w-4 h-4 text-vdu-green" />
-                <h3 className="text-sm font-black text-vdu-green">LOCATION</h3>
+            <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
+              <div className="flex items-center space-x-1 mb-1">
+                <Globe className="w-3 h-3 text-vdu-green" />
+                <h3 className="text-xs font-black text-vdu-green">LOCATION</h3>
               </div>
-              <div className="space-y-1 text-xs">
+              <div className="space-y-0.5 text-xs">
                 <div>
                   <span className="text-vdu-green-dim font-bold">Country:</span>
                   <span className="ml-2 text-muted">{station.country}</span>
@@ -201,12 +201,12 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
             </div>
 
             {/* Technical Specifications */}
-            <div className="bg-radio-dark rounded-lg p-3 border border-vdu-green-dim">
-              <div className="flex items-center space-x-2 mb-2">
-                <Signal className="w-4 h-4 text-vdu-green" />
-                <h3 className="text-sm font-black text-vdu-green">TECHNICAL</h3>
+            <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
+              <div className="flex items-center space-x-1 mb-1">
+                <Signal className="w-3 h-3 text-vdu-green" />
+                <h3 className="text-xs font-black text-vdu-green">TECHNICAL</h3>
               </div>
-              <div className="space-y-1 text-xs">
+              <div className="space-y-0.5 text-xs">
                 <div>
                   <span className="text-vdu-green-dim font-bold">Bitrate:</span>
                   <span className="ml-2 text-muted">
@@ -233,10 +233,10 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
             </div>
 
             {/* Broadcasting Info */}
-            <div className="bg-radio-dark rounded-lg p-3 border border-vdu-green-dim">
-              <div className="flex items-center space-x-2 mb-2">
-                <Radio className="w-4 h-4 text-vdu-green" />
-                <h3 className="text-sm font-black text-vdu-green">BROADCAST</h3>
+            <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
+              <div className="flex items-center space-x-1 mb-1">
+                <Radio className="w-3 h-3 text-vdu-green" />
+                <h3 className="text-xs font-black text-vdu-green">BROADCAST</h3>
               </div>
               <div className="space-y-1 text-xs">
                 <div>
@@ -267,12 +267,12 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
             </div>
 
             {/* Popularity & Metrics */}
-            <div className="bg-radio-dark rounded-lg p-3 border border-vdu-green-dim">
-              <div className="flex items-center space-x-2 mb-2">
-                <Users className="w-4 h-4 text-vdu-green" />
-                <h3 className="text-sm font-black text-vdu-green">METRICS</h3>
+            <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
+              <div className="flex items-center space-x-1 mb-1">
+                <Users className="w-3 h-3 text-vdu-green" />
+                <h3 className="text-xs font-black text-vdu-green">METRICS</h3>
               </div>
-              <div className="space-y-1 text-xs">
+              <div className="space-y-0.5 text-xs">
                 <div>
                   <span className="text-vdu-green-dim font-bold">Listeners:</span>
                   <span className="ml-2 text-muted">{station.clickcount || 0}</span>
@@ -303,12 +303,12 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
             </div>
 
             {/* Website & Organization */}
-            <div className="bg-radio-dark rounded-lg p-3 border border-vdu-green-dim">
-              <div className="flex items-center space-x-2 mb-2">
-                <Globe className="w-4 h-4 text-vdu-green" />
-                <h3 className="text-sm font-black text-vdu-green">WEBSITE</h3>
+            <div className="bg-radio-dark rounded-lg p-2 border border-vdu-green-dim">
+              <div className="flex items-center space-x-1 mb-1">
+                <Globe className="w-3 h-3 text-vdu-green" />
+                <h3 className="text-xs font-black text-vdu-green">WEBSITE</h3>
               </div>
-              <div className="space-y-1 text-xs">
+              <div className="space-y-0.5 text-xs">
                 {station.homepage ? (
                   <div>
                     <span className="text-vdu-green-dim font-bold">Homepage:</span>
