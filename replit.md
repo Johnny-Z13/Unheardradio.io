@@ -270,6 +270,11 @@ Changelog:
   - Added mapping for full official name "United Kingdom of Great Britain and Northern Ireland" → "UK"
   - Ensures all UK variants are properly shortened to two-letter abbreviation
   - Complements existing "United Kingdom" → "UK" mapping for complete coverage
+- June 28, 2025. Personalized sharing messages with site attribution
+  - Updated all share functionality to include "I found this radio station at UnheardRadio.io"
+  - Share title now shows: "{Station Name} - Unheard Radio" instead of generic text
+  - Share text includes station name, country, and site attribution for viral marketing
+  - Applied consistently across station cards, now-playing bar, and fullscreen view
 ```
 
 ## User Preferences

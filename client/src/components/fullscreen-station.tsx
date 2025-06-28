@@ -54,8 +54,8 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Signal Drift - ${station.name}`,
-          text: `Check out this obscure radio station: ${station.name}`,
+          title: `${station.name} - Unheard Radio`,
+          text: `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country}`,
           url,
         });
       } catch (error) {
@@ -63,7 +63,8 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
       }
     } else {
       try {
-        await navigator.clipboard.writeText(url);
+        const shareText = `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country} - ${url}`;
+        await navigator.clipboard.writeText(shareText);
       } catch (error) {
         // Clipboard write failed
       }

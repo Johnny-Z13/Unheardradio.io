@@ -41,8 +41,8 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Signal Drift - ${station.name}`,
-          text: `Check out this obscure radio station: ${station.name}`,
+          title: `${station.name} - Unheard Radio`,
+          text: `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country}`,
           url,
         });
       } catch (error) {
@@ -50,7 +50,8 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
       }
     } else {
       try {
-        await navigator.clipboard.writeText(url);
+        const shareText = `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country} - ${url}`;
+        await navigator.clipboard.writeText(shareText);
         toast({
           title: "Link copied",
           description: "Station link copied to clipboard",

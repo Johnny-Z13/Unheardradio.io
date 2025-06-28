@@ -28,8 +28,8 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Signal Drift - ${currentStation.name}`,
-          text: `Check out this obscure radio station: ${currentStation.name}`,
+          title: `${currentStation.name} - Unheard Radio`,
+          text: `I found this radio station at UnheardRadio.io: ${currentStation.name} from ${currentStation.country}`,
           url,
         });
       } catch (error) {
@@ -37,7 +37,8 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
       }
     } else {
       try {
-        await navigator.clipboard.writeText(url);
+        const shareText = `I found this radio station at UnheardRadio.io: ${currentStation.name} from ${currentStation.country} - ${url}`;
+        await navigator.clipboard.writeText(shareText);
       } catch (error) {
         // Clipboard write failed
       }
