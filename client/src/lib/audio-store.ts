@@ -75,11 +75,16 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
   },
 
   playStation: async (station) => {
-    const { audio, currentStation, isPlaying } = get();
+    let { audio, currentStation, isPlaying } = get();
     
     if (!audio) {
       get().initializeAudio();
-      return;
+      // Get the audio element after initialization
+      audio = get().audio;
+      if (!audio) {
+        console.error('Failed to initialize audio element');
+        return;
+      }
     }
     
     // If same station is playing, just pause/play
