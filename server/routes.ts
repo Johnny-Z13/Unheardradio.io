@@ -7,6 +7,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   let fallbackStations: any[] = [];
   let lastSuccessfulFetch = 0;
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  
+  // Country name mapping for shorter display names
+  const shortenCountryName = (country: string): string => {
+    const countryMap: { [key: string]: string } = {
+      'United Kingdom': 'UK',
+      'United States': 'USA',
+      'United States of America': 'USA',
+      'Russian Federation': 'Russia',
+      'Korea, Republic of': 'South Korea',
+      'Korea, Democratic People\'s Republic of': 'North Korea',
+      'Iran, Islamic Republic of': 'Iran',
+      'Venezuela, Bolivarian Republic of': 'Venezuela',
+      'Tanzania, United Republic of': 'Tanzania',
+      'Syrian Arab Republic': 'Syria',
+      'Moldova, Republic of': 'Moldova',
+      'Macedonia, the former Yugoslav Republic of': 'North Macedonia',
+      'Lao People\'s Democratic Republic': 'Laos',
+      'Congo, the Democratic Republic of the': 'DR Congo',
+      'Central African Republic': 'CAR',
+      'Bosnia and Herzegovina': 'Bosnia',
+      'Brunei Darussalam': 'Brunei'
+    };
+    
+    return countryMap[country] || country;
+  };
 
   // RadioBrowser API proxy routes
   app.get("/api/stations", async (req, res) => {
@@ -119,15 +144,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Trim to requested limit after filtering
         const sortedStations = filteredStations.slice(0, parseInt(limit as string) || 50);
         
-        res.json(sortedStations);
+        // Shorten country names for display
+        const stationsWithShortNames = sortedStations.map((station: any) => ({
+          ...station,
+          country: shortenCountryName(station.country)
+        }));
+        
+        res.json(stationsWithShortNames);
         return;
       }
       
       // Fallback: Return cached stations or generate a diverse set
       if (fallbackStations.length > 0 && (Date.now() - lastSuccessfulFetch) < CACHE_DURATION) {
-        // Return random selection from cache
+        // Return random selection from cache with shortened country names
         const shuffled = [...fallbackStations].sort(() => Math.random() - 0.5);
-        res.json(shuffled.slice(0, parseInt(limit as string) || 10));
+        const fallbackWithShortNames = shuffled.map((station: any) => ({
+          ...station,
+          country: shortenCountryName(station.country)
+        }));
+        res.json(fallbackWithShortNames.slice(0, parseInt(limit as string) || 10));
         return;
       }
       

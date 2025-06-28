@@ -257,6 +257,11 @@ Changelog:
   - Updated backend logic to handle filtering and sorting based on click count data
   - Set default filter to "Zero listeners only" to emphasize obscure station discovery
   - Implemented proper sorting algorithms for ascending/descending listener counts
+- June 28, 2025. Replaced "BY" text with map icon and shortened country names
+  - Updated station cards to display small MapPin icon before country name instead of "BY" text
+  - Added comprehensive country name mapping: United Kingdom → UK, United States → USA, Russian Federation → Russia
+  - Applied shortened names to all station displays including main feed, bookmarks, and fallback stations
+  - Enhanced visual clarity with location icon while maintaining VDU green aesthetic
 ```
 
 ## User Preferences
