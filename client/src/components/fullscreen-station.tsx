@@ -87,7 +87,7 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
   };
 
   return (
-    <div className="fixed inset-0 bg-radio-black z-50 overflow-hidden">
+    <div className="fixed inset-0 bg-radio-black z-[9999] overflow-hidden">
       {/* Animated background grid */}
       <div className="absolute inset-0 opacity-10">
         <div 

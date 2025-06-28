@@ -147,6 +147,29 @@
   /* Dark mode Leaflet map styling */
   .leaflet-container {
     background: var(--radio-black) !important;
+    z-index: 1 !important;
+  }
+
+  /* Ensure map controls stay below fullscreen overlays */
+  .leaflet-control-container {
+    z-index: 100 !important;
+  }
+
+  /* Force all leaflet elements to stay below fullscreen overlays */
+  .leaflet-pane,
+  .leaflet-map-pane,
+  .leaflet-tile-pane,
+  .leaflet-overlay-pane,
+  .leaflet-shadow-pane,
+  .leaflet-marker-pane,
+  .leaflet-popup-pane,
+  .leaflet-tooltip-pane {
+    z-index: 1 !important;
+  }
+
+  /* Ensure popups don't appear above fullscreen */
+  .leaflet-popup {
+    z-index: 200 !important;
   }
 
   /* Dark mode popup styling - use stronger selectors */
