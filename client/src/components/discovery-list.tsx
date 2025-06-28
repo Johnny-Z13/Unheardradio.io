@@ -42,13 +42,18 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
       if (offset === 0) {
         setAllStations(stations);
       } else {
-        setAllStations(prev => [...prev, ...stations]);
+        setAllStations(prev => {
+          // Prevent duplicates by checking if station already exists
+          const existingIds = new Set(prev.map(s => s.stationuuid));
+          const newStations = stations.filter(s => !existingIds.has(s.stationuuid));
+          return [...prev, ...newStations];
+        });
       }
-    } else if (offset === 0 && !isLoading) {
-      // Only clear if we're at offset 0 and not loading (failed request)
+    } else if (offset === 0 && !isLoading && !isFetching) {
+      // Only clear if we're at offset 0 and not loading/fetching
       setAllStations([]);
     }
-  }, [stations, offset, isLoading]);
+  }, [stations, offset, isLoading, isFetching]);
 
   const handleLoadMore = () => {
     setOffset(prev => prev + limit);
