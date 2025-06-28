@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { X, Minimize2, Volume2, Share2, Bookmark, Radio, Signal, Globe, Clock, Users, Headphones } from 'lucide-react';
+import { X, Minimize2, Share2, Bookmark, Radio, Signal, Globe, Clock, Users, Headphones } from 'lucide-react';
 import { RadioStation } from '@/types/radio';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import { getObscurityBadge, generateStationDescription, getTimeOnAir, getStationPopularity, getStreamQuality } from '@/lib/radio-api';
 import { useToast } from '@/hooks/use-toast';
-import { Slider } from '@/components/ui/slider';
 import { AudioVisualizer } from '@/components/audio-visualizer';
 
 interface FullscreenStationProps {
@@ -113,11 +112,11 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
       {/* Top bar with controls */}
       <div className="relative z-10 flex items-center justify-between p-6 border-b border-vdu-green-dim">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-vdu-green text-radio-black rounded-lg flex items-center justify-center font-black text-2xl">
-            S
+          <div className="w-12 h-12 bg-vdu-green text-radio-black rounded-lg flex items-center justify-center font-black text-xl">
+            U
           </div>
           <div>
-            <h1 className="text-2xl font-black text-vdu-green tracking-tight">SIGNAL DRIFT</h1>
+            <h1 className="text-2xl font-black text-vdu-green tracking-tight">UNHEARD RADIO</h1>
             <p className="text-sm text-muted font-medium">Fullscreen Mode</p>
           </div>
         </div>
@@ -175,29 +174,10 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
             </div>
           </div>
 
-          {/* Enhanced Audio Visualizer and Controls */}
+          {/* Enhanced Audio Visualizer */}
           {showVolumeViz && (
             <div className="mb-6">
-              <div className="mb-4">
-                <AudioVisualizer height={48} barCount={60} compact={false} />
-              </div>
-              
-              {/* Volume control */}
-              <div className="flex items-center justify-center space-x-3">
-                <Volume2 className="w-5 h-5 text-vdu-green" />
-                <div className="w-48">
-                  <Slider
-                    value={[volume * 100]}
-                    onValueChange={(value) => setVolume(value[0] / 100)}
-                    max={100}
-                    step={1}
-                    className="slider-fullscreen"
-                  />
-                </div>
-                <span className="text-sm font-bold text-vdu-green min-w-10 text-center">
-                  {Math.round(volume * 100)}%
-                </span>
-              </div>
+              <AudioVisualizer height={48} barCount={60} compact={false} />
             </div>
           )}
 
