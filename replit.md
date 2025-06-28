@@ -266,6 +266,10 @@ Changelog:
   - Changed default filter from "zero listeners only" to "low to high" sorting
   - Discovery feed now starts with zero-listener stations and progresses to higher listener counts
   - Maintains focus on obscure stations while providing natural progression through audience sizes
+- June 28, 2025. Enhanced UK country name abbreviation
+  - Added mapping for full official name "United Kingdom of Great Britain and Northern Ireland" → "UK"
+  - Ensures all UK variants are properly shortened to two-letter abbreviation
+  - Complements existing "United Kingdom" → "UK" mapping for complete coverage
 ```
 
 ## User Preferences

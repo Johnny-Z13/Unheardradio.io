@@ -12,6 +12,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const shortenCountryName = (country: string): string => {
     const countryMap: { [key: string]: string } = {
       'United Kingdom': 'UK',
+      'United Kingdom of Great Britain and Northern Ireland': 'UK',
       'United States': 'USA',
       'United States of America': 'USA',
       'Russian Federation': 'Russia',
