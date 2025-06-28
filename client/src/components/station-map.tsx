@@ -58,21 +58,29 @@ export function StationMap({ onStationSelect }: StationMapProps) {
   const { playStation } = useAudioStore();
   
   const handleStationsChange = useCallback((newStations: RadioStation[]) => {
-    setStations(newStations);
+    // Throttle station updates to prevent UI blocking
+    requestAnimationFrame(() => {
+      setStations(newStations);
+    });
   }, []);
 
   // Memoize filtered stations to prevent re-filtering on every render
-  const validStations = useMemo(() => stations.filter(station => 
-    station && 
-    typeof station.geo_lat === 'number' && 
-    typeof station.geo_long === 'number' &&
-    station.geo_lat !== 0 && 
-    station.geo_long !== 0 && 
-    !isNaN(station.geo_lat) &&
-    !isNaN(station.geo_long) &&
-    Math.abs(station.geo_lat) <= 90 && 
-    Math.abs(station.geo_long) <= 180
-  ), [stations]);
+  const validStations = useMemo(() => {
+    const filtered = stations.filter(station => 
+      station && 
+      typeof station.geo_lat === 'number' && 
+      typeof station.geo_long === 'number' &&
+      station.geo_lat !== 0 && 
+      station.geo_long !== 0 && 
+      !isNaN(station.geo_lat) &&
+      !isNaN(station.geo_long) &&
+      Math.abs(station.geo_lat) <= 90 && 
+      Math.abs(station.geo_long) <= 180
+    );
+    
+    // Limit to 1000 markers to prevent browser freeze
+    return filtered.slice(0, 1000);
+  }, [stations]);
 
 
 
@@ -122,7 +130,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           
           <StationLoader onStationsChange={handleStationsChange} />
           
-          {validStations.map((station, index) => {
+          {validStations.slice(0, 2000).map((station, index) => {
               try {
                 // Additional safety check for marker positioning
                 if (!station || 
@@ -130,18 +138,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
                     typeof station.geo_long !== 'number' ||
                     isNaN(station.geo_lat) ||
                     isNaN(station.geo_long)) {
-                  console.log('Skipping station due to invalid coordinates:', station);
                   return null;
-                }
-
-                // Debug first few markers
-                if (index < 3) {
-                  console.log(`Rendering marker ${index}:`, {
-                    name: station.name,
-                    lat: station.geo_lat,
-                    lng: station.geo_long,
-                    position: [station.geo_lat, station.geo_long]
-                  });
                 }
                 
                 const position: [number, number] = [station.geo_lat, station.geo_long];
