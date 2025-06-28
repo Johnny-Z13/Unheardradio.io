@@ -1,7 +1,6 @@
 import { SkipBack, Play, Pause, SkipForward, Volume2, Bookmark, Share2, ChevronDown, Maximize2 } from 'lucide-react';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import { useToast } from '@/hooks/use-toast';
 import { Slider } from '@/components/ui/slider';
 import { AudioVisualizer } from '@/components/audio-visualizer';
 
@@ -16,16 +15,11 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
   } = useAudioStore();
   
   const { isBookmarked, toggleBookmark } = useBookmarks();
-  const { toast } = useToast();
 
   if (!currentStation) return null;
 
   const handleBookmark = () => {
     toggleBookmark(currentStation);
-    toast({
-      title: isBookmarked(currentStation.stationuuid) ? "Bookmark removed" : "Station bookmarked",
-      description: currentStation.name,
-    });
   };
 
   const handleShare = async () => {

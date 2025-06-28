@@ -4,7 +4,6 @@ import { RadioStation } from '@/types/radio';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import { getObscurityBadge, generateStationDescription, getTimeOnAir, getStationPopularity, getStreamQuality } from '@/lib/radio-api';
-import { useToast } from '@/hooks/use-toast';
 import { AudioVisualizer } from '@/components/audio-visualizer';
 
 interface FullscreenStationProps {
@@ -23,7 +22,6 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
   } = useAudioStore();
   
   const { isBookmarked, toggleBookmark } = useBookmarks();
-  const { toast } = useToast();
 
   const isCurrentStation = currentStation?.stationuuid === station.stationuuid;
   const isCurrentlyPlaying = isCurrentStation && isPlaying;
@@ -48,10 +46,6 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
 
   const handleBookmark = () => {
     toggleBookmark(station);
-    toast({
-      title: isBookmarked(station.stationuuid) ? "Bookmark removed" : "Station bookmarked",
-      description: station.name,
-    });
   };
 
   const handleShare = async () => {
