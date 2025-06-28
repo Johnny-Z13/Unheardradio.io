@@ -100,102 +100,70 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
             placeholder="Search stations..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-radio-black border-vdu-green-dim text-vdu-green placeholder-gray-500 focus:border-vdu-green pr-10"
+            className="w-full bg-radio-black border-vdu-green-dim text-vdu-green placeholder-gray-500 focus:border-vdu-green pr-8 h-8 text-sm"
           />
-          <Search className="absolute right-3 top-3 h-4 w-4 text-gray-500" />
+          <Search className="absolute right-2 top-2 h-3 w-3 text-gray-500" />
         </div>
 
-        {/* Listener Count Filter */}
-        <div className="space-y-3">
-          <h3 className="text-xs md:text-sm font-semibold text-vdu-green uppercase tracking-wide">Listener Count</h3>
-          <RadioGroup value={listenerFilter} onValueChange={(value) => setListenerFilter(value as any)}>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="all" id="all" className="border-vdu-green-dim text-vdu-green" />
-                <Label htmlFor="all" className="text-xs text-gray-300 cursor-pointer">All stations</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="zero" id="zero" className="border-vdu-green-dim text-vdu-green" />
-                <Label htmlFor="zero" className="text-xs text-vdu-green cursor-pointer font-medium">0 listeners only</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="one" id="one" className="border-vdu-green-dim text-vdu-green" />
-                <Label htmlFor="one" className="text-xs text-vdu-green cursor-pointer font-medium">Exactly 1 listener</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="2-10" id="2-10" className="border-vdu-green-dim text-vdu-green" />
-                <Label htmlFor="2-10" className="text-xs text-gray-300 cursor-pointer">2-10 listeners</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="under100" id="under100" className="border-vdu-green-dim text-vdu-green" />
-                <Label htmlFor="under100" className="text-xs text-gray-300 cursor-pointer">Under 100 listeners</Label>
-              </div>
-            </div>
-          </RadioGroup>
-        </div>
-
-        {/* Location Filter */}
-        <div className="space-y-3">
-          <h3 className="text-xs md:text-sm font-semibold text-vdu-green uppercase tracking-wide">Location</h3>
-          <Select value={country} onValueChange={setCountry}>
-            <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green text-sm">
-              <SelectValue placeholder="All Countries" />
+        {/* Listener Count Filter - Compact Layout */}
+        <div className="space-y-2">
+          <h3 className="text-xs font-semibold text-vdu-green uppercase tracking-wide">Audience Size</h3>
+          <Select value={listenerFilter} onValueChange={(value) => setListenerFilter(value as any)}>
+            <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
+              <SelectValue placeholder="All listener counts" />
             </SelectTrigger>
             <SelectContent className="bg-radio-black border-vdu-green-dim">
-              <SelectItem value="all">All Countries</SelectItem>
-              {countries.slice(0, 50).map((c) => (
-                <SelectItem key={c.iso_3166_1} value={c.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20">
-                  {c.name} ({c.stationcount})
-                </SelectItem>
-              ))}
+              <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">All stations</SelectItem>
+              <SelectItem value="zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs font-bold">0 listeners only</SelectItem>
+              <SelectItem value="one" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs font-bold">Exactly 1 listener</SelectItem>
+              <SelectItem value="2-10" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">2-10 listeners</SelectItem>
+              <SelectItem value="under100" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Under 100 listeners</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Genre Filter */}
-        <div className="space-y-3">
-          <h3 className="text-xs md:text-sm font-semibold text-vdu-green uppercase tracking-wide">Genre</h3>
-          <Select value={genre} onValueChange={setGenre}>
-            <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green text-sm">
-              <SelectValue placeholder="All Genres" />
-            </SelectTrigger>
-            <SelectContent className="bg-radio-black border-vdu-green-dim max-h-60 overflow-y-auto">
-              <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20">All Genres</SelectItem>
-              {genres.slice(0, 100).map((g) => (
-                <SelectItem key={g.name} value={g.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20">
-                  {g.name} ({g.stationcount})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-
-
-        {/* Quick Filter Buttons */}
-        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-vdu-green-dim">
-          <div className="grid grid-cols-2 gap-2">
-            <button 
-              onClick={() => setListenerFilter('zero')}
-              className={`px-3 py-2 text-xs border transition-colors ${
-                listenerFilter === 'zero'
-                  ? 'border-vdu-green text-vdu-green bg-vdu-green bg-opacity-20'
-                  : 'border-vdu-green-dim text-gray-300 hover:border-vdu-green hover:text-vdu-green'
-              }`}
-            >
-              Zero Listeners
-            </button>
-            <button 
-              onClick={() => setListenerFilter('one')}
-              className={`px-3 py-2 text-xs border transition-colors ${
-                listenerFilter === 'one'
-                  ? 'border-vdu-green text-vdu-green bg-vdu-green bg-opacity-20'
-                  : 'border-vdu-green-dim text-gray-300 hover:border-vdu-green hover:text-vdu-green'
-              }`}
-            >
-              1 Listener
-            </button>
+        {/* Location and Genre Filters - Compact Grid */}
+        <div className="grid grid-cols-1 gap-2">
+          <div className="space-y-1">
+            <h3 className="text-xs font-semibold text-vdu-green uppercase tracking-wide">Location</h3>
+            <Select value={country} onValueChange={setCountry}>
+              <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
+                <SelectValue placeholder="All Countries" />
+              </SelectTrigger>
+              <SelectContent className="bg-radio-black border-vdu-green-dim max-h-48 overflow-y-auto">
+                <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">All Countries</SelectItem>
+                {countries.slice(0, 50).map((c) => (
+                  <SelectItem key={c.iso_3166_1} value={c.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">
+                    {c.name.length > 15 ? c.name.substring(0, 15) + '...' : c.name} ({c.stationcount})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
+          <div className="space-y-1">
+            <h3 className="text-xs font-semibold text-vdu-green uppercase tracking-wide">Genre</h3>
+            <Select value={genre} onValueChange={setGenre}>
+              <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
+                <SelectValue placeholder="All Genres" />
+              </SelectTrigger>
+              <SelectContent className="bg-radio-black border-vdu-green-dim max-h-48 overflow-y-auto">
+                <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">All Genres</SelectItem>
+                {genres.slice(0, 100).map((g) => (
+                  <SelectItem key={g.name} value={g.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">
+                    {g.name} ({g.stationcount})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Usage Instructions */}
+        <div className="mt-3 pt-3 border-t border-vdu-green-dim">
+          <p className="text-xs text-gray-400 leading-relaxed">
+            Set filters and click <span className="text-vdu-green font-bold">APPLY</span> to search the discovery feed with your criteria.
+          </p>
         </div>
 
 
