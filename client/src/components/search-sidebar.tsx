@@ -20,7 +20,7 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
   const [genre, setGenre] = useState('');
-  const [listenerFilter, setListenerFilter] = useState<'all' | 'zero' | 'one' | '2-10' | 'under100'>('all');
+  const [listenerFilter, setListenerFilter] = useState<'all' | 'zero' | 'hide-zero' | 'high-to-low' | 'low-to-high'>('zero');
   const [obscurity, setObscurity] = useState('rare');
   const [isCollapsed, setIsCollapsed] = useState(false);
   
@@ -40,8 +40,6 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
 
   // Filter and sort genres to show music categories, not technical specs
   const genres = useMemo(() => {
-    console.log('Raw genres count:', rawGenres.length);
-    
     const musicGenres = rawGenres.filter(genre => {
       const name = genre.name.toLowerCase();
       
@@ -56,13 +54,8 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
       return isNotTechnical;
     });
     
-    console.log('Filtered genres count:', musicGenres.length);
-    
     // Sort by station count descending
-    const sortedGenres = musicGenres.sort((a, b) => b.stationcount - a.stationcount).slice(0, 100);
-    console.log('Top 5 genres:', sortedGenres.slice(0, 5).map(g => g.name));
-    
-    return sortedGenres;
+    return musicGenres.sort((a, b) => b.stationcount - a.stationcount).slice(0, 100);
   }, [rawGenres]);
 
   // Debounce search input to prevent excessive API calls
@@ -140,11 +133,10 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
               <SelectValue placeholder="All listener counts" />
             </SelectTrigger>
             <SelectContent className="bg-radio-black border-vdu-green-dim">
-              <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">All stations</SelectItem>
-              <SelectItem value="zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs font-bold">0 listeners ✓</SelectItem>
-              <SelectItem value="under100" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Under 100 listeners ✓</SelectItem>
-              <SelectItem value="one" className="text-gray-500 hover:bg-gray-700 hover:bg-opacity-20 text-xs">Exactly 1 listener (no data)</SelectItem>
-              <SelectItem value="2-10" className="text-gray-500 hover:bg-gray-700 hover:bg-opacity-20 text-xs">2-10 listeners (no data)</SelectItem>
+              <SelectItem value="zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs font-bold">Zero listeners only</SelectItem>
+              <SelectItem value="hide-zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Hide zero listeners</SelectItem>
+              <SelectItem value="high-to-low" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Listeners high to low</SelectItem>
+              <SelectItem value="low-to-high" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Listeners low to high</SelectItem>
             </SelectContent>
           </Select>
         </div>

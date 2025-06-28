@@ -251,6 +251,12 @@ Changelog:
   - Implemented genre sorting by station count to prioritize popular categories
   - Added empty state messaging with helpful filter guidance when no results found
   - Updated listener filter options with visual indicators for available data (✓ markers)
+- June 28, 2025. Redesigned audience size filters with sorting and filtering options
+  - Replaced technical listener count ranges with user-friendly sorting options
+  - New audience filter options: "Zero listeners only", "Hide zero listeners", "Listeners high to low", "Listeners low to high"
+  - Updated backend logic to handle filtering and sorting based on click count data
+  - Set default filter to "Zero listeners only" to emphasize obscure station discovery
+  - Implemented proper sorting algorithms for ascending/descending listener counts
 ```
 
 ## User Preferences

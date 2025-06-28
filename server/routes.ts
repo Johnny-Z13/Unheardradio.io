@@ -56,32 +56,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (stations.length > 0) {
         let filteredStations = stations;
         
-        // Apply listener count filter
+        // Apply listener count filter and sorting
         if (listenerFilter) {
-          filteredStations = stations.filter((station: any) => {
-            const clicks = parseInt(station.clickcount) || 0;
-            
-            switch (listenerFilter) {
-              case 'zero':
+          switch (listenerFilter) {
+            case 'zero':
+              filteredStations = stations.filter((station: any) => {
+                const clicks = parseInt(station.clickcount) || 0;
                 return clicks === 0;
-              case 'one':
-                return clicks === 1;
-              case '2-10':
-                return clicks >= 2 && clicks <= 10;
-              case 'under100':
-                return clicks < 100;
-              default:
-                return true;
-            }
+              });
+              break;
+            case 'hide-zero':
+              filteredStations = stations.filter((station: any) => {
+                const clicks = parseInt(station.clickcount) || 0;
+                return clicks > 0;
+              });
+              break;
+            case 'high-to-low':
+              filteredStations = [...stations].sort((a: any, b: any) => {
+                const aClicks = parseInt(a.clickcount) || 0;
+                const bClicks = parseInt(b.clickcount) || 0;
+                return bClicks - aClicks; // Descending order
+              });
+              break;
+            case 'low-to-high':
+              filteredStations = [...stations].sort((a: any, b: any) => {
+                const aClicks = parseInt(a.clickcount) || 0;
+                const bClicks = parseInt(b.clickcount) || 0;
+                return aClicks - bClicks; // Ascending order
+              });
+              break;
+            default:
+              // Default obscurity sorting (low to high)
+              filteredStations = [...stations].sort((a: any, b: any) => {
+                const aClicks = parseInt(a.clickcount) || 0;
+                const bClicks = parseInt(b.clickcount) || 0;
+                return aClicks - bClicks;
+              });
+          }
+        } else {
+          // Default obscurity sorting (low to high)
+          filteredStations = [...stations].sort((a: any, b: any) => {
+            const aClicks = parseInt(a.clickcount) || 0;
+            const bClicks = parseInt(b.clickcount) || 0;
+            return aClicks - bClicks;
           });
         }
         
-        // Sort by click count (ascending for obscurity)
-        const sortedStations = filteredStations.sort((a: any, b: any) => {
-          const aClicks = parseInt(a.clickcount) || 0;
-          const bClicks = parseInt(b.clickcount) || 0;
-          return aClicks - bClicks;
-        });
+        const sortedStations = filteredStations;
         
         res.json(sortedStations);
         return;
