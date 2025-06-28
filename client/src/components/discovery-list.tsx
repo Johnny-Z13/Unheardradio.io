@@ -30,11 +30,18 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
     refetchOnWindowFocus: false, // Prevent unnecessary refetches on tab switch
   });
 
-  // Reset offset when filters change
+  // Reset offset when filters change (memoize filters to prevent unnecessary resets)
+  const stableFiltersString = JSON.stringify({
+    search: filters.search || '',
+    country: filters.country || '',
+    genre: filters.genre || '',
+    listenerFilter: filters.listenerFilter || 'all'
+  });
+
   useEffect(() => {
     setOffset(0);
     setAllStations([]);
-  }, [filters.search, filters.country, filters.genre, filters.listenerFilter]);
+  }, [stableFiltersString]);
 
   // Update allStations when new data comes in
   useEffect(() => {

@@ -13,17 +13,36 @@ import 'leaflet/dist/leaflet.css';
 // Import Leaflet's default marker icons
 import L from 'leaflet';
 delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+
+// Create custom green marker icon
+const greenIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.5 0C5.6 0 0 5.6 0 12.5c0 8.3 12.5 28.5 12.5 28.5S25 20.8 25 12.5C25 5.6 19.4 0 12.5 0z" fill="#00FF00" stroke="#008800" stroke-width="1"/>
+      <circle cx="12.5" cy="12.5" r="6" fill="#008800"/>
+    </svg>
+  `),
+  iconRetinaUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg width="50" height="82" viewBox="0 0 50 82" xmlns="http://www.w3.org/2000/svg">
+      <path d="M25 0C11.2 0 0 11.2 0 25c0 16.6 25 57 25 57S50 41.6 50 25C50 11.2 38.8 0 25 0z" fill="#00FF00" stroke="#008800" stroke-width="2"/>
+      <circle cx="25" cy="25" r="12" fill="#008800"/>
+    </svg>
+  `),
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
 
 interface StationMapProps {
   onStationSelect?: (station: RadioStation) => void;
 }
 
-function StationLoader({ onStationsChange }: { onStationsChange: (stations: RadioStation[]) => void }) {
+function StationLoader({ onStationsChange, onLoadingChange }: { 
+  onStationsChange: (stations: RadioStation[]) => void;
+  onLoadingChange: (loading: boolean) => void;
+}) {
   const { data: allStations = [], isLoading, error } = useQuery({
     queryKey: ['/api/stations', { limit: 5000 }],
     queryFn: () => fetchStations({ limit: 5000 }),
@@ -31,6 +50,10 @@ function StationLoader({ onStationsChange }: { onStationsChange: (stations: Radi
     gcTime: 10 * 60 * 1000, // Garbage collect after 10 minutes
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    onLoadingChange(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   useEffect(() => {
     if (allStations.length > 0) {
@@ -78,7 +101,7 @@ function StationMarker({
   };
 
   return (
-    <Marker ref={markerRef} position={position}>
+    <Marker ref={markerRef} position={position} icon={greenIcon}>
       <Popup className="custom-popup" maxWidth={300}>
         <div className="bg-radio-black text-vdu-green p-3 rounded border border-vdu-green-dim">
           <div className="flex items-start justify-between mb-2">
@@ -134,6 +157,7 @@ function StationMarker({
 
 export function StationMap({ onStationSelect }: StationMapProps) {
   const [stations, setStations] = useState<RadioStation[]>([]);
+  const [isLoadingStations, setIsLoadingStations] = useState(true);
   const { playStation } = useAudioStore();
   
   const handleStationsChange = useCallback((newStations: RadioStation[]) => {
@@ -141,6 +165,10 @@ export function StationMap({ onStationSelect }: StationMapProps) {
     requestAnimationFrame(() => {
       setStations(newStations);
     });
+  }, []);
+
+  const handleLoadingChange = useCallback((loading: boolean) => {
+    setIsLoadingStations(loading);
   }, []);
 
   // Memoize filtered stations to prevent re-filtering on every render
@@ -181,7 +209,14 @@ export function StationMap({ onStationSelect }: StationMapProps) {
           <div className="min-w-0 flex-1">
             <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif truncate">Global Radio Map</h2>
             <p className="text-xs md:text-sm text-gray-400 mt-1">
-              {validStations.length} stations mapped by location
+              {isLoadingStations ? (
+                <span className="flex items-center">
+                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                  Loading stations...
+                </span>
+              ) : (
+                `${validStations.length} stations mapped by location`
+              )}
             </p>
           </div>
           <div className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-400 flex-shrink-0">
@@ -204,7 +239,7 @@ export function StationMap({ onStationSelect }: StationMapProps) {
             maxZoom={20}
           />
           
-          <StationLoader onStationsChange={handleStationsChange} />
+          <StationLoader onStationsChange={handleStationsChange} onLoadingChange={handleLoadingChange} />
           
           {validStations.map((station, index) => {
             try {
