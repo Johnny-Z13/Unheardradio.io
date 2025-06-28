@@ -262,6 +262,10 @@ Changelog:
   - Added comprehensive country name mapping: United Kingdom → UK, United States → USA, Russian Federation → Russia
   - Applied shortened names to all station displays including main feed, bookmarks, and fallback stations
   - Enhanced visual clarity with location icon while maintaining VDU green aesthetic
+- June 28, 2025. Set default discovery feed to low-to-high listener sorting
+  - Changed default filter from "zero listeners only" to "low to high" sorting
+  - Discovery feed now starts with zero-listener stations and progresses to higher listener counts
+  - Maintains focus on obscure stations while providing natural progression through audience sizes
 ```
 
 ## User Preferences

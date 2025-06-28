@@ -20,7 +20,7 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
   const [genre, setGenre] = useState('');
-  const [listenerFilter, setListenerFilter] = useState<'all' | 'zero' | 'hide-zero' | 'high-to-low' | 'low-to-high'>('zero');
+  const [listenerFilter, setListenerFilter] = useState<'all' | 'zero' | 'hide-zero' | 'high-to-low' | 'low-to-high'>('low-to-high');
   const [obscurity, setObscurity] = useState('rare');
   const [isCollapsed, setIsCollapsed] = useState(false);
   
