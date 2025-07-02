@@ -129,6 +129,7 @@ export default async function handler(
           break
         case 'hide-zero':
           stations = stations.filter(s => s.clickcount > 0)
+          stations.sort((a, b) => (a.clickcount || 0) - (b.clickcount || 0))
           break
         case 'high-to-low':
           stations.sort((a, b) => (b.clickcount || 0) - (a.clickcount || 0))

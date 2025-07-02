@@ -122,19 +122,12 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="text-center">
             <h3 className="text-lg font-semibold text-gray-400 mb-2">No stations found</h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-500">
               {Object.keys(filters).some(key => filters[key as keyof SearchFilters]) 
                 ? "This filter combination returned no results. Try using '0 listeners' or 'under 100 listeners' filters, or select a different country/genre."
                 : "Try adjusting your search criteria or exploring different regions"
               }
             </p>
-            <Button 
-              onClick={handleRandomDrift}
-              className="bg-vdu-green text-radio-black hover:bg-vdu-green/80"
-            >
-              <Shuffle className="w-4 h-4 mr-2" />
-              Discover Random Station
-            </Button>
           </div>
         </div>
       ) : (
