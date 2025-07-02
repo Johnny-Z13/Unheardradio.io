@@ -132,11 +132,11 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
             <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
               <SelectValue placeholder="All listener counts" />
             </SelectTrigger>
-            <SelectContent className="bg-radio-black border-vdu-green-dim">
-              <SelectItem value="zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs font-bold">Zero listeners only</SelectItem>
-              <SelectItem value="hide-zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Hide zero listeners</SelectItem>
-              <SelectItem value="high-to-low" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Listeners high to low</SelectItem>
-              <SelectItem value="low-to-high" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">Listeners low to high</SelectItem>
+            <SelectContent className="bg-black border-vdu-green-dim backdrop-blur-none">
+              <SelectItem value="zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs font-bold bg-black">Zero listeners only</SelectItem>
+              <SelectItem value="hide-zero" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs bg-black">Hide zero listeners</SelectItem>
+              <SelectItem value="high-to-low" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs bg-black">Listeners high to low</SelectItem>
+              <SelectItem value="low-to-high" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs bg-black">Listeners low to high</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -149,10 +149,10 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
               <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
                 <SelectValue placeholder="All Countries" />
               </SelectTrigger>
-              <SelectContent className="bg-radio-black border-vdu-green-dim max-h-48 overflow-y-auto">
-                <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">All Countries</SelectItem>
+              <SelectContent className="bg-black border-vdu-green-dim max-h-48 overflow-y-auto backdrop-blur-none">
+                <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs bg-black">All Countries</SelectItem>
                 {countries.slice(0, 50).map((c) => (
-                  <SelectItem key={c.iso_3166_1} value={c.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">
+                  <SelectItem key={c.iso_3166_1} value={c.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs bg-black">
                     {c.name.length > 15 ? c.name.substring(0, 15) + '...' : c.name} ({c.stationcount})
                   </SelectItem>
                 ))}
@@ -166,10 +166,10 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
               <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
                 <SelectValue placeholder="All Genres" />
               </SelectTrigger>
-              <SelectContent className="bg-radio-black border-vdu-green-dim max-h-48 overflow-y-auto">
-                <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">All Genres</SelectItem>
+              <SelectContent className="bg-black border-vdu-green-dim max-h-48 overflow-y-auto backdrop-blur-none">
+                <SelectItem value="all" className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs bg-black">All Genres</SelectItem>
                 {genres.slice(0, 100).map((g) => (
-                  <SelectItem key={g.name} value={g.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs">
+                  <SelectItem key={g.name} value={g.name} className="text-vdu-green hover:bg-vdu-green hover:bg-opacity-20 text-xs bg-black">
                     {g.name} ({g.stationcount})
                   </SelectItem>
                 ))}
