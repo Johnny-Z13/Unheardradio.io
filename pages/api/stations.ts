@@ -115,7 +115,10 @@ export default async function handler(
     if (filters.listenerFilter) {
       switch (filters.listenerFilter) {
         case 'zero':
-          stations = stations.filter(s => s.clickcount === 0)
+          // Filter for stations with exactly zero listeners (including null/undefined)
+          stations = stations.filter(s => !s.clickcount || s.clickcount === 0)
+          // Sort by name for consistent ordering
+          stations.sort((a, b) => a.name.localeCompare(b.name))
           break
         case 'hide-zero':
           stations = stations.filter(s => s.clickcount > 0)
