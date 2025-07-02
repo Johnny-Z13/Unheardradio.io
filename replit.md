@@ -275,6 +275,15 @@ Changelog:
   - Share title now shows: "{Station Name} - Unheard Radio" instead of generic text
   - Share text includes station name, country, and site attribution for viral marketing
   - Applied consistently across station cards, now-playing bar, and fullscreen view
+- July 2, 2025. Next.js architecture migration for v0/Vercel deployment
+  - Restructured project from Vite+Express to Next.js full-stack framework
+  - Created app/ directory structure with layout.tsx and page.tsx
+  - Migrated API routes from Express to Next.js API routes (/pages/api/)
+  - Updated TypeScript configuration for Next.js path mapping
+  - Copied all components, hooks, and utilities to new structure
+  - Maintained mobile-first responsive design throughout migration
+  - Preserved VDU green terminal aesthetic and all existing features
+  - Added proper SEO metadata and mobile viewport configuration
 ```
 
 ## User Preferences
