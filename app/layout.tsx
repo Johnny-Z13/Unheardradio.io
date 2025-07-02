@@ -7,6 +7,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://unheardradio.io'),
   title: 'Unheard Radio - Discover Obscure Underground Radio Stations Worldwide',
   description: 'Anti-algorithm radio discovery platform. Find the world\'s most obscure, underground radio stations with zero listeners. Stream live broadcasts from forgotten corners of the globe.',
   keywords: 'radio, obscure radio, underground radio, radio discovery, live radio, streaming radio, zero listeners, anti-algorithm, radio browser, global radio, experimental radio, rare radio stations',
