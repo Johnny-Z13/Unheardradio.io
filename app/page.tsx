@@ -52,6 +52,7 @@ export default function Home() {
     { id: 'search' as Tab, icon: Search, label: 'Filter', shortLabel: 'Filter' },
     { id: 'saved' as Tab, icon: Bookmark, label: 'Saved', shortLabel: 'Saved' },
     { id: 'map' as Tab, icon: MapPin, label: 'Map', shortLabel: 'Map' },
+    { id: 'about' as Tab, icon: Info, label: 'About', shortLabel: 'About' },
   ]
 
   return (
@@ -71,9 +72,7 @@ export default function Home() {
             </div>
           </div>
           
-          <Link href="/about" className="text-vdu-green hover:text-vdu-green-dim transition-colors">
-            <Info className="w-5 h-5" />
-          </Link>
+
         </div>
       </header>
 
@@ -85,7 +84,13 @@ export default function Home() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === 'about') {
+                    window.location.href = '/about'
+                  } else {
+                    setActiveTab(tab.id)
+                  }
+                }}
                 className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 border-r border-vdu-green/20 transition-colors font-mono text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-vdu-green/10 text-vdu-green glow'
