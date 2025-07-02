@@ -1,5 +1,43 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { RadioStation, SearchFilters } from '@/types/radio'
+
+interface RadioStation {
+  stationuuid: string;
+  name: string;
+  url: string;
+  url_resolved: string;
+  homepage: string;
+  favicon: string;
+  tags: string;
+  country: string;
+  countrycode: string;
+  state: string;
+  language: string;
+  votes: number;
+  lastchangetime: string;
+  codec: string;
+  bitrate: number;
+  hls: number;
+  lastcheckok: number;
+  lastchecktime: string;
+  lastcheckoktime: string;
+  lastlocalchecktime: string;
+  clicktimestamp: string;
+  clickcount: number;
+  clicktrend: number;
+  ssl_error: number;
+  geo_lat: number;
+  geo_long: number;
+}
+
+interface SearchFilters {
+  search?: string;
+  country?: string;
+  genre?: string;
+  listenerFilter?: 'all' | 'zero' | 'hide-zero' | 'high-to-low' | 'low-to-high';
+  limit?: number;
+  offset?: number;
+  bookmarkedOnly?: boolean;
+}
 
 const RADIO_BROWSER_SERVERS = [
   'https://nl1.api.radio-browser.info',
@@ -20,7 +58,7 @@ export default async function handler(
       search: req.query.search as string,
       country: req.query.country as string,
       genre: req.query.genre as string,
-      listenerFilter: req.query.listenerFilter as string,
+      listenerFilter: req.query.listenerFilter as ('all' | 'zero' | 'hide-zero' | 'high-to-low' | 'low-to-high'),
       limit: parseInt(req.query.limit as string) || 20,
       offset: parseInt(req.query.offset as string) || 0,
     }
