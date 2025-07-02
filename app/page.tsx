@@ -120,22 +120,20 @@ export default function Home() {
           {activeTab === 'discover' && (
             <DiscoveryList 
               filters={searchFilters}
-              onStationSelect={handleStationSelect}
             />
           )}
           
           {activeTab === 'saved' && (
-            <BookmarkList onStationSelect={handleStationSelect} />
+            <BookmarkList />
           )}
           
           {activeTab === 'map' && (
-            <StationMap onStationSelect={handleStationSelect} />
+            <StationMap />
           )}
           
           {activeTab === 'search' && (
             <DiscoveryList 
               filters={searchFilters}
-              onStationSelect={handleStationSelect}
             />
           )}
         </div>

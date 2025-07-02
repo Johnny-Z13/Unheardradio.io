@@ -1,0 +1,113 @@
+[11:20:55.212] Running build in Washington, D.C., USA (East) – iad1
+[11:20:55.215] Build machine configuration: 2 cores, 8 GB
+[11:20:55.281] Cloning github.com/Johnny-Z13/Unheardradio.io (Branch: main, Commit: 3fd61a9)
+[11:20:55.857] Previous build caches not available
+[11:20:58.525] Cloning completed: 3.244s
+[11:20:58.881] Running "vercel build"
+[11:20:59.353] Vercel CLI 43.3.0
+[11:21:00.216] WARNING: You should not upload the `.next` directory.
+[11:21:00.220] Running "install" command: `npm install`...
+[11:21:15.463] 
+[11:21:15.465] added 311 packages, and audited 312 packages in 15s
+[11:21:15.465] 
+[11:21:15.465] 51 packages are looking for funding
+[11:21:15.465]   run `npm fund` for details
+[11:21:15.466] 
+[11:21:15.466] 1 low severity vulnerability
+[11:21:15.466] 
+[11:21:15.467] To address all issues, run:
+[11:21:15.467]   npm audit fix
+[11:21:15.467] 
+[11:21:15.467] Run `npm audit` for details.
+[11:21:15.514] Detected Next.js version: 15.3.4
+[11:21:15.515] Running "npm run build"
+[11:21:15.661] 
+[11:21:15.662] > unheard-radio@1.0.0 build
+[11:21:15.662] > next build
+[11:21:15.662] 
+[11:21:16.793]    ▲ Next.js 15.3.4
+[11:21:16.794] 
+[11:21:16.865]    Creating an optimized production build ...
+[11:21:26.861] Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+[11:21:26.862]   npx update-browserslist-db@latest
+[11:21:26.863]   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[11:21:30.260] Failed to compile.
+[11:21:30.260] 
+[11:21:30.260] ./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./app/globals.css
+[11:21:30.260] Error: Cannot find module '@tailwindcss/typography'
+[11:21:30.261] Require stack:
+[11:21:30.261] - /vercel/path0/tailwind.config.ts
+[11:21:30.261]     at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+[11:21:30.261]     at /vercel/path0/node_modules/next/dist/server/require-hook.js:55:36
+[11:21:30.261]     at Function.resolve (node:internal/modules/helpers:145:19)
+[11:21:30.261]     at _resolve (/vercel/path0/node_modules/jiti/dist/jiti.js:1:241814)
+[11:21:30.261]     at jiti (/vercel/path0/node_modules/jiti/dist/jiti.js:1:244531)
+[11:21:30.261]     at /vercel/path0/tailwind.config.ts:97:45
+[11:21:30.261]     at evalModule (/vercel/path0/node_modules/jiti/dist/jiti.js:1:247313)
+[11:21:30.261]     at jiti (/vercel/path0/node_modules/jiti/dist/jiti.js:1:245241)
+[11:21:30.262]     at /vercel/path0/node_modules/tailwindcss/lib/lib/load-config.js:52:26
+[11:21:30.262]     at loadConfig (/vercel/path0/node_modules/tailwindcss/lib/lib/load-config.js:62:6)
+[11:21:30.262] 
+[11:21:30.262] Import trace for requested module:
+[11:21:30.262] ./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./app/globals.css
+[11:21:30.262] ./app/globals.css
+[11:21:30.263] 
+[11:21:30.263] ./app/globals.css
+[11:21:30.263] Error: Cannot find module '@tailwindcss/typography'
+[11:21:30.263] Require stack:
+[11:21:30.263] - /vercel/path0/tailwind.config.ts
+[11:21:30.263]     at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+[11:21:30.263]     at /vercel/path0/node_modules/next/dist/server/require-hook.js:55:36
+[11:21:30.263]     at Function.resolve (node:internal/modules/helpers:145:19)
+[11:21:30.264]     at _resolve (/vercel/path0/node_modules/jiti/dist/jiti.js:1:241814)
+[11:21:30.264]     at jiti (/vercel/path0/node_modules/jiti/dist/jiti.js:1:244531)
+[11:21:30.264]     at /vercel/path0/tailwind.config.ts:97:45
+[11:21:30.264]     at evalModule (/vercel/path0/node_modules/jiti/dist/jiti.js:1:247313)
+[11:21:30.264]     at jiti (/vercel/path0/node_modules/jiti/dist/jiti.js:1:245241)
+[11:21:30.264]     at /vercel/path0/node_modules/tailwindcss/lib/lib/load-config.js:52:26
+[11:21:30.264]     at loadConfig (/vercel/path0/node_modules/tailwindcss/lib/lib/load-config.js:62:6)
+[11:21:30.264]     at tryRunOrWebpackError (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:316142)
+[11:21:30.265]     at __webpack_require_module__ (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:131548)
+[11:21:30.265]     at __nested_webpack_require_161494__ (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:130983)
+[11:21:30.265]     at /vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:131840
+[11:21:30.265]     at symbolIterator (/vercel/path0/node_modules/next/dist/compiled/neo-async/async.js:1:14444)
+[11:21:30.265]     at done (/vercel/path0/node_modules/next/dist/compiled/neo-async/async.js:1:14824)
+[11:21:30.265]     at Hook.eval [as callAsync] (eval at create (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:14:9224), <anonymous>:15:1)
+[11:21:30.266]     at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:14:6378)
+[11:21:30.266]     at /vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:130703
+[11:21:30.266]     at symbolIterator (/vercel/path0/node_modules/next/dist/compiled/neo-async/async.js:1:14402)
+[11:21:30.267] -- inner error --
+[11:21:30.267] Error: Cannot find module '@tailwindcss/typography'
+[11:21:30.267] Require stack:
+[11:21:30.267] - /vercel/path0/tailwind.config.ts
+[11:21:30.267]     at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+[11:21:30.267]     at /vercel/path0/node_modules/next/dist/server/require-hook.js:55:36
+[11:21:30.267]     at Function.resolve (node:internal/modules/helpers:145:19)
+[11:21:30.268]     at _resolve (/vercel/path0/node_modules/jiti/dist/jiti.js:1:241814)
+[11:21:30.268]     at jiti (/vercel/path0/node_modules/jiti/dist/jiti.js:1:244531)
+[11:21:30.268]     at /vercel/path0/tailwind.config.ts:97:45
+[11:21:30.268]     at evalModule (/vercel/path0/node_modules/jiti/dist/jiti.js:1:247313)
+[11:21:30.268]     at jiti (/vercel/path0/node_modules/jiti/dist/jiti.js:1:245241)
+[11:21:30.268]     at /vercel/path0/node_modules/tailwindcss/lib/lib/load-config.js:52:26
+[11:21:30.268]     at loadConfig (/vercel/path0/node_modules/tailwindcss/lib/lib/load-config.js:62:6)
+[11:21:30.268]     at Object.<anonymous> (/vercel/path0/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!/vercel/path0/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!/vercel/path0/app/globals.css:1:7)
+[11:21:30.269]     at /vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:962742
+[11:21:30.269]     at Hook.eval [as call] (eval at create (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:14:9002), <anonymous>:7:1)
+[11:21:30.269]     at Hook.CALL_DELEGATE [as _call] (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:14:6272)
+[11:21:30.275]     at /vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:131581
+[11:21:30.275]     at tryRunOrWebpackError (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:316096)
+[11:21:30.275]     at __webpack_require_module__ (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:131548)
+[11:21:30.275]     at __nested_webpack_require_161494__ (/vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:130983)
+[11:21:30.276]     at /vercel/path0/node_modules/next/dist/compiled/webpack/bundle5.js:29:131840
+[11:21:30.276]     at symbolIterator (/vercel/path0/node_modules/next/dist/compiled/neo-async/async.js:1:14444)
+[11:21:30.276] 
+[11:21:30.276] Generated code for /vercel/path0/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!/vercel/path0/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!/vercel/path0/app/globals.css
+[11:21:30.276] 
+[11:21:30.276] Import trace for requested module:
+[11:21:30.276] ./app/globals.css
+[11:21:30.276] 
+[11:21:30.285] 
+[11:21:30.287] > Build failed because of webpack errors
+[11:21:30.315] Error: Command "npm run build" exited with 1
+[11:21:30.521] 
+[11:21:33.495] Exiting build container
