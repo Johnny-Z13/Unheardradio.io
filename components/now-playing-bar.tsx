@@ -46,7 +46,7 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
   };
 
   return (
-    <div className="border-t border-vdu-green-dim bg-radio-dark p-2 md:p-3 sticky bottom-0 z-30">
+    <div className="border-t border-vdu-green-dim bg-black p-2 md:p-3 sticky bottom-0 z-30">
       <div className="flex items-center justify-between space-x-3">
         <div className="flex items-center space-x-2 min-w-0 flex-1">
           <div className="w-8 h-8 bg-vdu-green text-radio-black rounded-lg flex items-center justify-center font-black text-sm flex-shrink-0">

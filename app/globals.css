@@ -27,6 +27,11 @@
   --vdu-green: 120 100% 50%;
   --vdu-green-dim: 120 100% 35%;
   --vdu-glow: 120 100% 50%;
+  --radio-black: 0 0% 0%;
+  --radio-dark: 0 0% 5%;
+  --vdu-green-bright: 120 100% 60%;
+  --accent-cyan: 180 100% 70%;
+  --text-muted: 120 50% 70%;
 }
 
 * {
