@@ -79,9 +79,17 @@ export default async function handler(
       params.append('tag', filters.genre)
     }
     
-    params.append('limit', filters.limit?.toString() || '20')
+    // For zero listeners, use a much larger limit to get diverse results
+    const requestLimit = filters.listenerFilter === 'zero' ? '1000' : (filters.limit?.toString() || '20')
+    params.append('limit', requestLimit)
     params.append('offset', filters.offset?.toString() || '0')
     params.append('hidebroken', 'true')
+    
+    // Add order parameter to get less popular stations first
+    if (filters.listenerFilter === 'zero' || filters.listenerFilter === 'low-to-high') {
+      params.append('order', 'clickcount')
+      params.append('reverse', 'false')
+    }
     
     // Try multiple servers for reliability
     let stations: RadioStation[] = []
@@ -115,10 +123,9 @@ export default async function handler(
     if (filters.listenerFilter) {
       switch (filters.listenerFilter) {
         case 'zero':
-          // Filter for stations with exactly zero listeners (including null/undefined)
-          stations = stations.filter(s => !s.clickcount || s.clickcount === 0)
-          // Sort by name for consistent ordering
-          stations.sort((a, b) => a.name.localeCompare(b.name))
+          // Filter for stations with very low listener counts (0-5)
+          stations = stations.filter(s => (s.clickcount || 0) <= 5)
+          stations.sort((a, b) => (a.clickcount || 0) - (b.clickcount || 0))
           break
         case 'hide-zero':
           stations = stations.filter(s => s.clickcount > 0)

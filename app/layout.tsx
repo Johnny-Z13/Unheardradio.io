@@ -7,12 +7,37 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Unheard Radio - Obscure Radio Discovery',
-  description: 'Your portal to the strange side of sound. Discover the world\'s most obscure radio stations.',
-  keywords: 'radio, obscure, underground, streaming, discovery',
+  title: 'Unheard Radio - Discover Obscure Underground Radio Stations Worldwide',
+  description: 'Anti-algorithm radio discovery platform. Find the world\'s most obscure, underground radio stations with zero listeners. Stream live broadcasts from forgotten corners of the globe.',
+  keywords: 'radio, obscure radio, underground radio, radio discovery, live radio, streaming radio, zero listeners, anti-algorithm, radio browser, global radio, experimental radio, rare radio stations',
   authors: [{ name: 'Z13labs' }],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
-  themeColor: '#00FF00',
+  creator: 'Z13labs',
+  publisher: 'Unheard Radio',
+  category: 'Music & Audio',
+  robots: 'index, follow',
+  openGraph: {
+    title: 'Unheard Radio - Discover Obscure Radio Stations',
+    description: 'Your portal to the strange side of sound. Stream live radio from the world\'s most overlooked stations.',
+    url: 'https://unheardradio.io',
+    siteName: 'Unheard Radio',
+    type: 'website',
+    locale: 'en_US',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Unheard Radio - Discover Obscure Radio Stations',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Unheard Radio - Discover Obscure Radio Stations',
+    description: 'Anti-algorithm radio discovery. Find stations with zero listeners.',
+    creator: '@z13labs',
+    images: ['/og-image.png'],
+  },
 }
 
 export default function RootLayout({
