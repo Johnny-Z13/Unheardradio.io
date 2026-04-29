@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Radio, RotateCcw } from 'lucide-react';
+import { Search as SearchIcon, Rescan } from '@/components/icons';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -97,20 +97,20 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
       <div className="p-3 space-y-3">
         {/* Header with refresh button */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-black text-vdu-green tracking-tight">FILTERS</h2>
+          <h2 className="font-display text-[22px] leading-none text-vdu-green-bright phosphor tracking-[0.05em]">// FILTERS</h2>
           <Button
             onClick={handleRefresh}
             size="sm"
-            className="bg-vdu-green text-radio-black hover:bg-vdu-green-bright text-xs font-bold px-3 py-1 h-auto"
+            className="bg-vdu-green-bright text-radio-black hover:bg-vdu-green text-[10px] tracking-[0.15em] uppercase font-bold px-3 py-1.5 h-auto rounded-none"
           >
-            <RotateCcw className="w-3 h-3 mr-1" />
+            <Rescan size={12} className="mr-1.5" />
             APPLY
           </Button>
         </div>
         
-        <div className="text-center">
-          <div className="text-xs text-muted font-medium">STATIONS INDEXED</div>
-          <div className="text-sm text-vdu-green font-black">{totalStations.toLocaleString()}</div>
+        <div className="border-t border-b border-hairline py-2 flex items-baseline justify-between">
+          <span className="text-[10px] tracking-[0.15em] uppercase text-vdu-green-dim">// Indexed</span>
+          <span className="font-display text-[20px] leading-none text-vdu-green-bright">{totalStations.toLocaleString()}</span>
         </div>
         
         {/* Search Input */}
@@ -122,12 +122,12 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-radio-black border-vdu-green-dim text-vdu-green placeholder-gray-500 focus:border-vdu-green pr-8 h-8 text-sm"
           />
-          <Search className="absolute right-2 top-2 h-3 w-3 text-gray-500" />
+          <SearchIcon size={12} className="absolute right-2.5 top-2.5 text-vdu-green-dim" />
         </div>
 
         {/* Listener Count Filter - Compact Layout */}
         <div className="space-y-2">
-          <h3 className="text-xs font-semibold text-vdu-green uppercase tracking-wide">Audience Size</h3>
+          <h3 className="text-[10px] font-bold text-vdu-green-dim uppercase tracking-[0.15em]">// AUDIENCE&nbsp;SIZE</h3>
           <Select value={listenerFilter} onValueChange={(value) => setListenerFilter(value as any)}>
             <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
               <SelectValue placeholder="All listener counts" />
@@ -144,7 +144,7 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
         {/* Location and Genre Filters - Compact Grid */}
         <div className="grid grid-cols-1 gap-2">
           <div className="space-y-1">
-            <h3 className="text-xs font-semibold text-vdu-green uppercase tracking-wide">Location</h3>
+            <h3 className="text-[10px] font-bold text-vdu-green-dim uppercase tracking-[0.15em]">// LOCATION</h3>
             <Select value={country} onValueChange={setCountry}>
               <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
                 <SelectValue placeholder="All Countries" />
@@ -161,7 +161,7 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-xs font-semibold text-vdu-green uppercase tracking-wide">Genre</h3>
+            <h3 className="text-[10px] font-bold text-vdu-green-dim uppercase tracking-[0.15em]">// GENRE</h3>
             <Select value={genre} onValueChange={setGenre}>
               <SelectTrigger className="w-full bg-radio-black border-vdu-green-dim text-vdu-green focus:border-vdu-green h-8 text-xs">
                 <SelectValue placeholder="All Genres" />
@@ -179,9 +179,9 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
         </div>
 
         {/* Usage Instructions */}
-        <div className="mt-3 pt-3 border-t border-vdu-green-dim">
-          <p className="text-xs text-gray-400 leading-relaxed">
-            Set filters and click <span className="text-vdu-green font-bold">APPLY</span> to search the discovery feed with your criteria.
+        <div className="mt-3 pt-3 border-t border-hairline">
+          <p className="text-[10px] tracking-[0.05em] uppercase text-vdu-green-dim leading-relaxed">
+            Set filters · press <span className="text-vdu-green-bright">APPLY</span> · returns to SCAN feed
           </p>
         </div>
 
