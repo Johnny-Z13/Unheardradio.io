@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Shuffle, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { Scan } from '@/components/icons';
 import { RadioStation, SearchFilters } from '@/types/radio';
 import { fetchStations } from '@/lib/radio-api';
 import { StationCard } from './station-card';
@@ -94,10 +95,10 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
     <div className="flex-1 p-3 md:p-6 overflow-y-auto">
       <div className="mb-4 md:mb-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
         <div className="min-w-0">
-          <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif">
-            Ultra-Obscure Transmissions
+          <h2 className="font-display text-[22px] md:text-[28px] leading-none text-vdu-green-bright phosphor tracking-[0.04em]">
+            // OBSCURE TRANSMISSIONS
           </h2>
-          <p className="text-xs md:text-sm text-gray-400 mt-1">
+          <p className="text-[10px] tracking-[0.12em] uppercase text-vdu-green-dim mt-1.5">
             {!filters.search && !filters.country && !filters.genre 
               ? `Random discoveries • ${allStations.length} stations`
               : `Sorted by reverse popularity • ${allStations.length} stations found`
@@ -109,11 +110,11 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
             onClick={handleRandomDrift}
             variant="outline"
             size="sm"
-            className="border-vdu-green-dim text-vdu-green hover:bg-vdu-green hover:text-radio-black text-xs md:text-sm"
+            className="border-vdu-green-dim text-vdu-green hover:bg-vdu-green-bright hover:text-radio-black text-[10px] tracking-[0.15em] uppercase font-bold rounded-none"
           >
-            <Shuffle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-            <span className="hidden md:inline">Random Drift</span>
-            <span className="md:hidden">Random</span>
+            <Scan size={12} className="mr-1.5" />
+            <span className="hidden md:inline">RANDOM DRIFT</span>
+            <span className="md:hidden">RANDOM</span>
           </Button>
         </div>
       </div>

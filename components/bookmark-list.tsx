@@ -42,12 +42,8 @@ export function BookmarkList() {
   return (
     <div className="flex-1 p-3 md:p-6 overflow-y-auto">
       <div className="mb-4 md:mb-6">
-        <h2 className="text-lg md:text-xl font-bold text-vdu-green font-serif">
-          Saved Stations
-        </h2>
-        <p className="text-xs md:text-sm text-gray-400 mt-1">
-          {bookmarkStations.length} saved {bookmarkStations.length === 1 ? 'station' : 'stations'}
-        </p>
+        <h2 className="font-display text-[22px] md:text-[28px] leading-none text-vdu-green-bright phosphor tracking-[0.04em]">// LOG / SAVED CONTACTS</h2>
+        <p className="text-[10px] tracking-[0.12em] uppercase text-vdu-green-dim mt-1.5">{bookmarkStations.length} saved {bookmarkStations.length === 1 ? 'contact' : 'contacts'}</p>
       </div>
 
       {bookmarkStations.length === 0 ? (
