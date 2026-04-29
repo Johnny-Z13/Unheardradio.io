@@ -62,6 +62,8 @@ export default {
         "vdu-green-bright": "var(--vdu-green-bright)",
         "vdu-green-dim": "var(--vdu-green-dim)",
         "accent-cyan": "var(--accent-cyan)",
+        "vdu-green-faint": "hsl(var(--vdu-green-faint))",
+        "radio-panel": "hsl(var(--radio-panel))",
         "text-muted": "var(--text-muted)",
         sidebar: {
           DEFAULT: "var(--sidebar-background)",
