@@ -148,3 +148,12 @@ export function Rescan({ size = 14, className }: IconProps) {
     </svg>
   )
 }
+
+export function ArrowLeft({ size = 14, className }: IconProps) {
+  return (
+    <svg {...base(size)} className={className} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
+      <line x1="11" y1="7" x2="3" y2="7" />
+      <polyline points="6,4 3,7 6,10" />
+    </svg>
+  )
+}

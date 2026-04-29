@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Bookmark } from 'lucide-react';
+import { Log } from '@/components/icons';
 import { RadioStation } from '@/types/radio';
 import { StationCard } from './station-card';
 import { FullscreenStation } from './fullscreen-station';
@@ -48,7 +48,7 @@ export function BookmarkList() {
 
       {bookmarkStations.length === 0 ? (
         <div className="text-center py-12">
-          <Bookmark className="w-16 h-16 text-vdu-green-dim mx-auto mb-4" />
+          <Log size={64} className="text-vdu-green-dim mx-auto mb-4 block" />
           <p className="text-vdu-green text-lg mb-2">No saved stations</p>
           <p className="text-sm text-muted max-w-md mx-auto">
             Bookmark stations from the discover feed to keep them here for quick access.

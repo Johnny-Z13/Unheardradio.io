@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Loader2, MapPin } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { MapPin } from '@/components/icons';
 import { RadioStation } from '@/types/radio';
 
 interface StationMapProps {
