@@ -40,9 +40,12 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
         )}
       </div>
 
-      {/* Visualizer (hidden on the smallest screens to keep the strip glanceable) */}
-      <div className="hidden sm:block w-[180px] md:w-[260px] lg:w-[300px]">
-        <AudioVisualizer mode="trace" height={28} />
+      {/* Visualizer + readout (hidden on the smallest screens) */}
+      <div className="hidden sm:flex flex-col gap-1 w-[180px] md:w-[260px] lg:w-[300px]">
+        <AudioVisualizer mode="trace" height={24} />
+        <div className="hidden md:block">
+          <AudioVisualizer mode="dbfs" />
+        </div>
       </div>
 
       {/* Controls */}
