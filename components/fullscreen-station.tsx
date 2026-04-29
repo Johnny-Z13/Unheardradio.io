@@ -5,6 +5,7 @@ import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import { getObscurityBadge, generateStationDescription, getTimeOnAir, getStationPopularity, getStreamQuality } from '@/lib/radio-api';
 import { AudioVisualizer } from '@/components/audio-visualizer';
+import { ShareMenu } from './share-menu';
 
 interface FullscreenStationProps {
   station: RadioStation;
@@ -46,29 +47,6 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
 
   const handleBookmark = () => {
     toggleBookmark(station);
-  };
-
-  const handleShare = async () => {
-    const url = `${window.location.origin}?station=${station.stationuuid}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${station.name} - Unheard Radio`,
-          text: `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country}`,
-          url,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-      }
-    } else {
-      try {
-        const shareText = `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country} - ${url}`;
-        await navigator.clipboard.writeText(shareText);
-      } catch (error) {
-        // Clipboard write failed
-      }
-    }
   };
 
   return (
@@ -443,13 +421,11 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
               <span>{isBookmarked(station.stationuuid) ? 'SAVED' : 'SAVE'}</span>
             </button>
             
-            <button
-              onClick={handleShare}
-              className="flex items-center space-x-1 px-3 py-1 rounded-lg border border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all font-bold text-xs"
-            >
-              <Share2 className="w-3 h-3" />
-              <span>SHARE</span>
-            </button>
+            <ShareMenu
+              station={station}
+              iconClassName="flex items-center space-x-1 px-3 py-1 rounded-lg border border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all font-bold text-xs"
+              trigger={<><Share2 className="w-3 h-3" /><span>SHARE</span></>}
+            />
 
             {station.homepage && (
               <a

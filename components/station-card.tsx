@@ -1,9 +1,8 @@
-import { Play, Pause, Bookmark, Share2, Maximize2, MapPin } from 'lucide-react';
+import { Play, Pause, Bookmark, Maximize2, MapPin } from 'lucide-react';
 import { RadioStation } from '@/types/radio';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import { getObscurityBadge, generateStationDescription, getTimeOnAir, getStationPopularity, getStreamQuality } from '@/lib/radio-api';
-import { useToast } from '@/hooks/use-toast';
+import { ShareMenu } from './share-menu';
 
 interface StationCardProps {
   station: RadioStation;
@@ -13,18 +12,11 @@ interface StationCardProps {
 export function StationCard({ station, onMaximize }: StationCardProps) {
   const { playStation, currentStation, isPlaying, isLoading } = useAudioStore();
   const { isBookmarked, toggleBookmark } = useBookmarks();
-  const { toast } = useToast();
-  
+
   const isCurrentStation = currentStation?.stationuuid === station.stationuuid;
   const isCurrentlyPlaying = isCurrentStation && isPlaying;
   const isCurrentlyLoading = isCurrentStation && isLoading;
-  
-  const obscurityBadge = getObscurityBadge(station);
-  const description = generateStationDescription(station);
-  const timeOnAir = getTimeOnAir(station);
-  const popularity = getStationPopularity(station);
-  const streamQuality = getStreamQuality(station);
-  
+
   const handlePlay = () => {
     playStation(station);
   };
@@ -32,38 +24,6 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
     toggleBookmark(station);
-  };
-  
-  const handleShare = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const url = `${window.location.origin}?station=${station.stationuuid}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${station.name} - Unheard Radio`,
-          text: `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country}`,
-          url,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-      }
-    } else {
-      try {
-        const shareText = `I found this radio station at UnheardRadio.io: ${station.name} from ${station.country} - ${url}`;
-        await navigator.clipboard.writeText(shareText);
-        toast({
-          title: "Link copied",
-          description: "Station link copied to clipboard",
-        });
-      } catch (error) {
-        toast({
-          title: "Failed to copy link",
-          description: "Unable to copy to clipboard",
-          variant: "destructive",
-        });
-      }
-    }
   };
 
   return (
@@ -130,12 +90,7 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
               <Bookmark className={`w-4 h-4 ${isBookmarked(station.stationuuid) ? 'fill-current' : ''}`} />
             </button>
             
-            <button
-              onClick={handleShare}
-              className="w-7 h-7 rounded-full border border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center"
-            >
-              <Share2 className="w-3 h-3" />
-            </button>
+            <ShareMenu station={station} />
           </div>
         </div>
 

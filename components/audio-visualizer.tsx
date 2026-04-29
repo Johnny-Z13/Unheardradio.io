@@ -13,7 +13,7 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
   const [peaks, setPeaks] = useState<number[]>([]);
   const animationFrameRef = useRef<number>();
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
   const lastUpdateTime = useRef<number>(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
@@ -80,7 +80,7 @@ export function AudioVisualizer({ height = 32, barCount = 40, compact = false }:
             audioContextRef.current = audioContext;
             sourceNodeRef.current = source;
             analyserRef.current = analyser;
-            dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);
+            dataArrayRef.current = new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount));
             
             console.log('Audio visualizer connected to stream');
           }

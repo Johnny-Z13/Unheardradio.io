@@ -1,48 +1,17 @@
-import { SkipBack, Play, Pause, SkipForward, Volume2, Bookmark, Share2, ChevronDown, Maximize2 } from 'lucide-react';
+import { Play, Pause, Bookmark, Maximize2 } from 'lucide-react';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import { Slider } from '@/components/ui/slider';
 import { AudioVisualizer } from '@/components/audio-visualizer';
+import { ShareMenu } from './share-menu';
 
 export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
-  const {
-    currentStation,
-    isPlaying,
-    volume,
-    togglePlay,
-    setVolume,
-    error,
-  } = useAudioStore();
-  
+  const { currentStation, isPlaying, togglePlay, error } = useAudioStore();
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
   if (!currentStation) return null;
 
   const handleBookmark = () => {
     toggleBookmark(currentStation);
-  };
-
-  const handleShare = async () => {
-    const url = `${window.location.origin}?station=${currentStation.stationuuid}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${currentStation.name} - Unheard Radio`,
-          text: `I found this radio station at UnheardRadio.io: ${currentStation.name} from ${currentStation.country}`,
-          url,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-      }
-    } else {
-      try {
-        const shareText = `I found this radio station at UnheardRadio.io: ${currentStation.name} from ${currentStation.country} - ${url}`;
-        await navigator.clipboard.writeText(shareText);
-      } catch (error) {
-        // Clipboard write failed
-      }
-    }
   };
 
   return (
@@ -98,7 +67,12 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
           >
             <Bookmark className={`w-3 h-3 ${isBookmarked(currentStation.stationuuid) ? 'fill-current' : ''}`} />
           </button>
-          
+
+          <ShareMenu
+            station={currentStation}
+            iconClassName="w-8 h-8 rounded-lg border border-vdu-green-dim text-vdu-green-dim hover:border-vdu-green hover:text-vdu-green transition-all flex items-center justify-center"
+          />
+
           {onMaximize && (
             <button
               onClick={onMaximize}

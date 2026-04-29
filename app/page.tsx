@@ -1,39 +1,67 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { SearchSidebar } from '@/components/search-sidebar'
 import { DiscoveryList } from '@/components/discovery-list'
 import { BookmarkList } from '@/components/bookmark-list'
 import { StationMap } from '@/components/station-map-simple'
 import { NowPlayingBar } from '@/components/now-playing-bar'
 import { FullscreenStation } from '@/components/fullscreen-station'
-import { AudioVisualizer } from '@/components/audio-visualizer'
 import { RadioStation, SearchFilters } from '@/types/radio'
 import { useAudioStore } from '@/lib/audio-store'
 import { Radar, Search, Bookmark, MapPin, Info } from 'lucide-react'
-import Link from 'next/link'
 
 type Tab = 'discover' | 'search' | 'saved' | 'map' | 'about'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('discover')
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>({ 
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
     listenerFilter: 'low-to-high',
     limit: 20,
-    offset: 0 
+    offset: 0,
   })
   const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null)
-  const [totalStations, setTotalStations] = useState(0)
-  
-  const { currentStation } = useAudioStore()
+
+  const { currentStation, playStation } = useAudioStore()
+
+  const { data: stats } = useQuery<{ stations: number }>({
+    queryKey: ['/api/stats'],
+    queryFn: async () => {
+      const res = await fetch('/api/stats')
+      if (!res.ok) throw new Error('stats')
+      return res.json()
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  })
+
+  // Deep link: ?station=<uuid> auto-plays that station via RadioBrowser lookup
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const uuid = params.get('station')
+    if (!uuid) return
+
+    let cancelled = false
+    fetch(`https://de1.api.radio-browser.info/json/stations/byuuid/${uuid}`, {
+      headers: { 'User-Agent': 'UnheardRadio/1.0' },
+    })
+      .then(r => (r.ok ? r.json() : []))
+      .then((stations: RadioStation[]) => {
+        if (cancelled || !stations.length) return
+        playStation(stations[0])
+        setFullscreenStation(stations[0])
+        // Clean the URL so refresh doesn't re-trigger
+        window.history.replaceState({}, '', window.location.pathname)
+      })
+      .catch(() => { /* link broken, ignore */ })
+
+    return () => { cancelled = true }
+  }, [playStation])
 
   const handleRefreshToDiscovery = (appliedFilters: SearchFilters) => {
     setSearchFilters(appliedFilters)
     setActiveTab('discover')
-  }
-
-  const handleStationSelect = (station: RadioStation) => {
-    setFullscreenStation(station)
   }
 
   const handleCloseFullscreen = () => {
@@ -46,7 +74,6 @@ export default function Home() {
     }
   }
 
-  // Mobile-optimized navigation
   const tabs = [
     { id: 'discover' as Tab, icon: Radar, label: 'Discover', shortLabel: 'Radar' },
     { id: 'search' as Tab, icon: Search, label: 'Filter', shortLabel: 'Filter' },
@@ -57,26 +84,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-vdu-green font-mono">
-      {/* Mobile-first header */}
       <header className="border-b border-vdu-green/20 p-3 sm:p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-6 h-6 sm:w-8 sm:h-8 border border-vdu-green flex items-center justify-center text-xs sm:text-sm font-bold">
-              U
-            </div>
-            <div>
-              <h1 className="text-sm sm:text-lg font-bold glow">UNHEARD RADIO</h1>
-              <p className="text-xs sm:text-sm text-vdu-green-dim">
-                Stations live on air: 47,283
-              </p>
-            </div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 border border-vdu-green flex items-center justify-center text-xs sm:text-sm font-bold">
+            U
           </div>
-          
-
+          <div>
+            <h1 className="text-sm sm:text-lg font-bold glow">UNHEARD RADIO</h1>
+            <p className="text-xs sm:text-sm text-vdu-green-dim">
+              Stations live on air: {stats ? stats.stations.toLocaleString() : '…'}
+            </p>
+          </div>
         </div>
       </header>
 
-      {/* Mobile-optimized navigation */}
       <nav className="border-b border-vdu-green/20 overflow-x-auto">
         <div className="flex min-w-max">
           {tabs.map((tab) => {
@@ -101,35 +122,22 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Main content area with mobile layout */}
       <div className="flex flex-col lg:flex-row h-[calc(100vh-120px)]">
-        {/* Sidebar - mobile collapsible, desktop fixed */}
         {activeTab === 'search' && (
           <div className="w-full lg:w-80 border-r border-vdu-green/20 bg-black/50">
             <SearchSidebar
               onFiltersChange={setSearchFilters}
               onRefreshToDiscovery={handleRefreshToDiscovery}
-              totalStations={totalStations}
+              totalStations={stats?.stations ?? 0}
             />
           </div>
         )}
 
-        {/* Content area */}
         <div className="flex-1 relative overflow-hidden">
-          {activeTab === 'discover' && (
-            <DiscoveryList 
-              filters={searchFilters}
-            />
-          )}
-          
-          {activeTab === 'saved' && (
-            <BookmarkList />
-          )}
-          
-          {activeTab === 'map' && (
-            <StationMap />
-          )}
-          
+          {activeTab === 'discover' && <DiscoveryList filters={searchFilters} />}
+          {activeTab === 'saved' && <BookmarkList />}
+          {activeTab === 'map' && <StationMap />}
+          {activeTab === 'search' && <DiscoveryList filters={searchFilters} />}
           {activeTab === 'about' && (
             <div className="flex-1 p-6 overflow-y-auto">
               <div className="max-w-2xl mx-auto space-y-8">
@@ -139,30 +147,30 @@ export default function Home() {
                     your portal to the strange side of sound
                   </p>
                 </div>
-                
+
                 <div className="space-y-6">
                   <p className="text-lg leading-relaxed">
-                    Welcome to the underground. While everyone else feeds you the same popular frequencies, 
+                    Welcome to the underground. While everyone else feeds you the same popular frequencies,
                     we dig deeper into the weird, wonderful, and completely overlooked corners of global radio.
                   </p>
-                  
+
                   <p className="leading-relaxed">
-                    Our reverse-algorithm doesn't chase listeners—it finds the stations nobody else bothers with. 
-                    The glitchy transmissions. The ghost signals. The offbeat gems broadcasting to empty rooms 
+                    Our reverse-algorithm doesn&apos;t chase listeners—it finds the stations nobody else bothers with.
+                    The glitchy transmissions. The ghost signals. The offbeat gems broadcasting to empty rooms
                     at 3 AM.
                   </p>
-                  
+
                   <p className="leading-relaxed">
                     This is anti-algorithm radio. Always live. Never normal.
                   </p>
-                  
+
                   <p className="leading-relaxed">
-                    Every station here is real, broadcasting right now from some forgotten corner of the world. 
-                    No playlists. No recommendations. Just pure, unfiltered discovery of sounds you never 
+                    Every station here is real, broadcasting right now from some forgotten corner of the world.
+                    No playlists. No recommendations. Just pure, unfiltered discovery of sounds you never
                     knew existed.
                   </p>
                 </div>
-                
+
                 <div className="border-t border-vdu-green/20 pt-6 mt-8">
                   <div className="text-sm text-vdu-green-dim space-y-2">
                     <p>Built by Z13labs</p>
@@ -175,28 +183,17 @@ export default function Home() {
               </div>
             </div>
           )}
-          
-          {activeTab === 'search' && (
-            <DiscoveryList 
-              filters={searchFilters}
-            />
-          )}
         </div>
       </div>
 
-      {/* Mobile-optimized now playing bar */}
       {currentStation && (
         <div className="fixed bottom-0 left-0 right-0 z-50">
           <NowPlayingBar onMaximize={handleMaximizeStation} />
         </div>
       )}
 
-      {/* Fullscreen station modal */}
       {fullscreenStation && (
-        <FullscreenStation
-          station={fullscreenStation}
-          onClose={handleCloseFullscreen}
-        />
+        <FullscreenStation station={fullscreenStation} onClose={handleCloseFullscreen} />
       )}
     </div>
   )

@@ -1,16 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-
-interface Country {
-  name: string
-  iso_3166_1: string
-  stationcount: number
-}
-
-const RADIO_BROWSER_SERVERS = [
-  'https://nl1.api.radio-browser.info',
-  'https://de1.api.radio-browser.info',
-  'https://at1.api.radio-browser.info'
-]
+import { radioBrowserFetch } from '@/lib/radio-browser'
+import type { Country } from '@/types/radio'
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,40 +11,13 @@ export default async function handler(
   }
 
   try {
-    let countries: Country[] = []
-    let lastError: Error | null = null
-    
-    for (const server of RADIO_BROWSER_SERVERS) {
-      try {
-        const response = await fetch(`${server}/json/countries`, {
-          headers: {
-            'User-Agent': 'UnheardRadio/1.0',
-          },
-        })
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`)
-        }
-        
-        countries = await response.json()
-        break
-      } catch (error) {
-        lastError = error as Error
-        continue
-      }
-    }
-    
-    if (countries.length === 0 && lastError) {
-      throw lastError
-    }
-    
-    // Sort by station count and take top 50
+    const response = await radioBrowserFetch('/json/countries')
+    const countries: Country[] = await response.json()
     countries.sort((a, b) => b.stationcount - a.stationcount)
-    countries = countries.slice(0, 50)
-    
-    res.status(200).json(countries)
+    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+    res.status(200).json(countries.slice(0, 50))
   } catch (error) {
     console.error('Error fetching countries:', error)
-    res.status(500).json({ error: 'Failed to fetch countries' })
+    res.status(502).json({ error: 'Failed to fetch countries' })
   }
 }

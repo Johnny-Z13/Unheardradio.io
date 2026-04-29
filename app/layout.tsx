@@ -23,21 +23,12 @@ export const metadata: Metadata = {
     siteName: 'Unheard Radio',
     type: 'website',
     locale: 'en_US',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Unheard Radio - Discover Obscure Radio Stations',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Unheard Radio - Discover Obscure Radio Stations',
     description: 'Anti-algorithm radio discovery. Find stations with zero listeners.',
     creator: '@z13labs',
-    images: ['/og-image.png'],
   },
 }
 
