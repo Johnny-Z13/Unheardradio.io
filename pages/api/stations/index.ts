@@ -18,7 +18,9 @@ export default async function handler(
       listenerFilter: req.query.listenerFilter as SearchFilters['listenerFilter'],
       limit: parseInt(req.query.limit as string) || 20,
       offset: parseInt(req.query.offset as string) || 0,
+      randomSeed: req.query.randomSeed as string,
     }
+    const shouldRandomise = Boolean(filters.randomSeed)
 
     const params = new URLSearchParams()
     if (filters.search) params.append('name', filters.search)
@@ -26,9 +28,11 @@ export default async function handler(
     if (filters.genre) params.append('tag', filters.genre)
 
     // Zero-listener mode pulls a wider net so post-filter still has variety
-    const requestLimit = filters.listenerFilter === 'zero' ? '1000' : (filters.limit?.toString() || '20')
+    const requestLimit = shouldRandomise || filters.listenerFilter === 'zero'
+      ? '1000'
+      : (filters.limit?.toString() || '20')
     params.append('limit', requestLimit)
-    params.append('offset', filters.offset?.toString() || '0')
+    params.append('offset', shouldRandomise ? '0' : (filters.offset?.toString() || '0'))
     params.append('hidebroken', 'true')
 
     if (filters.listenerFilter === 'zero' || filters.listenerFilter === 'low-to-high') {
@@ -57,10 +61,45 @@ export default async function handler(
         break
     }
 
+    if (shouldRandomise && filters.randomSeed) {
+      stations = seededShuffle(stations, filters.randomSeed)
+      const start = filters.offset || 0
+      const end = start + (filters.limit || 20)
+      stations = stations.slice(start, end)
+    }
+
     res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300')
     res.status(200).json(stations)
   } catch (error) {
     console.error('Error fetching stations:', error)
     res.status(502).json({ error: 'Failed to fetch stations' })
   }
+}
+
+function seededShuffle(stations: RadioStation[], seed: string): RadioStation[] {
+  const shuffled = [...stations]
+  let state = hashSeed(seed)
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    state = nextRandomState(state)
+    const j = state % (i + 1)
+    const current = shuffled[i]
+    shuffled[i] = shuffled[j]
+    shuffled[j] = current
+  }
+
+  return shuffled
+}
+
+function hashSeed(seed: string): number {
+  let hash = 2166136261
+  for (let i = 0; i < seed.length; i++) {
+    hash ^= seed.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return hash >>> 0
+}
+
+function nextRandomState(state: number): number {
+  return (Math.imul(state, 1664525) + 1013904223) >>> 0
 }

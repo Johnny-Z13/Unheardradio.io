@@ -16,7 +16,10 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
   const [allStations, setAllStations] = useState<RadioStation[]>([]);
   const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null);
   const [offset, setOffset] = useState(0);
+  const [randomSeed, setRandomSeed] = useState(() => filters.randomSeed ?? Date.now().toString(36));
   const limit = 20;
+  const canRandomise = filters.listenerFilter !== 'high-to-low';
+  const activeFilters = canRandomise ? { ...filters, randomSeed } : filters;
   
   const {
     data: stations = [],
@@ -24,9 +27,9 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
     error,
     isFetching,
   } = useQuery({
-    queryKey: ['/api/stations', { ...filters, limit, offset }],
-    queryFn: () => fetchStations({ ...filters, limit, offset }),
-    staleTime: 2 * 60 * 1000, // 2 minutes cache
+    queryKey: ['/api/stations', { ...activeFilters, limit, offset }],
+    queryFn: () => fetchStations({ ...activeFilters, limit, offset }),
+    staleTime: 0,
     gcTime: 5 * 60 * 1000, // Garbage collect after 5 minutes
     refetchOnWindowFocus: false, // Prevent unnecessary refetches on tab switch
   });
@@ -35,7 +38,10 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
   useEffect(() => {
     setOffset(0);
     setAllStations([]);
-  }, [filters.search, filters.country, filters.genre, filters.listenerFilter]);
+    if (canRandomise) {
+      setRandomSeed(filters.randomSeed ?? Date.now().toString(36));
+    }
+  }, [canRandomise, filters.search, filters.country, filters.genre, filters.listenerFilter, filters.randomSeed]);
 
   // Update allStations when new data comes in
   useEffect(() => {
@@ -58,13 +64,11 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
     setOffset(prev => prev + limit);
   };
 
-  const handleRandomDrift = () => {
-    if (allStations.length > 0) {
-      const randomIndex = Math.floor(Math.random() * allStations.length);
-      const randomStation = allStations[randomIndex];
-      const element = document.querySelector(`[data-station-id="${randomStation.stationuuid}"]`);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+  const handleRandomiseFeed = () => {
+    if (!canRandomise) return;
+    setAllStations([]);
+    setOffset(0);
+    setRandomSeed(`${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`);
   };
 
   if (isLoading && offset === 0) {
@@ -107,14 +111,15 @@ export function DiscoveryList({ filters }: DiscoveryListProps) {
         </div>
         <div className="flex items-center justify-end">
           <Button
-            onClick={handleRandomDrift}
+            onClick={handleRandomiseFeed}
             variant="outline"
             size="sm"
+            disabled={isFetching || !canRandomise}
             className="border-vdu-green-dim text-vdu-green hover:bg-vdu-green-bright hover:text-radio-black text-[10px] tracking-[0.15em] uppercase font-bold rounded-none"
           >
             <Scan size={12} className="mr-1.5" />
-            <span className="hidden md:inline">RANDOM DRIFT</span>
-            <span className="md:hidden">RANDOM</span>
+            <span className="hidden md:inline">RANDOMISE FEED</span>
+            <span className="md:hidden">RANDOMISE</span>
           </Button>
         </div>
       </div>

@@ -21,6 +21,7 @@ export default function Home() {
     listenerFilter: 'low-to-high',
     limit: 20,
     offset: 0,
+    randomSeed: Date.now().toString(36),
   })
   const [fullscreenStation, setFullscreenStation] = useState<RadioStation | null>(null)
 

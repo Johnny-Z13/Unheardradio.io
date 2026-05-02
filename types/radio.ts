@@ -45,6 +45,7 @@ export interface SearchFilters {
   listenerFilter?: 'all' | 'zero' | 'hide-zero' | 'high-to-low' | 'low-to-high';
   limit?: number;
   offset?: number;
+  randomSeed?: string;
   bookmarkedOnly?: boolean;
 }
 
