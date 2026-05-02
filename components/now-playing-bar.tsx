@@ -23,7 +23,7 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
       {/* Info + trace stack */}
       <div className="min-w-0">
         <div className="flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.08em] uppercase text-vdu-green-dim mb-0.5">
-          <span>► RX</span>
+          <span>► Signal</span>
           <span className="text-accent-cyan">ID&nbsp;{getStationId(currentStation)}</span>
           <span className="hidden sm:inline">·&nbsp;BAND&nbsp;{getBand(currentStation)}</span>
           <span className="hidden md:inline">·&nbsp;{getCoords(currentStation)}</span>

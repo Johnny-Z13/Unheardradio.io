@@ -19,6 +19,7 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
   const isLive = isCurrent && isPlaying;
   const isBuffering = isCurrent && isLoading;
   const bookmarked = isBookmarked(station.stationuuid);
+  const listenerCount = station.clickcount || 0;
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,7 +51,7 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
           {isLive && (
             <span className="inline-flex items-center gap-1.5 border border-accent-cyan/40 bg-accent-cyan/10 px-2 py-0.5 text-[10px] tracking-[0.15em] uppercase text-accent-cyan whitespace-nowrap">
               <span className="w-1.5 h-1.5 bg-accent-cyan animate-pulse" />
-              RX&nbsp;ACTIVE
+              LIVE&nbsp;SIGNAL
             </span>
           )}
         </div>
@@ -98,11 +99,11 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 sm:gap-x-5 gap-y-0.5 text-[11px] tracking-[0.04em] min-w-0">
           <span className="text-vdu-green-dim uppercase">Origin</span>
-          <span className="text-vdu-green-dim uppercase">RX</span>
+          <span className="text-vdu-green-dim uppercase">Listeners</span>
           <span className="text-vdu-green-dim uppercase hidden sm:inline">Rate</span>
           <span className="text-vdu-green-dim uppercase hidden sm:inline">Uptime</span>
           <span className="text-vdu-green truncate">{getOrigin(station)}</span>
-          <span className="text-vdu-green">{station.clickcount || 0}</span>
+          <span className="text-vdu-green">{listenerCount.toLocaleString()}</span>
           <span className="text-vdu-green hidden sm:inline">{getRate(station)}</span>
           <span className="text-vdu-green hidden sm:inline">{getUptime(station)}</span>
         </div>

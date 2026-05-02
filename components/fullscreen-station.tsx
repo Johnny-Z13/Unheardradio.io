@@ -51,7 +51,7 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
       <div className="sticky top-0 z-20 border-b border-hairline bg-radio-black/95 backdrop-blur px-3 sm:px-6 py-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <div className="font-display text-[22px] leading-none text-vdu-green-bright phosphor tracking-[0.08em]">
-            UNHEARD // RX DETAIL
+            UNHEARD // SIGNAL DETAIL
           </div>
           <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-vdu-green-dim truncate">
             ID {getStationId(station)} · BAND {getBand(station)} · {getOrigin(station)}
@@ -78,7 +78,7 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
             <div className="min-w-0">
               <div className="flex flex-wrap gap-2 mb-3">
                 <Badge>{obscurityBadge.text}</Badge>
-                <Badge>{isLive ? 'LIVE RX' : isCurrentStation ? 'PAUSED' : 'READY'}</Badge>
+                <Badge>{isLive ? 'LIVE SIGNAL' : isCurrentStation ? 'PAUSED' : 'READY'}</Badge>
                 <Badge>{streamQuality.quality}</Badge>
               </div>
               <h1 className="font-display text-[40px] sm:text-[56px] leading-none text-vdu-green-bright phosphor tracking-[0.03em] uppercase break-words">
@@ -169,7 +169,7 @@ export function FullscreenStation({ station, onClose }: FullscreenStationProps) 
           </DetailPanel>
 
           <DetailPanel title="Discovery">
-            <DetailItem label="RX count" value={(station.clickcount || 0).toLocaleString()} />
+            <DetailItem label="Listeners" value={(station.clickcount || 0).toLocaleString()} />
             <DetailItem label="Popularity" value={getStationPopularity(station)} />
             <DetailItem label="Uptime" value={getUptime(station)} />
             <DetailItem label="On air" value={getTimeOnAir(station)} />
