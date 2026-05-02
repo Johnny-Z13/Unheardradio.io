@@ -10,14 +10,21 @@ export async function fetchStations(filters: SearchFilters = {}): Promise<RadioS
   if (filters.limit) params.append('limit', filters.limit.toString());
   if (filters.offset) params.append('offset', filters.offset.toString());
   
-  console.log('Fetching stations with filters:', filters);
-  console.log('API URL:', `/api/stations?${params}`);
-  
   const response = await fetch(`/api/stations?${params}`);
   if (!response.ok) {
     throw new Error('Failed to fetch stations');
   }
   
+  return response.json();
+}
+
+export async function fetchStationByUuid(stationUuid: string): Promise<RadioStation | null> {
+  const response = await fetch(`/api/stations/${stationUuid}`);
+  if (response.status === 404) return null;
+  if (!response.ok) {
+    throw new Error('Failed to fetch station');
+  }
+
   return response.json();
 }
 

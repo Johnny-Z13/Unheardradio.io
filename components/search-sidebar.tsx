@@ -1,31 +1,23 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Search as SearchIcon, Rescan } from '@/components/icons';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { fetchCountries, fetchGenres } from '@/lib/radio-api';
 import { SearchFilters, Country, Genre } from '@/types/radio';
-import { useBookmarks } from '@/hooks/use-bookmarks';
 
 interface SearchSidebarProps {
-  onFiltersChange: (filters: SearchFilters) => void;
   onRefreshToDiscovery: (filters: SearchFilters) => void;
   totalStations: number;
 }
 
-export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStations }: SearchSidebarProps) {
+export function SearchSidebar({ onRefreshToDiscovery, totalStations }: SearchSidebarProps) {
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
   const [genre, setGenre] = useState('');
   const [listenerFilter, setListenerFilter] = useState<'all' | 'zero' | 'hide-zero' | 'high-to-low' | 'low-to-high'>('low-to-high');
-  const [obscurity, setObscurity] = useState('rare');
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  
-  const { bookmarkCount } = useBookmarks();
-  
+
   const { data: countries = [] } = useQuery<Country[]>({
     queryKey: ['/api/countries'],
     queryFn: () => fetchCountries(),
@@ -58,38 +50,17 @@ export function SearchSidebar({ onFiltersChange, onRefreshToDiscovery, totalStat
     return musicGenres.sort((a, b) => b.stationcount - a.stationcount).slice(0, 100);
   }, [rawGenres]);
 
-  // Debounce search input to prevent excessive API calls
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const filters: SearchFilters = {
-        search: search || undefined,
-        country: country === 'all' ? undefined : country || undefined,
-        genre: genre === 'all' ? undefined : genre || undefined,
-        listenerFilter: listenerFilter !== 'all' ? listenerFilter : undefined,
-        limit: 50,
-        offset: 0,
-      };
-      
-      onFiltersChange(filters);
-    }, search ? 500 : 0); // Debounce search by 500ms, immediate for other filters
-
-    return () => clearTimeout(timeoutId);
-  }, [search, country, genre, listenerFilter, obscurity, onFiltersChange]);
-
-  const popularGenres = [
-    'Ambient', 'Experimental', 'Field Recording', 'Drone', 'Numbers Station', 'Lo-Fi'
-  ];
+  const buildFilters = (): SearchFilters => ({
+    search: search || undefined,
+    country: country === 'all' ? undefined : country || undefined,
+    genre: genre === 'all' ? undefined : genre || undefined,
+    listenerFilter: listenerFilter !== 'all' ? listenerFilter : undefined,
+    limit: 50,
+    offset: 0,
+  });
 
   const handleRefresh = () => {
-    const currentFilters: SearchFilters = {
-      search: search || undefined,
-      country: country === 'all' ? undefined : country || undefined,
-      genre: genre === 'all' ? undefined : genre || undefined,
-      listenerFilter: listenerFilter !== 'all' ? listenerFilter : undefined,
-      limit: 50,
-      offset: 0,
-    };
-    onRefreshToDiscovery(currentFilters);
+    onRefreshToDiscovery(buildFilters());
   };
 
   return (

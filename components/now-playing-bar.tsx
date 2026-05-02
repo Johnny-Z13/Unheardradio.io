@@ -16,8 +16,8 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
     <div
       className="border-t border-vdu-green-dim bg-radio-panel px-3 sm:px-4 py-2 sm:py-3 grid items-center gap-3 sm:gap-4"
       style={{
-        gridTemplateColumns: 'minmax(0, 1fr) auto auto',
-        boxShadow: '0 -4px 20px hsla(120, 100%, 40%, 0.08)',
+        gridTemplateColumns: 'minmax(0, 1fr) minmax(180px, 340px) auto',
+        boxShadow: '0 -4px 22px hsla(120, 100%, 40%, 0.12)',
       }}
     >
       {/* Info + trace stack */}
@@ -41,9 +41,12 @@ export function NowPlayingBar({ onMaximize }: { onMaximize?: () => void }) {
       </div>
 
       {/* Visualizer + readout (hidden on the smallest screens) */}
-      <div className="hidden sm:flex flex-col gap-1 w-[180px] md:w-[260px] lg:w-[300px]">
-        <AudioVisualizer mode="trace" height={24} />
-        <div className="hidden md:block">
+      <div className="hidden sm:grid grid-cols-[1fr_88px] items-center gap-2 min-w-0">
+        <div className="grid gap-1">
+          <AudioVisualizer mode="bars" height={28} />
+          <AudioVisualizer mode="trace" height={18} />
+        </div>
+        <div className="hidden md:block text-right">
           <AudioVisualizer mode="dbfs" />
         </div>
       </div>

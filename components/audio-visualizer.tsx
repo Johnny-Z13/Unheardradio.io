@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAudioStore } from '@/lib/audio-store'
 
-type Mode = 'trace' | 'waterfall' | 'dbfs'
+type Mode = 'trace' | 'waterfall' | 'dbfs' | 'bars'
 
 interface AudioVisualizerProps {
   mode?: Mode
@@ -14,7 +14,7 @@ interface AudioVisualizerProps {
 const SAMPLES = 50
 
 export function AudioVisualizer({ mode = 'trace', height = 28, width }: AudioVisualizerProps) {
-  const { isPlaying, currentStation } = useAudioStore()
+  const { isPlaying, currentStation, getFrequencyData } = useAudioStore()
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -22,64 +22,16 @@ export function AudioVisualizer({ mode = 'trace', height = 28, width }: AudioVis
   const trailRef = useRef<SVGPathElement>(null)
   const cursorRef = useRef<SVGLineElement>(null)
 
-  const audioContextRef = useRef<AudioContext | null>(null)
-  const analyserRef = useRef<AnalyserNode | null>(null)
-  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
-  const dataRef = useRef<Uint8Array<ArrayBuffer> | null>(null)
   const rafRef = useRef<number>()
   const prevPathRef = useRef<string>('')
   const phaseRef = useRef(0)
 
   const [readout, setReadout] = useState<{ peak: number; avg: number }>({ peak: -60, avg: -60 })
 
-  // Audio graph setup
-  useEffect(() => {
-    let cancelled = false
-    if (!isPlaying || !currentStation || analyserRef.current) return
-
-    const t = setTimeout(() => {
-      if (cancelled) return
-      try {
-        const audio = document.getElementById('main-audio-player') as HTMLAudioElement | null
-        if (!audio || !audio.src || audio.paused) return
-
-        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
-        if (ctx.state === 'suspended') ctx.resume()
-        const src = ctx.createMediaElementSource(audio)
-        const ana = ctx.createAnalyser()
-        ana.fftSize = 256
-        ana.smoothingTimeConstant = 0.15
-        ana.minDecibels = -80
-        ana.maxDecibels = -20
-        src.connect(ana)
-        ana.connect(ctx.destination)
-        audioContextRef.current = ctx
-        sourceRef.current = src
-        analyserRef.current = ana
-        dataRef.current = new Uint8Array(new ArrayBuffer(ana.frequencyBinCount))
-      } catch {
-        // setup failed — animation will use synthetic fallback
-      }
-    }, 400)
-
-    return () => {
-      cancelled = true
-      clearTimeout(t)
-    }
-  }, [isPlaying, currentStation])
-
-  // Cleanup on unmount or when stopping
+  // Reset animation state when stopping.
   useEffect(() => {
     if (!isPlaying || !currentStation) {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
-      try { sourceRef.current?.disconnect() } catch { /* ignore */ }
-      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        try { audioContextRef.current.close() } catch { /* ignore */ }
-      }
-      sourceRef.current = null
-      analyserRef.current = null
-      audioContextRef.current = null
-      dataRef.current = null
       prevPathRef.current = ''
     }
   }, [isPlaying, currentStation])
@@ -89,12 +41,7 @@ export function AudioVisualizer({ mode = 'trace', height = 28, width }: AudioVis
     const tick = () => {
       const w = svgRef.current?.clientWidth || width || 280
       const h = height
-      let bytes: Uint8Array | null = null
-
-      if (analyserRef.current && dataRef.current) {
-        analyserRef.current.getByteFrequencyData(dataRef.current)
-        bytes = dataRef.current
-      }
+      const bytes = getSignalBytes(getFrequencyData())
 
       if (mode === 'trace') {
         const path = bytes
@@ -121,6 +68,11 @@ export function AudioVisualizer({ mode = 'trace', height = 28, width }: AudioVis
       } else if (mode === 'waterfall' && canvasRef.current) {
         drawSyntheticWaterfall(canvasRef.current, phaseRef.current)
         phaseRef.current += isPlaying ? 0.08 : 0.02
+      } else if (mode === 'bars' && canvasRef.current && bytes) {
+        drawBars(canvasRef.current, bytes, isPlaying)
+      } else if (mode === 'bars' && canvasRef.current) {
+        drawSyntheticBars(canvasRef.current, phaseRef.current, isPlaying)
+        phaseRef.current += isPlaying ? 0.08 : 0.02
       }
 
       rafRef.current = requestAnimationFrame(tick)
@@ -130,7 +82,7 @@ export function AudioVisualizer({ mode = 'trace', height = 28, width }: AudioVis
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [mode, height, width, isPlaying])
+  }, [mode, height, width, isPlaying, getFrequencyData])
 
   if (mode === 'dbfs') {
     return (
@@ -142,7 +94,7 @@ export function AudioVisualizer({ mode = 'trace', height = 28, width }: AudioVis
     )
   }
 
-  if (mode === 'waterfall') {
+  if (mode === 'waterfall' || mode === 'bars') {
     return (
       <canvas
         ref={canvasRef}
@@ -170,6 +122,19 @@ export function AudioVisualizer({ mode = 'trace', height = 28, width }: AudioVis
       </svg>
     </div>
   )
+}
+
+function getSignalBytes(bytes: Uint8Array | null): Uint8Array | null {
+  if (!bytes) return null
+
+  let max = 0
+  for (let i = 0; i < bytes.length; i++) {
+    if (bytes[i] > max) max = bytes[i]
+  }
+
+  // Some streams play but cannot be inspected because they do not provide
+  // cross-origin audio data. Treat all-zero output as unavailable signal data.
+  return max > 1 ? bytes : null
 }
 
 function buildTraceFromBytes(bytes: Uint8Array, width: number, height: number): string {
@@ -205,7 +170,7 @@ function buildSyntheticTrace(width: number, height: number, phase: number, activ
 }
 
 function drawWaterfall(canvas: HTMLCanvasElement, bytes: Uint8Array) {
-  const ctx = canvas.getContext('2d')
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
   if (!ctx) return
   const w = canvas.width
   const h = canvas.height
@@ -228,7 +193,7 @@ function drawWaterfall(canvas: HTMLCanvasElement, bytes: Uint8Array) {
 }
 
 function drawSyntheticWaterfall(canvas: HTMLCanvasElement, phase: number) {
-  const ctx = canvas.getContext('2d')
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
   if (!ctx) return
   const w = canvas.width
   const h = canvas.height
@@ -248,6 +213,57 @@ function drawSyntheticWaterfall(canvas: HTMLCanvasElement, phase: number) {
     row.data[off + 3] = a
   }
   ctx.putImageData(row, 0, 0)
+}
+
+function drawBars(canvas: HTMLCanvasElement, bytes: Uint8Array, active: boolean) {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+
+  const w = canvas.width
+  const h = canvas.height
+  const bars = 42
+  const gap = 2
+  const barW = (w - gap * (bars - 1)) / bars
+
+  ctx.clearRect(0, 0, w, h)
+  ctx.fillStyle = 'rgba(0, 18, 0, 0.65)'
+  ctx.fillRect(0, 0, w, h)
+
+  for (let i = 0; i < bars; i++) {
+    const start = Math.floor((i / bars) * bytes.length)
+    const end = Math.floor(((i + 1) / bars) * bytes.length)
+    let sum = 0
+    for (let j = start; j < end; j++) sum += bytes[j] || 0
+    const level = Math.pow(sum / Math.max(1, end - start) / 255, 0.72)
+    const barH = Math.max(active ? 2 : 1, level * h)
+    const x = i * (barW + gap)
+    const y = h - barH
+    const hot = level > 0.72
+
+    ctx.fillStyle = hot ? 'rgba(143,255,255,0.9)' : 'rgba(44,255,44,0.78)'
+    ctx.fillRect(x, y, barW, barH)
+
+    if (hot) {
+      ctx.fillStyle = 'rgba(143,255,255,0.22)'
+      ctx.fillRect(x, Math.max(0, y - 3), barW, 2)
+    }
+  }
+}
+
+function drawSyntheticBars(canvas: HTMLCanvasElement, phase: number, active: boolean) {
+  const synthetic = new Uint8Array(128)
+  const base = active ? 48 : 12
+  const swing = active ? 90 : 12
+
+  for (let i = 0; i < synthetic.length; i++) {
+    const t = phase + i * 0.15
+    const envelope = Math.max(0, 1 - i / synthetic.length)
+    synthetic[i] = Math.max(0, Math.min(255, base + swing * envelope * (
+      Math.sin(t) * 0.45 + Math.sin(t * 0.37 + 1.8) * 0.35 + Math.random() * 0.18
+    )))
+  }
+
+  drawBars(canvas, synthetic, active)
 }
 
 function waterfallColor(v: number): [number, number, number, number] {

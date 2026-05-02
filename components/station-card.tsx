@@ -2,6 +2,7 @@ import { RadioStation } from '@/types/radio';
 import { useAudioStore } from '@/lib/audio-store';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import { ShareMenu } from './share-menu';
+import { AudioVisualizer } from './audio-visualizer';
 import { Play, Stop, Log, LogOn, Inspect, Send } from './icons';
 import { getBand, getStationId, getCoords, getOrigin, getRate, getUptime } from '@/lib/station-format';
 
@@ -26,7 +27,7 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
 
   return (
     <div
-      className={`bg-radio-dark border border-hairline border-l-2 p-3 sm:p-4 mb-2.5 transition-colors ${
+      className={`relative bg-radio-dark border border-hairline border-l-2 p-3 sm:p-4 mb-2.5 transition-colors overflow-hidden ${
         isCurrent
           ? 'border-l-vdu-green-bright'
           : 'border-l-vdu-green-dim hover:border-l-vdu-green'
@@ -36,6 +37,10 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
         boxShadow: 'inset 2px 0 12px hsla(120, 100%, 50%, 0.10)',
       } : undefined}
     >
+      {isCurrent && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-accent-cyan opacity-70" />
+      )}
+
       {/* Row 1: callsign + top metadata */}
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2.5">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -59,6 +64,15 @@ export function StationCard({ station, onMaximize }: StationCardProps) {
           </span>
         </div>
       </div>
+
+      {isCurrent && (
+        <div className="mb-3 grid grid-cols-[1fr_auto] items-end gap-3">
+          <AudioVisualizer mode="bars" height={22} />
+          <div className="hidden sm:block text-[10px] tracking-[0.14em] uppercase text-accent-cyan">
+            {isBuffering ? 'Buffering' : isLive ? 'Live signal' : 'Paused'}
+          </div>
+        </div>
+      )}
 
       {/* Row 2: play + data + actions */}
       <div className="grid grid-cols-[auto_1fr_auto] gap-3 sm:gap-4 items-center">

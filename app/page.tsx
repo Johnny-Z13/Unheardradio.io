@@ -10,6 +10,7 @@ import { NowPlayingBar } from '@/components/now-playing-bar'
 import { FullscreenStation } from '@/components/fullscreen-station'
 import { RadioStation, SearchFilters } from '@/types/radio'
 import { useAudioStore } from '@/lib/audio-store'
+import { fetchStationByUuid } from '@/lib/radio-api'
 import { Discover, Filter, Log, MapPin, Info } from '@/components/icons'
 
 type Tab = 'discover' | 'search' | 'saved' | 'map' | 'about'
@@ -36,21 +37,18 @@ export default function Home() {
     gcTime: 30 * 60 * 1000,
   })
 
-  // Deep link: ?station=<uuid> auto-plays that station via RadioBrowser lookup
+  // Deep link: ?station=<uuid> auto-plays that station via our API proxy.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const uuid = params.get('station')
     if (!uuid) return
 
     let cancelled = false
-    fetch(`https://de1.api.radio-browser.info/json/stations/byuuid/${uuid}`, {
-      headers: { 'User-Agent': 'UnheardRadio/1.0' },
-    })
-      .then(r => (r.ok ? r.json() : []))
-      .then((stations: RadioStation[]) => {
-        if (cancelled || !stations.length) return
-        playStation(stations[0])
-        setFullscreenStation(stations[0])
+    fetchStationByUuid(uuid)
+      .then((station) => {
+        if (cancelled || !station) return
+        playStation(station)
+        setFullscreenStation(station)
         // Clean the URL so refresh doesn't re-trigger
         window.history.replaceState({}, '', window.location.pathname)
       })
@@ -127,7 +125,6 @@ export default function Home() {
         {activeTab === 'search' && (
           <div className="w-full lg:w-80 border-r border-vdu-green/20 bg-black/50">
             <SearchSidebar
-              onFiltersChange={setSearchFilters}
               onRefreshToDiscovery={handleRefreshToDiscovery}
               totalStations={stats?.stations ?? 0}
             />

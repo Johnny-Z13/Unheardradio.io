@@ -23,16 +23,25 @@ export function getCoords(station: RadioStation): string {
 }
 
 const COUNTRY_SHORT: Record<string, string> = {
+  'The United States of America': 'USA',
   'United States of America': 'USA',
   'United States': 'USA',
+  'The United Kingdom of Great Britain and Northern Ireland': 'UK',
   'United Kingdom': 'UK',
   'United Kingdom of Great Britain and Northern Ireland': 'UK',
+  'The Russian Federation': 'Russia',
   'Russian Federation': 'Russia',
+}
+
+const COUNTRY_CODE_SHORT: Record<string, string> = {
+  GB: 'UK',
+  RU: 'Russia',
+  US: 'USA',
 }
 
 export function getOrigin(station: RadioStation): string {
   const cc = station.countrycode?.toUpperCase() || ''
-  const name = COUNTRY_SHORT[station.country] || station.country || ''
+  const name = COUNTRY_CODE_SHORT[cc] || COUNTRY_SHORT[station.country] || station.country || ''
   if (cc && name) return `${cc} / ${name.toUpperCase()}`
   if (name) return name.toUpperCase()
   return '— / UNKNOWN'
